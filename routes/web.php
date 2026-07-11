@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::put('settings/preferences', [SettingsController::class, 'updatePreferences'])->name('settings.preferences.update');
 
     Route::prefix('admin')->name('admin.')->middleware('acl')->group(function () {
         Route::get('users/data', [UserController::class, 'data'])->name('users.data');

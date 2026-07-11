@@ -76,6 +76,47 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3 class="card-title">{{ __('Preferenze') }}</h3>
+                </div>
+                <div class="card-body">
+                    @if (session('status') === 'preferences-updated')
+                        <div class="alert alert-success" data-testid="preferences-updated">{{ __('Preferenze aggiornate.') }}</div>
+                    @endif
+
+                    <form action="{{ route('settings.preferences.update') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        @foreach (config('preferences') as $key => $preference)
+                            <div class="mb-3">
+                                <label for="{{ $key }}" class="form-label">{{ __(ucfirst(str_replace('_', ' ', $key))) }}</label>
+                                <select
+                                    id="{{ $key }}"
+                                    name="{{ $key }}"
+                                    class="form-select @error($key) is-invalid @enderror"
+                                    data-testid="preference-{{ $key }}"
+                                >
+                                    @foreach ($preference['options'] as $value => $label)
+                                        <option value="{{ $value }}" @selected(old($key, $preferences[$key]) === $value)>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error($key)
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        @endforeach
+
+                        <div class="form-footer">
+                            <button type="submit" class="btn btn-primary" data-testid="preferences-submit">{{ __('Salva preferenze') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

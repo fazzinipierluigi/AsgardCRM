@@ -69,6 +69,20 @@ Login is **username + password** (not email). Email is still stored on the `user
 
 Login attempts are rate-limited (5 attempts per username+IP, then a cooldown) — see `app/Http/Requests/Auth/LoginRequest.php`.
 
+## Settings (key/value)
+
+The `settings` table stores arbitrary `key => value` pairs, each either **global** (`user_id` null) or scoped to a specific user. Resolution order when reading: user value → global value → the default you pass in.
+
+```php
+$user->getSetting('theme', 'light');   // read (user, then global, then default)
+$user->setSetting('theme', 'dark');    // write, scoped to this user
+Setting::setValue(null, 'theme', 'dark'); // write a global default for everyone
+```
+
+Per-user preferences exposed today on the personal settings page (`/settings`): **formato data**, **lingua**, **formato numeri**, **tema** (chiaro/scuro). Allowed values/labels/defaults for each live in `config/preferences.php` — add a new preference by adding a key there plus a `<select>` in `resources/views/settings/edit.blade.php` (the form loops over `config('preferences')` automatically).
+
+The `theme` preference drives `data-bs-theme` on `<html>` (`resources/views/layouts/app.blade.php`); `language` is applied every request by `App\Http\Middleware\ApplyUserPreferences` (registered globally on the `web` middleware group).
+
 ## Permissions (Just A Gate)
 
 Roles and permissions are managed by Just A Gate. The `User` model uses the `Authorizable` trait (`app/Models/User.php`).

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePreferencesRequest;
 use App\Http\Requests\UpdateSettingsRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +15,14 @@ class SettingsController extends Controller
      */
     public function edit(): View
     {
-        return view('settings.edit', ['user' => auth()->user()]);
+        $user = auth()->user();
+
+        $preferences = collect(config('preferences'))
+            ->mapWithKeys(fn (array $preference, string $key) => [
+                $key => $user->getSetting($key, $preference['default']),
+            ]);
+
+        return view('settings.edit', ['user' => $user, 'preferences' => $preferences]);
     }
 
     /**
@@ -33,5 +41,20 @@ class SettingsController extends Controller
         $user->save();
 
         return back()->with('status', 'settings-updated');
+    }
+
+    /**
+     * Update the current user's preferences (date format, language, number
+     * format, theme).
+     */
+    public function updatePreferences(UpdatePreferencesRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        foreach (array_keys(config('preferences')) as $key) {
+            $user->setSetting($key, $request->string($key)->toString());
+        }
+
+        return back()->with('status', 'preferences-updated');
     }
 }

@@ -30,4 +30,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Resolve a setting for this user, falling back to the global value
+     * and then to the given default.
+     */
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        return Setting::valueFor($this->id, $key, $default);
+    }
+
+    /**
+     * Set a setting scoped to this user.
+     */
+    public function setSetting(string $key, mixed $value): void
+    {
+        Setting::setValue($this->id, $key, $value);
+    }
 }

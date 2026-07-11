@@ -73,3 +73,42 @@ test('email must be unique', function () {
 
     $response->assertSessionHasErrors('email');
 });
+
+test('user can update preferences', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->put('/settings/preferences', [
+        'date_format' => 'Y-m-d',
+        'language' => 'en',
+        'number_format' => 'en',
+        'theme' => 'dark',
+    ]);
+
+    $response->assertRedirect();
+    expect($user->getSetting('date_format'))->toBe('Y-m-d');
+    expect($user->getSetting('language'))->toBe('en');
+    expect($user->getSetting('number_format'))->toBe('en');
+    expect($user->getSetting('theme'))->toBe('dark');
+});
+
+test('preferences reject values outside the allowed options', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->put('/settings/preferences', [
+        'date_format' => 'not-a-real-format',
+        'language' => 'en',
+        'number_format' => 'en',
+        'theme' => 'dark',
+    ]);
+
+    $response->assertSessionHasErrors('date_format');
+});
+
+test('theme preference is reflected on the page', function () {
+    $user = User::factory()->create();
+    $user->setSetting('theme', 'dark');
+
+    $response = $this->actingAs($user)->get('/dashboard');
+
+    $response->assertSee('data-bs-theme="dark"', false);
+});

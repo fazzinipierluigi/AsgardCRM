@@ -40,6 +40,17 @@ Custom, NOT a starter-kit scaffold. Auth field is **`username`**, not email.
 - `database/factories/UserFactory.php` — generates `username` via `fake()->unique()->userName()`.
 - Seeded user (via `DatabaseSeeder`): `username=test`, `email=test@example.com`, `password=password`.
 
+## settings (key/value store)
+
+- Table `settings`: `user_id` (nullable FK, `cascadeOnDelete`), `key` (string), `value` (text, nullable), unique on `(user_id, key)`. `user_id = null` means a global setting.
+- Model `app/Models/Setting.php`: `Setting::valueFor(?int $userId, string $key, $default = null)` (user value → global value → default) and `Setting::setValue(?int $userId, string $key, $value)` (updateOrCreate, so re-setting a key updates the row instead of duplicating it).
+- **Note on the unique index**: SQL treats `NULL <> NULL`, so a DB-level unique constraint alone would not stop two global rows sharing the same `key` if inserted via raw `create()`. Uniqueness in practice is guaranteed by always writing through `Setting::setValue()` (which does `updateOrCreate`) — never `Setting::create()` directly.
+- `User` model exposes `$user->getSetting($key, $default)` / `$user->setSetting($key, $value)`, thin wrappers around the above scoped to `$this->id`.
+- Per-user preferences (date format, language, number format, theme) are just entries in this table with a fixed key list defined in `config/preferences.php` — each entry is `['default' => ..., 'options' => [value => label]]`. `SettingsController::edit()`/`updatePreferences()` and `resources/views/settings/edit.blade.php` iterate `config('preferences')` generically, so adding a new preference is config + one form loop, no per-field code.
+- `theme` is read directly in `layouts/app.blade.php` (`<html data-bs-theme="...">`) on every page render (no caching) — this only affects Bootstrap's CSS color variables for the overall page; the sidebar `<aside>` always forces `data-bs-theme="dark"` regardless (a separate, intentional Tabler convention, not tied to this preference).
+- `language` is applied per-request by `App\Http\Middleware\ApplyUserPreferences` (registered globally on the `web` middleware group in `bootstrap/app.php`), calling `App::setLocale()` before the request reaches the controller. Guests are skipped (`$request->user()` is null).
+- `date_format`/`number_format` are stored but not yet wired into any output — no feature reads them yet. When building something that formats dates/numbers for display, resolve via `auth()->user()->getSetting('date_format', config('preferences.date_format.default'))` rather than hardcoding a format.
+
 ## ACL (Just A Gate)
 
 - Config: `config/acl.php`. Keys: `middleware` (default `'acl'`), `additional` (manual `key => name` map), `role_user_creation` (bool, auto-generates a `user.create.role_{slug}` permission per role), `clean_permission` (bool, deletes stale permissions on import), `assign` (`permission_key => [role_slug, ...]` auto-assignment map), `translate` (`permission_key => display name` override).
