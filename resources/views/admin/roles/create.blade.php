@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', __('Nuovo ruolo'))
+@section('title', t('Nuovo ruolo'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.roles.index') }}">{{ __('Ruoli') }}</a>
+        <a href="{{ route('admin.roles.index') }}">{{ t('Ruoli') }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.roles.create') }}">{{ __('Nuovo ruolo') }}</a>
+        <a href="{{ route('admin.roles.create') }}">{{ t('Nuovo ruolo') }}</a>
     </li>
 @endsection
 
@@ -19,7 +19,7 @@
                 @include('admin.roles._form', ['role' => null])
 
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="role-submit">{{ __('Crea ruolo') }}</button>
+                    <button type="submit" class="btn btn-primary" data-testid="role-submit">{{ t('Crea ruolo') }}</button>
                 </div>
             </form>
         </div>

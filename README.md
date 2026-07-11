@@ -97,6 +97,10 @@ Resolution order: the authenticated user's `language` preference (see Settings a
 
 Manage translations from `/admin/translations` (Utenti/Ruoli/Traduzioni in the admin menu) — plain CRUD: key, language (restricted to `config('preferences.language.options')`, i.e. the same languages selectable as a user preference), value. The same key can exist in multiple languages; the same key+language pair cannot be duplicated.
 
+Every Blade view in this app uses `t('String')` instead of Laravel's `__('String')`/`@lang` for UI text — the string itself is the lookup key, same convention Laravel's own `__()` uses when no translation file matches. Reserve `__()`/`trans()` for anything that must stay tied to Laravel's own file-based translations (validation messages, framework/package strings); use `t()` for everything you write in this app's own views.
+
+**Installation seeds a full set of translations automatically** — `php artisan db:seed` runs `TranslationSeeder`, which bulk-imports the `it`/`en` value for every UI string currently used in the app (both are shipped as first-class languages, not just Italian). Re-running it is safe: existing rows are updated in place, not duplicated. When you add a new `t('...')` call in a view, add its `it`/`en` pair to `database/seeders/TranslationSeeder.php` and re-run `php artisan db:seed --class=TranslationSeeder` so it's not left showing the raw key to users.
+
 ## Permissions (Just A Gate)
 
 Roles and permissions are managed by Just A Gate. The `User` model uses the `Authorizable` trait (`app/Models/User.php`).

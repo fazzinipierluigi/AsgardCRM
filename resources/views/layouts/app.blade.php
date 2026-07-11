@@ -42,7 +42,7 @@
                                 </svg>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <div class="dropdown-item text-muted">{{ __('Nessuna notifica') }}</div>
+                                <div class="dropdown-item text-muted">{{ t('Nessuna notifica') }}</div>
                             </div>
                         </div>
 
@@ -52,16 +52,16 @@
                                 <div class="d-none d-xl-block ps-2">
                                     <div data-testid="user-menu-name">{{ auth()->user()->name }}</div>
                                     <div class="mt-1 small text-muted" data-testid="user-menu-role">
-                                        {{ auth()->user()->getRoles()->pluck('name')->join(', ') ?: __('Nessun ruolo') }}
+                                        {{ auth()->user()->getRoles()->pluck('name')->join(', ') ?: t('Nessun ruolo') }}
                                     </div>
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <a href="{{ route('settings.edit') }}" class="dropdown-item">{{ __('Impostazioni') }}</a>
+                                <a href="{{ route('settings.edit') }}" class="dropdown-item">{{ t('Impostazioni') }}</a>
                                 <div class="dropdown-divider"></div>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="dropdown-item">{{ __('Logout') }}</button>
+                                    <button type="submit" class="dropdown-item">{{ t('Logout') }}</button>
                                 </form>
                             </div>
                         </div>

@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('Login') }} - {{ config('app.name', 'Laravel') }}</title>
+        <title>{{ t('Login') }} - {{ config('app.name', 'Laravel') }}</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
@@ -17,13 +17,13 @@
                 </div>
                 <div class="card card-md">
                     <div class="card-body">
-                        <h2 class="h2 text-center mb-4">{{ __('Login to your account') }}</h2>
+                        <h2 class="h2 text-center mb-4">{{ t('Login to your account') }}</h2>
 
                         <form action="{{ route('login') }}" method="POST" autocomplete="off" novalidate>
                             @csrf
 
                             <div class="mb-3">
-                                <label for="username" class="form-label">{{ __('Username') }}</label>
+                                <label for="username" class="form-label">{{ t('Username') }}</label>
                                 <input
                                     type="text"
                                     id="username"
@@ -39,7 +39,7 @@
 
                             <div class="mb-2">
                                 <label for="password" class="form-label">
-                                    {{ __('Password') }}
+                                    {{ t('Password') }}
                                 </label>
                                 <input
                                     type="password"
@@ -55,13 +55,13 @@
                             <div class="mb-3">
                                 <label class="form-check">
                                     <input type="checkbox" name="remember" class="form-check-input">
-                                    <span class="form-check-label">{{ __('Remember me') }}</span>
+                                    <span class="form-check-label">{{ t('Remember me') }}</span>
                                 </label>
                             </div>
 
                             <div class="form-footer">
                                 <button type="submit" class="btn btn-primary w-100">
-                                    {{ __('Sign in') }}
+                                    {{ t('Sign in') }}
                                 </button>
                             </div>
                         </form>

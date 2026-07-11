@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', __('Nuovo utente'))
+@section('title', t('Nuovo utente'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.users.index') }}">{{ __('Utenti') }}</a>
+        <a href="{{ route('admin.users.index') }}">{{ t('Utenti') }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.users.create') }}">{{ __('Nuovo utente') }}</a>
+        <a href="{{ route('admin.users.create') }}">{{ t('Nuovo utente') }}</a>
     </li>
 @endsection
 
@@ -19,7 +19,7 @@
                 @include('admin.users._form', ['user' => null, 'roles' => $roles, 'userRoleIds' => []])
 
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ __('Crea utente') }}</button>
+                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ t('Crea utente') }}</button>
                 </div>
             </form>
         </div>

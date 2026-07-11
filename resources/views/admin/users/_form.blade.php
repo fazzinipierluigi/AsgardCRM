@@ -1,7 +1,7 @@
 @php $isEdit = $user !== null; @endphp
 
 <div class="mb-3">
-    <label for="name" class="form-label">{{ __('Nome') }}</label>
+    <label for="name" class="form-label">{{ t('Nome') }}</label>
     <input
         type="text"
         id="name"
@@ -15,7 +15,7 @@
 </div>
 
 <div class="mb-3">
-    <label for="username" class="form-label">{{ __('Username') }}</label>
+    <label for="username" class="form-label">{{ t('Username') }}</label>
     <input
         type="text"
         id="username"
@@ -29,7 +29,7 @@
 </div>
 
 <div class="mb-3">
-    <label for="email" class="form-label">{{ __('Email') }}</label>
+    <label for="email" class="form-label">{{ t('Email') }}</label>
     <input
         type="email"
         id="email"
@@ -43,14 +43,14 @@
 </div>
 
 <div class="mb-3">
-    <label for="password" class="form-label">{{ __('Password') }}</label>
+    <label for="password" class="form-label">{{ t('Password') }}</label>
     <input
         type="password"
         id="password"
         name="password"
         class="form-control @error('password') is-invalid @enderror"
         @if (! $isEdit) required @endif
-        placeholder="{{ $isEdit ? __('Lascia vuoto per non modificarla') : '' }}"
+        placeholder="{{ $isEdit ? t('Lascia vuoto per non modificarla') : '' }}"
     >
     @error('password')
         <div class="invalid-feedback">{{ $message }}</div>
@@ -58,12 +58,12 @@
 </div>
 
 <div class="mb-3">
-    <label for="password_confirmation" class="form-label">{{ __('Conferma password') }}</label>
+    <label for="password_confirmation" class="form-label">{{ t('Conferma password') }}</label>
     <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
 </div>
 
 <div class="mb-3">
-    <label class="form-label">{{ __('Ruoli') }}</label>
+    <label class="form-label">{{ t('Ruoli') }}</label>
     @foreach ($roles as $role)
         <label class="form-check">
             <input

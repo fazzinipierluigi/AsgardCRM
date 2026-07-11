@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
-@section('title', __('Utenti'))
+@section('title', t('Utenti'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.users.index') }}">{{ __('Utenti') }}</a>
+        <a href="{{ route('admin.users.index') }}">{{ t('Utenti') }}</a>
     </li>
 @endsection
 
 @section('buttons')
     <a href="{{ route('admin.users.create') }}" class="btn btn-primary" data-testid="user-create-link">
-        {{ __('Nuovo utente') }}
+        {{ t('Nuovo utente') }}
     </a>
 @endsection
 
@@ -19,13 +19,13 @@
         <div class="alert alert-success" data-testid="users-status">
             @switch(session('status'))
                 @case('user-created')
-                    {{ __('Utente creato correttamente.') }}
+                    {{ t('Utente creato correttamente.') }}
                     @break
                 @case('user-updated')
-                    {{ __('Utente aggiornato correttamente.') }}
+                    {{ t('Utente aggiornato correttamente.') }}
                     @break
                 @case('user-deleted')
-                    {{ __('Utente eliminato correttamente.') }}
+                    {{ t('Utente eliminato correttamente.') }}
                     @break
             @endswitch
         </div>
@@ -47,15 +47,15 @@
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
                 columns: [
-                    { id: 'name', index: 'name', text: @json(__('Nome')), sortable: true, filterable: true },
-                    { id: 'username', index: 'username', text: @json(__('Username')), sortable: true, filterable: true },
-                    { id: 'email', index: 'email', text: @json(__('Email')), sortable: true, filterable: true },
-                    { id: 'roles', index: 'roles', text: @json(__('Ruoli')) },
-                    { id: 'created_at', index: 'created_at', text: @json(__('Creato il')), sortable: true },
+                    { id: 'name', index: 'name', text: @json(t('Nome')), sortable: true, filterable: true },
+                    { id: 'username', index: 'username', text: @json(t('Username')), sortable: true, filterable: true },
+                    { id: 'email', index: 'email', text: @json(t('Email')), sortable: true, filterable: true },
+                    { id: 'roles', index: 'roles', text: @json(t('Ruoli')) },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
                     {
                         id: 'actions',
                         index: 'id',
-                        text: @json(__('Azioni')),
+                        text: @json(t('Azioni')),
                         sortable: false,
                         filterable: false,
                         render: function (params) {
@@ -63,11 +63,11 @@
                             var editUrl = @json(route('admin.users.index')) + '/' + id + '/edit';
                             var deleteUrl = @json(route('admin.users.index')) + '/' + id;
                             return (
-                                '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(__('Modifica')) + '</a>' +
-                                '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(__('Confermi l\'eliminazione?'))) + ');">' +
+                                '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(t('Modifica')) + '</a>' +
+                                '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(t('Confermi l\'eliminazione?'))) + ');">' +
                                     '<input type="hidden" name="_token" value="' + window.CSRF_TOKEN + '">' +
                                     '<input type="hidden" name="_method" value="DELETE">' +
-                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(__('Elimina')) + '</button>' +
+                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(t('Elimina')) + '</button>' +
                                 '</form>'
                             );
                         },

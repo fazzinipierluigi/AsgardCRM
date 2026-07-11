@@ -12,7 +12,7 @@
                         <path d="M14 4h6v4h-6z" />
                     </svg>
                 </span>
-                <span class="nav-link-title">{{ __('Dashboard') }}</span>
+                <span class="nav-link-title">{{ t('Dashboard') }}</span>
             </a>
         </li>
     </ul>
@@ -30,7 +30,7 @@
                                 <path d="M14 3.5a6 6 0 1 0 -8 5.65" />
                             </svg>
                         </span>
-                        <span class="nav-link-title">{{ __('Amministrazione') }}</span>
+                        <span class="nav-link-title">{{ t('Amministrazione') }}</span>
                     </a>
                 </li>
             </ul>

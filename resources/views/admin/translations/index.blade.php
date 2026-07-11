@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
-@section('title', __('Traduzioni'))
+@section('title', t('Traduzioni'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.translations.index') }}">{{ __('Traduzioni') }}</a>
+        <a href="{{ route('admin.translations.index') }}">{{ t('Traduzioni') }}</a>
     </li>
 @endsection
 
 @section('buttons')
     <a href="{{ route('admin.translations.create') }}" class="btn btn-primary" data-testid="translation-create-link">
-        {{ __('Nuova traduzione') }}
+        {{ t('Nuova traduzione') }}
     </a>
 @endsection
 
@@ -19,13 +19,13 @@
         <div class="alert alert-success" data-testid="translations-status">
             @switch(session('status'))
                 @case('translation-created')
-                    {{ __('Traduzione creata correttamente.') }}
+                    {{ t('Traduzione creata correttamente.') }}
                     @break
                 @case('translation-updated')
-                    {{ __('Traduzione aggiornata correttamente.') }}
+                    {{ t('Traduzione aggiornata correttamente.') }}
                     @break
                 @case('translation-deleted')
-                    {{ __('Traduzione eliminata correttamente.') }}
+                    {{ t('Traduzione eliminata correttamente.') }}
                     @break
             @endswitch
         </div>
@@ -43,14 +43,14 @@
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
                 columns: [
-                    { id: 'key', index: 'key', text: @json(__('Chiave')), sortable: true, filterable: true },
-                    { id: 'language', index: 'language', text: @json(__('Lingua')), sortable: true, filterable: true },
-                    { id: 'value', index: 'value', text: @json(__('Valore')), sortable: true, filterable: true },
-                    { id: 'created_at', index: 'created_at', text: @json(__('Creato il')), sortable: true },
+                    { id: 'key', index: 'key', text: @json(t('Chiave')), sortable: true, filterable: true },
+                    { id: 'language', index: 'language', text: @json(t('Lingua')), sortable: true, filterable: true },
+                    { id: 'value', index: 'value', text: @json(t('Valore')), sortable: true, filterable: true },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
                     {
                         id: 'actions',
                         index: 'id',
-                        text: @json(__('Azioni')),
+                        text: @json(t('Azioni')),
                         sortable: false,
                         filterable: false,
                         render: function (params) {
@@ -58,11 +58,11 @@
                             var editUrl = @json(route('admin.translations.index')) + '/' + id + '/edit';
                             var deleteUrl = @json(route('admin.translations.index')) + '/' + id;
                             return (
-                                '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(__('Modifica')) + '</a>' +
-                                '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(__('Confermi l\'eliminazione?'))) + ');">' +
+                                '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(t('Modifica')) + '</a>' +
+                                '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(t('Confermi l\'eliminazione?'))) + ');">' +
                                     '<input type="hidden" name="_token" value="' + window.CSRF_TOKEN + '">' +
                                     '<input type="hidden" name="_method" value="DELETE">' +
-                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(__('Elimina')) + '</button>' +
+                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(t('Elimina')) + '</button>' +
                                 '</form>'
                             );
                         },

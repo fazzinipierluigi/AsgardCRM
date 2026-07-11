@@ -1,17 +1,17 @@
 @extends('layouts.base')
 
-@section('title', __('Impostazioni'))
+@section('title', t('Impostazioni'))
 
 @section('content')
     <div class="row row-cards">
         <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ __('Impostazioni personali') }}</h3>
+                    <h3 class="card-title">{{ t('Impostazioni personali') }}</h3>
                 </div>
                 <div class="card-body">
                     @if (session('status') === 'settings-updated')
-                        <div class="alert alert-success" data-testid="settings-updated">{{ __('Impostazioni aggiornate.') }}</div>
+                        <div class="alert alert-success" data-testid="settings-updated">{{ t('Impostazioni aggiornate.') }}</div>
                     @endif
 
                     <form action="{{ route('settings.update') }}" method="POST">
@@ -20,12 +20,12 @@
 
                         <div class="row">
                             <div class="col-12 col-lg-6 mb-3">
-                                <label for="username" class="form-label">{{ __('Username') }}</label>
+                                <label for="username" class="form-label">{{ t('Username') }}</label>
                                 <input type="text" id="username" class="form-control" value="{{ $user->username }}" disabled>
                             </div>
 
                             <div class="col-12 col-lg-6 mb-3">
-                                <label for="name" class="form-label">{{ __('Nome') }}</label>
+                                <label for="name" class="form-label">{{ t('Nome') }}</label>
                                 <input
                                     type="text"
                                     id="name"
@@ -39,7 +39,7 @@
                             </div>
 
                             <div class="col-12 mb-3">
-                                <label for="email" class="form-label">{{ __('Email') }}</label>
+                                <label for="email" class="form-label">{{ t('Email') }}</label>
                                 <input
                                     type="email"
                                     id="email"
@@ -53,13 +53,13 @@
                             </div>
 
                             <div class="col-12 col-lg-6 mb-3">
-                                <label for="password" class="form-label">{{ __('Nuova password') }}</label>
+                                <label for="password" class="form-label">{{ t('Nuova password') }}</label>
                                 <input
                                     type="password"
                                     id="password"
                                     name="password"
                                     class="form-control @error('password') is-invalid @enderror"
-                                    placeholder="{{ __('Lascia vuoto per non modificarla') }}"
+                                    placeholder="{{ t('Lascia vuoto per non modificarla') }}"
                                 >
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -67,13 +67,13 @@
                             </div>
 
                             <div class="col-12 col-lg-6 mb-3">
-                                <label for="password_confirmation" class="form-label">{{ __('Conferma password') }}</label>
+                                <label for="password_confirmation" class="form-label">{{ t('Conferma password') }}</label>
                                 <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
                             </div>
                         </div>
 
                         <div class="form-footer">
-                            <button type="submit" class="btn btn-primary">{{ __('Salva') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ t('Salva') }}</button>
                         </div>
                     </form>
                 </div>
@@ -83,11 +83,11 @@
         <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">{{ __('Preferenze') }}</h3>
+                    <h3 class="card-title">{{ t('Preferenze') }}</h3>
                 </div>
                 <div class="card-body">
                     @if (session('status') === 'preferences-updated')
-                        <div class="alert alert-success" data-testid="preferences-updated">{{ __('Preferenze aggiornate.') }}</div>
+                        <div class="alert alert-success" data-testid="preferences-updated">{{ t('Preferenze aggiornate.') }}</div>
                     @endif
 
                     <form action="{{ route('settings.preferences.update') }}" method="POST">
@@ -97,7 +97,7 @@
                         <div class="row">
                             @foreach (config('preferences') as $key => $preference)
                                 <div class="col-12 col-lg-6 mb-3">
-                                    <label for="{{ $key }}" class="form-label">{{ __(ucfirst(str_replace('_', ' ', $key))) }}</label>
+                                    <label for="{{ $key }}" class="form-label">{{ t(ucfirst(str_replace('_', ' ', $key))) }}</label>
                                     <select
                                         id="{{ $key }}"
                                         name="{{ $key }}"
@@ -118,7 +118,7 @@
                         </div>
 
                         <div class="form-footer">
-                            <button type="submit" class="btn btn-primary" data-testid="preferences-submit">{{ __('Salva preferenze') }}</button>
+                            <button type="submit" class="btn btn-primary" data-testid="preferences-submit">{{ t('Salva preferenze') }}</button>
                         </div>
                     </form>
                 </div>

@@ -1,7 +1,7 @@
 @php $isSystem = $role?->is_system ?? false; @endphp
 
 <div class="mb-3">
-    <label for="name" class="form-label">{{ __('Nome') }}</label>
+    <label for="name" class="form-label">{{ t('Nome') }}</label>
     <input
         type="text"
         id="name"
@@ -16,7 +16,7 @@
 
 @if ($role)
     <div class="mb-3">
-        <label for="slug" class="form-label">{{ __('Slug') }}</label>
+        <label for="slug" class="form-label">{{ t('Slug') }}</label>
         <input
             type="text"
             id="slug"
@@ -26,7 +26,7 @@
             @if ($isSystem) readonly @endif
         >
         @if ($isSystem)
-            <small class="form-hint">{{ __('Lo slug di un ruolo di sistema non può essere modificato.') }}</small>
+            <small class="form-hint">{{ t('Lo slug di un ruolo di sistema non può essere modificato.') }}</small>
         @endif
         @error('slug')
             <div class="invalid-feedback">{{ $message }}</div>

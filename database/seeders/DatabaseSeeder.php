@@ -30,5 +30,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->assignRole($adminRole);
+
+        $this->call(TranslationSeeder::class);
     }
 }

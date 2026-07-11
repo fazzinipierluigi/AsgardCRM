@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', __('Modifica utente'))
+@section('title', t('Modifica utente'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.users.index') }}">{{ __('Utenti') }}</a>
+        <a href="{{ route('admin.users.index') }}">{{ t('Utenti') }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.users.edit', $user) }}">{{ __('Modifica utente') }}</a>
+        <a href="{{ route('admin.users.edit', $user) }}">{{ t('Modifica utente') }}</a>
     </li>
 @endsection
 
@@ -20,7 +20,7 @@
                 @include('admin.users._form', ['user' => $user, 'roles' => $roles, 'userRoleIds' => $userRoleIds])
 
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ __('Salva modifiche') }}</button>
+                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ t('Salva modifiche') }}</button>
                 </div>
             </form>
         </div>

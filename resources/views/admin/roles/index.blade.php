@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
-@section('title', __('Ruoli'))
+@section('title', t('Ruoli'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.roles.index') }}">{{ __('Ruoli') }}</a>
+        <a href="{{ route('admin.roles.index') }}">{{ t('Ruoli') }}</a>
     </li>
 @endsection
 
 @section('buttons')
     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary" data-testid="role-create-link">
-        {{ __('Nuovo ruolo') }}
+        {{ t('Nuovo ruolo') }}
     </a>
 @endsection
 
@@ -19,13 +19,13 @@
         <div class="alert alert-success" data-testid="roles-status">
             @switch(session('status'))
                 @case('role-created')
-                    {{ __('Ruolo creato correttamente.') }}
+                    {{ t('Ruolo creato correttamente.') }}
                     @break
                 @case('role-updated')
-                    {{ __('Ruolo aggiornato correttamente.') }}
+                    {{ t('Ruolo aggiornato correttamente.') }}
                     @break
                 @case('role-deleted')
-                    {{ __('Ruolo eliminato correttamente.') }}
+                    {{ t('Ruolo eliminato correttamente.') }}
                     @break
             @endswitch
         </div>
@@ -47,22 +47,22 @@
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
                 columns: [
-                    { id: 'name', index: 'name', text: @json(__('Nome')), sortable: true, filterable: true },
-                    { id: 'slug', index: 'slug', text: @json(__('Slug')), sortable: true, filterable: true },
-                    { id: 'permissions_count', index: 'permissions_count', text: @json(__('Permessi')), type: 'number' },
+                    { id: 'name', index: 'name', text: @json(t('Nome')), sortable: true, filterable: true },
+                    { id: 'slug', index: 'slug', text: @json(t('Slug')), sortable: true, filterable: true },
+                    { id: 'permissions_count', index: 'permissions_count', text: @json(t('Permessi')), type: 'number' },
                     {
                         id: 'is_system',
                         index: 'is_system',
-                        text: @json(__('Sistema')),
+                        text: @json(t('Sistema')),
                         render: function (params) {
-                            return params.value ? @json(__('Sì')) : @json(__('No'));
+                            return params.value ? @json(t('Sì')) : @json(t('No'));
                         },
                     },
-                    { id: 'created_at', index: 'created_at', text: @json(__('Creato il')), sortable: true },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
                     {
                         id: 'actions',
                         index: 'id',
-                        text: @json(__('Azioni')),
+                        text: @json(t('Azioni')),
                         sortable: false,
                         filterable: false,
                         render: function (params) {
@@ -72,14 +72,14 @@
                             var deleteUrl = @json(route('admin.roles.index')) + '/' + id;
                             var html = '';
                             if (!params.item.is_admin) {
-                                html += '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(__('Modifica')) + '</a>';
-                                html += '<a href="' + permissionsUrl + '" class="btn btn-sm btn-outline-secondary me-1">' + @json(__('Permessi')) + '</a>';
+                                html += '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(t('Modifica')) + '</a>';
+                                html += '<a href="' + permissionsUrl + '" class="btn btn-sm btn-outline-secondary me-1">' + @json(t('Permessi')) + '</a>';
                             }
                             if (!params.item.is_system) {
-                                html += '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(__('Confermi l\'eliminazione?'))) + ');">' +
+                                html += '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(t('Confermi l\'eliminazione?'))) + ');">' +
                                     '<input type="hidden" name="_token" value="' + window.CSRF_TOKEN + '">' +
                                     '<input type="hidden" name="_method" value="DELETE">' +
-                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(__('Elimina')) + '</button>' +
+                                    '<button type="submit" class="btn btn-sm btn-outline-danger">' + @json(t('Elimina')) + '</button>' +
                                 '</form>';
                             }
                             return html;

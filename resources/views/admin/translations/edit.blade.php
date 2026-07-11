@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', __('Modifica traduzione'))
+@section('title', t('Modifica traduzione'))
 
 @section('breadcrumb')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.translations.index') }}">{{ __('Traduzioni') }}</a>
+        <a href="{{ route('admin.translations.index') }}">{{ t('Traduzioni') }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.translations.edit', $translation) }}">{{ __('Modifica traduzione') }}</a>
+        <a href="{{ route('admin.translations.edit', $translation) }}">{{ t('Modifica traduzione') }}</a>
     </li>
 @endsection
 
@@ -20,7 +20,7 @@
                 @include('admin.translations._form')
 
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="translation-submit">{{ __('Salva modifiche') }}</button>
+                    <button type="submit" class="btn btn-primary" data-testid="translation-submit">{{ t('Salva modifiche') }}</button>
                 </div>
             </form>
         </div>

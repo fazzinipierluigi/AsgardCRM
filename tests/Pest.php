@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Translation;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -9,6 +10,7 @@ use Tests\TestCase;
 
 pest()->extend(DuskTestCase::class)
     ->use(DatabaseMigrations::class)
+    ->afterEach(fn () => Translation::forgetCache())
     ->in('Browser');
 
 /*
@@ -24,6 +26,7 @@ pest()->extend(DuskTestCase::class)
 
 pest()->extend(TestCase::class)
  // ->use(RefreshDatabase::class)
+    ->afterEach(fn () => Translation::forgetCache())
     ->in('Feature');
 
 /*

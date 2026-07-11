@@ -1,13 +1,13 @@
 @extends('layouts.admin')
 
-@section('title', __('Permessi di :role', ['role' => $role->name]))
+@section('title', t('Permessi di :role', ['role' => $role->name]))
 
 @section('breadcrumb')
     <li class="breadcrumb-item">
-        <a href="{{ route('admin.roles.index') }}">{{ __('Ruoli') }}</a>
+        <a href="{{ route('admin.roles.index') }}">{{ t('Ruoli') }}</a>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-        <a href="{{ route('admin.roles.permissions.edit', $role) }}">{{ __('Permessi di :role', ['role' => $role->name]) }}</a>
+        <a href="{{ route('admin.roles.permissions.edit', $role) }}">{{ t('Permessi di :role', ['role' => $role->name]) }}</a>
     </li>
 @endsection
 
@@ -16,7 +16,7 @@
         <div class="card-body">
             @if ($role->is_admin)
                 <div class="alert alert-info" data-testid="role-permissions-admin-notice">
-                    {{ __('Questo ruolo ha accesso completo automatico: i permessi selezionati qui non hanno effetto.') }}
+                    {{ t('Questo ruolo ha accesso completo automatico: i permessi selezionati qui non hanno effetto.') }}
                 </div>
             @endif
 
@@ -43,13 +43,13 @@
                         </div>
                     @empty
                         <div class="col-12">
-                            <div class="text-muted">{{ __('Nessun permesso disponibile.') }}</div>
+                            <div class="text-muted">{{ t('Nessun permesso disponibile.') }}</div>
                         </div>
                     @endforelse
                 </div>
 
                 <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="role-permissions-submit">{{ __('Salva permessi') }}</button>
+                    <button type="submit" class="btn btn-primary" data-testid="role-permissions-submit">{{ t('Salva permessi') }}</button>
                 </div>
             </form>
         </div>
