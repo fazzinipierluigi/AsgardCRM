@@ -2,20 +2,19 @@
 
 @section('title', __('Ruoli'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <div class="row align-items-center">
-            <div class="col">
-                <h2 class="page-title">{{ __('Ruoli') }}</h2>
-            </div>
-            <div class="col-auto">
-                <a href="{{ route('admin.roles.create') }}" class="btn btn-primary" data-testid="role-create-link">
-                    {{ __('Nuovo ruolo') }}
-                </a>
-            </div>
-        </div>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.roles.index') }}">{{ __('Ruoli') }}</a>
+    </li>
+@endsection
 
+@section('buttons')
+    <a href="{{ route('admin.roles.create') }}" class="btn btn-primary" data-testid="role-create-link">
+        {{ __('Nuovo ruolo') }}
+    </a>
+@endsection
+
+@section('content')
     @if (session('status'))
         <div class="alert alert-success" data-testid="roles-status">
             @switch(session('status'))

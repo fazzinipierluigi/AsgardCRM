@@ -2,11 +2,16 @@
 
 @section('title', __('Modifica utente'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <h2 class="page-title">{{ __('Modifica utente') }}</h2>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.users.index') }}">{{ __('Utenti') }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.users.edit', $user) }}">{{ __('Modifica utente') }}</a>
+    </li>
+@endsection
 
+@section('content')
     <div class="card">
         <div class="card-body">
             <form action="{{ route('admin.users.update', $user) }}" method="POST">

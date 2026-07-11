@@ -2,20 +2,19 @@
 
 @section('title', __('Permessi'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <div class="row align-items-center">
-            <div class="col">
-                <h2 class="page-title">{{ __('Permessi') }}</h2>
-            </div>
-            <div class="col-auto">
-                <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary" data-testid="permission-create-link">
-                    {{ __('Nuovo permesso') }}
-                </a>
-            </div>
-        </div>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.permissions.index') }}">{{ __('Permessi') }}</a>
+    </li>
+@endsection
 
+@section('buttons')
+    <a href="{{ route('admin.permissions.create') }}" class="btn btn-primary" data-testid="permission-create-link">
+        {{ __('Nuovo permesso') }}
+    </a>
+@endsection
+
+@section('content')
     @if (session('status'))
         <div class="alert alert-success" data-testid="permissions-status">
             @switch(session('status'))

@@ -2,20 +2,19 @@
 
 @section('title', __('Utenti'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <div class="row align-items-center">
-            <div class="col">
-                <h2 class="page-title">{{ __('Utenti') }}</h2>
-            </div>
-            <div class="col-auto">
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary" data-testid="user-create-link">
-                    {{ __('Nuovo utente') }}
-                </a>
-            </div>
-        </div>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.users.index') }}">{{ __('Utenti') }}</a>
+    </li>
+@endsection
 
+@section('buttons')
+    <a href="{{ route('admin.users.create') }}" class="btn btn-primary" data-testid="user-create-link">
+        {{ __('Nuovo utente') }}
+    </a>
+@endsection
+
+@section('content')
     @if (session('status'))
         <div class="alert alert-success" data-testid="users-status">
             @switch(session('status'))

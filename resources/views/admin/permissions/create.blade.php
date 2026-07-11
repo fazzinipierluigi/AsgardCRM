@@ -2,11 +2,16 @@
 
 @section('title', __('Nuovo permesso'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <h2 class="page-title">{{ __('Nuovo permesso') }}</h2>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.permissions.index') }}">{{ __('Permessi') }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.permissions.create') }}">{{ __('Nuovo permesso') }}</a>
+    </li>
+@endsection
 
+@section('content')
     <div class="card">
         <div class="card-body">
             <form action="{{ route('admin.permissions.store') }}" method="POST">

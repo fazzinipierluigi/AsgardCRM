@@ -2,11 +2,16 @@
 
 @section('title', __('Modifica ruolo'))
 
-@section('content')
-    <div class="page-header d-print-none">
-        <h2 class="page-title">{{ __('Modifica ruolo') }}</h2>
-    </div>
+@section('breadcrumb')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.roles.index') }}">{{ __('Ruoli') }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.roles.edit', $role) }}">{{ __('Modifica ruolo') }}</a>
+    </li>
+@endsection
 
+@section('content')
     <div class="card">
         <div class="card-body">
             <form action="{{ route('admin.roles.update', $role) }}" method="POST">
