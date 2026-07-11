@@ -1,4 +1,4 @@
-@php $isEdit = $role !== null; $isSystem = $role?->is_system ?? false; @endphp
+@php $isSystem = $role?->is_system ?? false; @endphp
 
 <div class="mb-3">
     <label for="name" class="form-label">{{ __('Nome') }}</label>
@@ -30,28 +30,4 @@
     @error('slug')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
-</div>
-
-<div class="mb-3">
-    <label class="form-label">{{ __('Permessi') }}</label>
-    @foreach ($permissions as $group => $groupPermissions)
-        <div class="mb-2">
-            <div class="fw-bold text-uppercase small text-muted">{{ $group }}</div>
-            @foreach ($groupPermissions as $permission)
-                <label class="form-check">
-                    <input
-                        type="checkbox"
-                        class="form-check-input"
-                        name="permissions[]"
-                        value="{{ $permission->key }}"
-                        @checked(in_array($permission->key, old('permissions', $rolePermissionKeys ?? [])))
-                    >
-                    <span class="form-check-label">{{ $permission->name ?? $permission->key }}</span>
-                </label>
-            @endforeach
-        </div>
-    @endforeach
-    @if ($permissions->isEmpty())
-        <div class="text-muted">{{ __('Nessun permesso disponibile.') }}</div>
-    @endif
 </div>

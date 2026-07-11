@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRoleRequest;
+use App\Http\Requests\Admin\UpdateRolePermissionsRequest;
 use App\Http\Requests\Admin\UpdateRoleRequest;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
@@ -52,7 +53,7 @@ class RoleController extends Controller
      */
     public function create(): View
     {
-        return view('admin.roles.create', ['permissions' => $this->groupedPermissions()]);
+        return view('admin.roles.create');
     }
 
     /**
@@ -60,8 +61,7 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        $role = Role::create($request->only('name', 'slug'));
-        $role->syncPermissions($request->input('permissions', []));
+        Role::create($request->only('name', 'slug'));
 
         return redirect()->route('admin.roles.index')->with('status', 'role-created');
     }
@@ -71,11 +71,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role): View
     {
-        return view('admin.roles.edit', [
-            'role' => $role,
-            'permissions' => $this->groupedPermissions(),
-            'rolePermissionKeys' => $role->permissions->pluck('key')->all(),
-        ]);
+        return view('admin.roles.edit', ['role' => $role]);
     }
 
     /**
@@ -90,7 +86,6 @@ class RoleController extends Controller
         }
 
         $role->save();
-        $role->syncPermissions($request->input('permissions', []));
 
         return redirect()->route('admin.roles.index')->with('status', 'role-updated');
     }
@@ -107,6 +102,28 @@ class RoleController extends Controller
         $role->delete();
 
         return redirect()->route('admin.roles.index')->with('status', 'role-deleted');
+    }
+
+    /**
+     * Show the form to manage a role's assigned permissions.
+     */
+    public function editPermissions(Role $role): View
+    {
+        return view('admin.roles.permissions', [
+            'role' => $role,
+            'permissions' => $this->groupedPermissions(),
+            'rolePermissionKeys' => $role->permissions->pluck('key')->all(),
+        ]);
+    }
+
+    /**
+     * Sync a role's assigned permissions.
+     */
+    public function updatePermissions(UpdateRolePermissionsRequest $request, Role $role): RedirectResponse
+    {
+        $role->syncPermissions($request->input('permissions', []));
+
+        return redirect()->route('admin.roles.index')->with('status', 'role-permissions-updated');
     }
 
     /**

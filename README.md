@@ -101,7 +101,9 @@ php artisan permission:assign {key} {role}
 # e.g. php artisan permission:assign contacts.manage admin
 ```
 
-Other useful commands: `php artisan permission:import` (regenerates permissions from `config/acl.php` — custom keys, route-based permissions, role-based permissions — and applies the assignments/cleanup declared there), `php artisan permission:init` (first-time setup, creates the `admin` role). The built-in `admin` role has full access.
+Other useful commands: `php artisan permission:import` (regenerates permissions from `config/acl.php` — custom keys, route-based permissions, role-based permissions — and applies the assignments/cleanup declared there), `php artisan permission:init` (first-time setup, creates the `admin` role — running it again is a no-op if the role already exists, e.g. via `db:seed`). The built-in `admin` role has full access.
+
+From the UI: on `/admin/roles`, each row has a dedicated **Permessi** action (separate from Modifica) that opens a checklist of every permission grouped by resource — this is the only place permissions are assigned to a role; the role create/edit form only handles name/slug. `roles.slug` has a database-level unique constraint (in addition to form validation), so a role can never be silently duplicated.
 
 To gate a Livewire component or method behind a permission, use the `#[RequiresPermission('key')]` attribute (class-level = checked every lifecycle, method-level = checked only on that action).
 

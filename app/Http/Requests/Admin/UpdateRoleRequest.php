@@ -28,8 +28,6 @@ class UpdateRoleRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'alpha_dash', Rule::unique('roles', 'slug')->ignore($role->id)],
-            'permissions' => ['array'],
-            'permissions.*' => ['string', 'exists:permissions,key'],
         ];
     }
 }

@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('users', UserController::class)->except('show');
 
         Route::get('roles/data', [RoleController::class, 'data'])->name('roles.data');
+        Route::get('roles/{role}/permissions', [RoleController::class, 'editPermissions'])->name('roles.permissions.edit');
+        Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
         Route::resource('roles', RoleController::class)->except('show');
 
         Route::get('permissions/data', [PermissionController::class, 'data'])->name('permissions.data');

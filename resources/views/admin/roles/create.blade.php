@@ -16,7 +16,7 @@
         <div class="card-body">
             <form action="{{ route('admin.roles.store') }}" method="POST">
                 @csrf
-                @include('admin.roles._form', ['role' => null, 'permissions' => $permissions, 'rolePermissionKeys' => []])
+                @include('admin.roles._form', ['role' => null])
 
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary" data-testid="role-submit">{{ __('Crea ruolo') }}</button>

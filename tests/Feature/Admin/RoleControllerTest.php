@@ -14,19 +14,16 @@ test('admin can view the roles index', function () {
     $this->actingAs(adminUser())->get(route('admin.roles.index'))->assertOk();
 });
 
-test('admin can create a role with permissions', function () {
+test('admin can create a role', function () {
     $admin = adminUser();
-    $permission = Permission::create(['key' => 'contacts.manage', 'name' => 'Manage Contacts']);
 
     $response = $this->actingAs($admin)->post(route('admin.roles.store'), [
         'name' => 'Editor',
         'slug' => 'editor',
-        'permissions' => [$permission->key],
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));
-    $role = Role::where('slug', 'editor')->firstOrFail();
-    expect($role->hasPermission('contacts.manage'))->toBeTrue();
+    expect(Role::where('slug', 'editor')->exists())->toBeTrue();
 });
 
 test('creating a role requires a unique slug', function () {
@@ -41,19 +38,59 @@ test('creating a role requires a unique slug', function () {
     $response->assertSessionHasErrors('slug');
 });
 
-test('admin can update a role permissions', function () {
+test('admin can update a role name', function () {
+    $admin = adminUser();
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+
+    $response = $this->actingAs($admin)->put(route('admin.roles.update', $role), [
+        'name' => 'Senior Editor',
+        'slug' => 'editor',
+    ]);
+
+    $response->assertRedirect(route('admin.roles.index'));
+    expect($role->fresh()->name)->toBe('Senior Editor');
+});
+
+test('admin can view the role permissions form', function () {
+    $admin = adminUser();
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+
+    $this->actingAs($admin)->get(route('admin.roles.permissions.edit', $role))->assertOk();
+});
+
+test('admin can sync a role permissions', function () {
     $admin = adminUser();
     $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
     $permission = Permission::create(['key' => 'contacts.manage', 'name' => 'Manage Contacts']);
 
-    $response = $this->actingAs($admin)->put(route('admin.roles.update', $role), [
-        'name' => 'Editor',
-        'slug' => 'editor',
+    $response = $this->actingAs($admin)->put(route('admin.roles.permissions.update', $role), [
         'permissions' => [$permission->key],
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));
     expect($role->fresh()->hasPermission('contacts.manage'))->toBeTrue();
+});
+
+test('removing all checkboxes clears the role permissions', function () {
+    $admin = adminUser();
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+    $permission = Permission::create(['key' => 'contacts.manage', 'name' => 'Manage Contacts']);
+    $role->givePermission($permission);
+
+    $this->actingAs($admin)->put(route('admin.roles.permissions.update', $role), []);
+
+    expect($role->fresh()->hasPermission('contacts.manage'))->toBeFalse();
+});
+
+test('role permissions must exist', function () {
+    $admin = adminUser();
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+
+    $response = $this->actingAs($admin)->put(route('admin.roles.permissions.update', $role), [
+        'permissions' => ['not-a-real-permission'],
+    ]);
+
+    $response->assertSessionHasErrors('permissions.0');
 });
 
 test('system role slug cannot be changed', function () {
