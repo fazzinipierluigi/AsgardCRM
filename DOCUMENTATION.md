@@ -9,8 +9,9 @@ Low-level reference for AI agents working on this codebase. Dense, structured, n
 - name: AsgardCRM
 - type: CRM (Laravel app), built incrementally
 - framework: laravel/framework ^13.8, php ^8.3
-- db (dev): sqlite, file `database/database.sqlite`
-- ui template: Tabler (`@tabler/core`, npm) — Bootstrap-based, NOT Tailwind-driven UI. Tailwind is still present (Laravel 13 skeleton default) but unused for actual CRM screens; `resources/css/app.css` imports both `tailwindcss` and `@tabler/core/dist/css/tabler.min.css` + `raccoon-tables/styles/raccoon-tables.css`.
+- db (dev): mariadb (see `.env.example`); Pest/Dusk still use sqlite (`:memory:` and `database/testing.sqlite` respectively) regardless of the app's own `.env`.
+- ui template: Tabler (`@tabler/core`, npm) — Bootstrap-based. **Tailwind CSS is NOT used and must never be re-added to `resources/css/app.css`** — see gotcha #10 below.
+- home page (`/`) redirects straight to `/login`; no Laravel welcome view (deleted).
 - rule: never add a self-attribution/co-author tag to any git commit (subject or body).
 - rule: every feature/procedure ships with Pest and/or Dusk tests before considered done.
 - rule: docs split — README.md (procedures, human-facing), DOCUMENTATION.md (this file), SDK.md (API/webservice/SDK ref).
@@ -121,3 +122,4 @@ Two suites, deliberately separated because **SQLite `:memory:` cannot be shared 
 7. Raccoon Tables' `serverAdapter` defaults to POST; our GET-only data routes need `method: 'GET'` set explicitly in every grid config, or requests 405.
 8. `EloquentSource::apply()` silently returns zero rows if the request has no `limit` param — always pass `start`/`limit` when hitting a `*/data` endpoint directly (tests included).
 9. Headless Chrome (`--headless=new`) resolves `confirm()` dialogs immediately — Dusk's `waitForDialog()`/`acceptDialog()` will time out waiting for something that already resolved; just wait for the resulting page change instead.
+10. **Tailwind CSS and Bootstrap/Tabler both define a class literally named `.collapse`, with opposite meanings, and Tailwind's wins.** Tailwind ships a `visibility` utility `.collapse { visibility: collapse }` (table-row visibility helper); Bootstrap/Tabler use `.collapse` for collapsible sections (`.collapse:not(.show) { display: none }`, overridden to `display:flex!important` at the `lg` breakpoint for `.navbar-vertical`). With both stylesheets loaded, `display` ends up correct (Tabler's `!important` wins) but `visibility: collapse` from Tailwind is never contested — the element takes up layout space but renders with all descendants invisible. This is exactly what happened to the sidebar menu (`#sidebar-menu.navbar-collapse.collapse`): content existed in the DOM, `assertPresent()` passed, but nothing was visible to a real user. Root cause was `resources/css/app.css` importing both `@import 'tailwindcss'` and `@import '@tabler/core/dist/css/tabler.min.css'`. Fix: don't import Tailwind at all — this project uses Tabler/Bootstrap exclusively, never Tailwind utility classes. **Any Dusk assertion for on-screen navigation must use `assertVisible()`, not `assertPresent()`** — presence-only checks do not catch visibility bugs like this one (that's exactly how this bug shipped past the original test suite).

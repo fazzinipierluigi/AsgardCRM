@@ -10,8 +10,9 @@ test('layout shows fixed sidebar and top navbar', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $browser->loginAs($user)
             ->visit('/dashboard')
-            ->assertPresent('[data-testid="sidebar"]')
-            ->assertPresent('[data-testid="topnavbar"]');
+            ->assertVisible('[data-testid="sidebar"]')
+            ->assertVisible('[data-testid="topnavbar"]')
+            ->assertVisible('[data-testid="menu-dashboard"]');
     });
 });
 
@@ -40,7 +41,7 @@ test('administration link is visible to privileged users', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $browser->loginAs($user)
             ->visit('/dashboard')
-            ->assertPresent('[data-testid="menu-admin"]');
+            ->assertVisible('[data-testid="menu-admin"]');
     });
 });
 
