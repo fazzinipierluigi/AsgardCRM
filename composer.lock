@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9144407b9276d173a63d179579902647",
+    "content-hash": "b94005cf1b76042a16ee6e620a695b11",
     "packages": [
         {
             "name": "brick/math",
@@ -506,6 +506,119 @@
                 }
             ],
             "time": "2025-03-06T22:45:56+00:00"
+        },
+        {
+            "name": "fazzinipierluigi/just-a-gate",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fazzinipierluigi/just-a-gate.git",
+                "reference": "8496e8e9e66e75f57462cf4952c70e50936b2d4d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fazzinipierluigi/just-a-gate/zipball/8496e8e9e66e75f57462cf4952c70e50936b2d4d",
+                "reference": "8496e8e9e66e75f57462cf4952c70e50936b2d4d",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+                "laravel/prompts": "^0.3",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+                "phpunit/phpunit": "^10.0|^11.0|^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "JustAGate": "Fazzinipierluigi\\JustAGate\\Facades\\JustAGate"
+                    },
+                    "providers": [
+                        "Fazzinipierluigi\\JustAGate\\JustAGateServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fazzinipierluigi\\JustAGate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pierluigi Fazzini",
+                    "email": "fazzinipierluigi@gmail.com"
+                }
+            ],
+            "description": "A package that introduces a simple but very flexible and powerful ACL",
+            "homepage": "https://github.com/fazzinipierluigi/just-a-gate",
+            "keywords": [
+                "JustAGate",
+                "acl",
+                "laravel",
+                "permissions",
+                "roles"
+            ],
+            "support": {
+                "issues": "https://github.com/fazzinipierluigi/just-a-gate/issues",
+                "source": "https://github.com/fazzinipierluigi/just-a-gate/tree/1.0.0"
+            },
+            "time": "2026-06-04T18:41:06+00:00"
+        },
+        {
+            "name": "fazzinipierluigi/laraccoon_datasource",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fazzinipierluigi/laraccoon_datasource.git",
+                "reference": "9605a476c460d5485b0597eab17bfcd57f5066cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fazzinipierluigi/laraccoon_datasource/zipball/9605a476c460d5485b0597eab17bfcd57f5066cf",
+                "reference": "9605a476c460d5485b0597eab17bfcd57f5066cf",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^9.0|^10.0|^11.0|^12.0|^13.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Fazzinipierluigi\\LaraccoonDatasource\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pierluigi Fazzini",
+                    "email": "fazzinipierluigi@gmail.com"
+                }
+            ],
+            "description": "A Laravel library that processes server-side requests from the Raccoon Tables JavaScript plugin and returns the expected response format",
+            "keywords": [
+                "datagrid",
+                "datasource",
+                "eloquent",
+                "laravel",
+                "library",
+                "raccoon",
+                "raccoon-tables"
+            ],
+            "support": {
+                "issues": "https://github.com/fazzinipierluigi/laraccoon_datasource/issues",
+                "source": "https://github.com/fazzinipierluigi/laraccoon_datasource/tree/1.0.0"
+            },
+            "time": "2026-06-09T19:25:16+00:00"
         },
         {
             "name": "fruitcake/php-cors",
