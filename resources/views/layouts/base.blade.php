@@ -15,6 +15,23 @@
                 <span class="nav-link-title">{{ t('Dashboard') }}</span>
             </a>
         </li>
+
+        @foreach (\App\Models\Entity::where('is_installed', true)->orderBy('name')->get() as $installedEntity)
+            @can("entity_{$installedEntity->slug}.index")
+                <li class="nav-item">
+                    <a
+                        class="nav-link {{ request()->routeIs('entities.*') && request()->route('entity')?->slug === $installedEntity->slug ? 'active' : '' }}"
+                        href="{{ route('entities.index', $installedEntity) }}"
+                        data-testid="menu-entity-{{ $installedEntity->slug }}"
+                    >
+                        @if ($installedEntity->icon)
+                            <span class="nav-link-icon"><i class="{{ $installedEntity->icon }}"></i></span>
+                        @endif
+                        <span class="nav-link-title">{{ $installedEntity->name }}</span>
+                    </a>
+                </li>
+            @endcan
+        @endforeach
     </ul>
 
     <div class="mt-auto">

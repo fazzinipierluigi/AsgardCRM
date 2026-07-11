@@ -22,6 +22,11 @@
                 <span class="nav-link-title">{{ t('Lingue') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.entities.*') ? 'active' : '' }}" href="{{ route('admin.entities.index') }}" data-testid="menu-entities">
+                <span class="nav-link-title">{{ t('Entità') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">

@@ -1,0 +1,377 @@
+import Sortable from 'sortablejs';
+import { Modal } from 'bootstrap';
+
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('entity-builder-form');
+
+    if (!form) {
+        return;
+    }
+
+    // Installed entities are fully locked (see EntityBuilderController /
+    // UpdateEntityBuilderRequest) — the <fieldset disabled> only blocks
+    // real form controls, not click handlers on plain divs/buttons, so
+    // skip wiring any interactivity at all rather than relying on that.
+    if (form.dataset.installed === '1') {
+        return;
+    }
+
+    var tabsNav = document.getElementById('tabs-nav');
+    var tabsContent = document.getElementById('tabs-content');
+    var addTabBtn = document.getElementById('add-tab-btn');
+
+    var tabNavTemplate = document.getElementById('tab-nav-template');
+    var tabPaneTemplate = document.getElementById('tab-pane-template');
+    var cardTemplate = document.getElementById('card-template');
+    var fieldTemplate = document.getElementById('field-template');
+
+    var nameModalEl = document.getElementById('name-modal');
+    var nameModal = new Modal(nameModalEl);
+    var nameModalTitle = document.getElementById('name-modal-title');
+    var nameModalInput = document.getElementById('name-modal-input');
+    var nameModalSaveBtn = document.getElementById('name-modal-save');
+    var nameModalSaveHandler = null;
+
+    var fieldModalEl = document.getElementById('field-modal');
+    var fieldModal = new Modal(fieldModalEl);
+    var fieldTypeLabels = JSON.parse(fieldModalEl.dataset.fieldTypes || '{}');
+    var currentFieldEl = null;
+
+    var counter = 0;
+
+    function nextToken(prefix) {
+        counter += 1;
+
+        return prefix + 'new' + counter;
+    }
+
+    function renderTemplate(template, replacements) {
+        var html = template.innerHTML;
+
+        Object.keys(replacements).forEach(function (token) {
+            html = html.split(token).join(replacements[token]);
+        });
+
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html.trim();
+
+        return wrapper.firstElementChild;
+    }
+
+    // ── name modal (reused for creating/renaming both tabs and cards) ──────
+
+    function openNameModal(title, initialValue, onSave) {
+        nameModalTitle.textContent = title;
+        nameModalInput.value = initialValue;
+        nameModalSaveHandler = onSave;
+        nameModal.show();
+        setTimeout(function () {
+            nameModalInput.focus();
+        }, 300);
+    }
+
+    nameModalSaveBtn.addEventListener('click', function () {
+        var value = nameModalInput.value.trim();
+
+        if (!value || !nameModalSaveHandler) {
+            return;
+        }
+
+        nameModalSaveHandler(value);
+        nameModal.hide();
+    });
+
+    nameModalInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            nameModalSaveBtn.click();
+        }
+    });
+
+    // ── drag-and-drop reordering (same parent only, see DOCUMENTATION.md) ──
+
+    function makeSortable(container, handleSelector) {
+        if (!container) {
+            return;
+        }
+
+        Sortable.create(container, { handle: handleSelector, animation: 150 });
+    }
+
+    function wireCard(cardEl) {
+        makeSortable(cardEl.querySelector('.fields-container'), '.field-drag-handle');
+    }
+
+    function wireTabPane(paneEl) {
+        makeSortable(paneEl.querySelector('.cards-container'), '.card-drag-handle');
+        paneEl.querySelectorAll('.card-item').forEach(wireCard);
+    }
+
+    makeSortable(tabsNav, '.tab-drag-handle');
+    tabsContent.querySelectorAll('.tab-pane').forEach(wireTabPane);
+
+    // ── tab switching ────────────────────────────────────────────────────
+
+    function activateTab(token) {
+        tabsNav.querySelectorAll('.tab-switch-btn').forEach(function (btn) {
+            btn.classList.remove('active');
+        });
+        tabsContent.querySelectorAll('.tab-pane').forEach(function (pane) {
+            pane.classList.remove('show', 'active');
+        });
+
+        var btn = tabsNav.querySelector('[data-bs-target="#tab-pane-' + token + '"]');
+        var pane = document.getElementById('tab-pane-' + token);
+        btn?.classList.add('active');
+        pane?.classList.add('show', 'active');
+    }
+
+    // ── add tab/card/field ───────────────────────────────────────────────
+
+    function addTab() {
+        openNameModal(nameModalEl.dataset.tabLabel || 'Nome tab', '', function (name) {
+            var token = nextToken('t');
+            var navEl = renderTemplate(tabNavTemplate, { __TAB__: token });
+            var paneEl = renderTemplate(tabPaneTemplate, { __TAB__: token });
+
+            navEl.querySelector('.tab-name-input').value = name;
+            navEl.querySelector('.tab-name-label').textContent = name;
+
+            tabsNav.appendChild(navEl);
+            tabsContent.appendChild(paneEl);
+            wireTabPane(paneEl);
+            activateTab(token);
+        });
+    }
+
+    function addCard(paneEl) {
+        openNameModal(nameModalEl.dataset.cardLabel || 'Nome card', '', function (name) {
+            var cardEl = renderTemplate(cardTemplate, {
+                __TAB__: paneEl.dataset.tabToken,
+                __CARD__: nextToken('c'),
+            });
+
+            cardEl.querySelector('.card-name-input').value = name;
+            cardEl.querySelector('.card-name-label').textContent = name;
+
+            paneEl.querySelector('.cards-container').appendChild(cardEl);
+            wireCard(cardEl);
+        });
+    }
+
+    function addField(cardEl) {
+        var fieldEl = renderTemplate(fieldTemplate, {
+            __TAB__: cardEl.dataset.tabToken,
+            __CARD__: cardEl.dataset.cardToken,
+            __FIELD__: nextToken('f'),
+        });
+
+        cardEl.querySelector('.fields-container').appendChild(fieldEl);
+        openFieldModalFor(fieldEl);
+    }
+
+    addTabBtn?.addEventListener('click', addTab);
+
+    // ── field settings modal ────────────────────────────────────────────
+
+    function syncFieldModalGroups(type) {
+        document.getElementById('field-modal-options').closest('.field-modal-options-group').classList.toggle('d-none', type !== 'select');
+        document.getElementById('field-modal-code-prefix').closest('.field-modal-code-group').classList.toggle('d-none', type !== 'code');
+        document.getElementById('field-modal-relation').closest('.field-modal-relation-group').classList.toggle('d-none', type !== 'relation');
+    }
+
+    function openFieldModalFor(fieldEl) {
+        currentFieldEl = fieldEl;
+
+        var type = fieldEl.querySelector('.field-type-input').value;
+
+        document.getElementById('field-modal-name').value = fieldEl.querySelector('.field-name-input').value;
+        document.getElementById('field-modal-column').value = fieldEl.querySelector('.field-column-input').value;
+        document.getElementById('field-modal-type').value = type;
+        document.getElementById('field-modal-required').checked = fieldEl.querySelector('.field-required-input').value === '1';
+        document.getElementById('field-modal-options').value = fieldEl.querySelector('.field-options-input').value;
+        document.getElementById('field-modal-code-prefix').value = fieldEl.querySelector('.field-codeprefix-input').value;
+        document.getElementById('field-modal-relation').value = fieldEl.querySelector('.field-relationtarget-input').value;
+        document.getElementById('field-modal-default').value = fieldEl.querySelector('.field-defaultvalue-input').value;
+
+        syncFieldModalGroups(type);
+        fieldModal.show();
+    }
+
+    document.getElementById('field-modal-type').addEventListener('change', function (event) {
+        syncFieldModalGroups(event.target.value);
+    });
+
+    document.getElementById('field-modal-save').addEventListener('click', function () {
+        if (!currentFieldEl) {
+            return;
+        }
+
+        var type = document.getElementById('field-modal-type').value;
+        var name = document.getElementById('field-modal-name').value.trim();
+
+        currentFieldEl.querySelector('.field-name-input').value = name;
+        currentFieldEl.querySelector('.field-column-input').value = document.getElementById('field-modal-column').value.trim();
+        currentFieldEl.querySelector('.field-type-input').value = type;
+        currentFieldEl.querySelector('.field-required-input').value = document.getElementById('field-modal-required').checked ? '1' : '0';
+        currentFieldEl.querySelector('.field-options-input').value = document.getElementById('field-modal-options').value;
+        currentFieldEl.querySelector('.field-codeprefix-input').value = document.getElementById('field-modal-code-prefix').value;
+        currentFieldEl.querySelector('.field-relationtarget-input').value = document.getElementById('field-modal-relation').value;
+        currentFieldEl.querySelector('.field-defaultvalue-input').value = document.getElementById('field-modal-default').value;
+
+        currentFieldEl.querySelector('.field-preview-name').textContent = name || 'Nuovo campo';
+        currentFieldEl.querySelector('.field-preview-type').textContent = fieldTypeLabels[type] || '';
+
+        fieldModal.hide();
+        currentFieldEl = null;
+    });
+
+    // ── click routing ────────────────────────────────────────────────────
+
+    form.addEventListener('click', function (event) {
+        var addCardBtn = event.target.closest('.add-card-btn');
+        if (addCardBtn) {
+            addCard(addCardBtn.closest('.tab-pane'));
+            return;
+        }
+
+        var addFieldBtn = event.target.closest('.add-field-btn');
+        if (addFieldBtn) {
+            addField(addFieldBtn.closest('.card-item'));
+            return;
+        }
+
+        var tabRenameBtn = event.target.closest('.tab-rename-btn');
+        if (tabRenameBtn) {
+            var navLi = tabRenameBtn.closest('.nav-item');
+            var currentName = navLi.querySelector('.tab-name-input').value;
+            openNameModal(nameModalEl.dataset.tabLabel || 'Nome tab', currentName, function (newName) {
+                navLi.querySelector('.tab-name-input').value = newName;
+                navLi.querySelector('.tab-name-label').textContent = newName;
+            });
+            return;
+        }
+
+        var tabRemoveBtn = event.target.closest('.tab-pane-remove-tab-btn');
+        if (tabRemoveBtn) {
+            var pane = tabRemoveBtn.closest('.tab-pane');
+            var token = pane.dataset.tabToken;
+            var wasActive = pane.classList.contains('active');
+            var navItem = tabsNav.querySelector('[data-tab-token="' + token + '"]');
+
+            navItem?.remove();
+            pane.remove();
+
+            if (wasActive) {
+                var firstNavItem = tabsNav.querySelector('.nav-item');
+                if (firstNavItem) {
+                    activateTab(firstNavItem.dataset.tabToken);
+                }
+            }
+            return;
+        }
+
+        var cardRenameBtn = event.target.closest('.card-rename-btn');
+        if (cardRenameBtn) {
+            var cardEl = cardRenameBtn.closest('.card-item');
+            var currentCardName = cardEl.querySelector('.card-name-input').value;
+            openNameModal(nameModalEl.dataset.cardLabel || 'Nome card', currentCardName, function (newName) {
+                cardEl.querySelector('.card-name-input').value = newName;
+                cardEl.querySelector('.card-name-label').textContent = newName;
+            });
+            return;
+        }
+
+        var removeBtn = event.target.closest('.remove-row-btn');
+        if (removeBtn) {
+            removeBtn.closest('.repeatable-row').remove();
+        }
+    });
+
+    // A single click/release on the field preview also fires after a
+    // resize drag ends (mouseup lands inside the box), which would
+    // otherwise pop the field modal open right after resizing — require
+    // a double-click to edit a field instead.
+    form.addEventListener('dblclick', function (event) {
+        var fieldPreview = event.target.closest('.field-preview');
+
+        if (fieldPreview && !event.target.closest('.field-drag-handle') && !event.target.closest('.remove-row-btn') && !event.target.closest('.field-resize-handle')) {
+            openFieldModalFor(fieldPreview.closest('.field-item'));
+        }
+    });
+
+    // ── field resizing (drag the right edge, snapped to 1/12 columns) ──────
+
+    var resizing = null;
+
+    function columnStep(fieldEl) {
+        // Measure the row's parent (the card body), not the .row itself —
+        // Bootstrap's .row has negative margins that make its own bounding
+        // box wider than the visible column area, which would overestimate
+        // the step size and make dragging feel unresponsive.
+        var container = fieldEl.closest('.fields-container').parentElement;
+
+        return container.getBoundingClientRect().width / 12;
+    }
+
+    function setFieldWidth(fieldEl, width) {
+        width = Math.min(12, Math.max(1, width));
+
+        for (var i = 1; i <= 12; i++) {
+            fieldEl.classList.remove('col-md-' + i);
+        }
+
+        fieldEl.classList.add('col-md-' + width);
+        fieldEl.dataset.width = width;
+        fieldEl.querySelector('.field-width-input').value = width;
+
+        return width;
+    }
+
+    form.addEventListener('mousedown', function (event) {
+        var handle = event.target.closest('.field-resize-handle');
+
+        if (!handle) {
+            return;
+        }
+
+        var fieldEl = handle.closest('.field-item');
+
+        resizing = {
+            handle: handle,
+            fieldEl: fieldEl,
+            startX: event.clientX,
+            startWidth: parseInt(fieldEl.dataset.width, 10) || 12,
+            step: columnStep(fieldEl),
+        };
+
+        handle.classList.add('is-resizing');
+        document.body.classList.add('is-resizing-field');
+
+        event.preventDefault();
+        event.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function (event) {
+        if (!resizing) {
+            return;
+        }
+
+        var deltaColumns = Math.round((event.clientX - resizing.startX) / resizing.step);
+        setFieldWidth(resizing.fieldEl, resizing.startWidth + deltaColumns);
+    });
+
+    document.addEventListener('mouseup', function () {
+        if (!resizing) {
+            return;
+        }
+
+        resizing.handle.classList.remove('is-resizing');
+        document.body.classList.remove('is-resizing-field');
+        resizing = null;
+    });
+
+    // Exposed so automated tests (Dusk headless Chrome can't reliably
+    // simulate a real mouse drag) can set a field's width directly.
+    window.__entityBuilderSetFieldWidth = setFieldWidth;
+});
