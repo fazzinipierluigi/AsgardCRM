@@ -14,6 +14,7 @@ Low-level reference for AI agents working on this codebase. Dense, structured, n
 - home page (`/`) redirects straight to `/login`; no Laravel welcome view (deleted).
 - rule: never add a self-attribution/co-author tag to any git commit (subject or body).
 - rule: every feature/procedure ships with Pest and/or Dusk tests before considered done.
+- rule: use the full available screen width — no narrow fixed-width columns (e.g. `col-lg-8`) boxing in page content; use `row row-cards` with `col-md-6`/`col-md-4`-style siblings so cards fill the row. Exception: pages intentionally narrow/centered (e.g. the login screen).
 - rule: docs split — README.md (procedures, human-facing), DOCUMENTATION.md (this file), SDK.md (API/webservice/SDK ref).
 
 ## stack packages
@@ -91,7 +92,8 @@ Consequence: the role edit/create form's permission checkboxes use `value="{{ $p
 - **`EloquentSource::apply()` returns an empty result set if the request has no `limit` param** (`$limit = (int)($params['limit'] ?? 0); if ($limit <= 0) $this->filtered_dataset->take(0);`). Raccoon Tables' own client always sends `start`/`limit` in real usage, so this only bites manual/test requests hitting `*/data` directly — always pass `?start=0&limit=25` (or similar) when calling these endpoints outside the actual grid (see Pest tests in `tests/Feature/Admin/*ControllerTest.php`).
 - **Global search requires `$search_fields` passed explicitly** to `EloquentSource::apply($query, $request, $field_map, $search_fields)` — the grid's `searchBar: true` sends a `globalSearch` param regardless, but the backend silently ignores it unless `$search_fields` lists which columns to search (e.g. `['name', 'username', 'email']` for users). Without this, typing in the search box returns unfiltered results.
 - Row actions (Modifica/Elimina) are rendered by our own `render` callback on an `actions` column — plain HTML strings (an `<a>` and a `<form>` with a hidden `_method=DELETE` + `_token` from `window.CSRF_TOKEN`, exposed globally in `layouts/app.blade.php`). Not a Raccoon Tables feature — just template strings we own.
-- Raccoon Tables DOM class names used by Dusk tests (stable, taken from the shipped source, not guessed): `.rt-search-bar-input` (the search box), `.rt-row` / `.rt-cell` (grid rows/cells).
+- Raccoon Tables DOM class names used by Dusk tests (stable, taken from the shipped source, not guessed): `.rt-search-bar-input` (the search box), `.rt-row` / `.rt-cell` (grid rows/cells), `.rt-wrap.rt-dark` (root wrapper gains `rt-dark` when `dark: true`).
+- **Grid theme follows the logged-in user's `theme` preference**: every grid config sets `dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark')` alongside `theme: 'tabler'`. Keep this line whenever adding a new grid — it's not automatic, each `RaccoonGrid` instantiation needs its own `dark` flag.
 
 ## testing infrastructure
 

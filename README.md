@@ -81,7 +81,7 @@ Setting::setValue(null, 'theme', 'dark'); // write a global default for everyone
 
 Per-user preferences exposed today on the personal settings page (`/settings`): **formato data**, **lingua**, **formato numeri**, **tema** (chiaro/scuro). Allowed values/labels/defaults for each live in `config/preferences.php` — add a new preference by adding a key there plus a `<select>` in `resources/views/settings/edit.blade.php` (the form loops over `config('preferences')` automatically).
 
-The `theme` preference drives `data-bs-theme` on `<html>` (`resources/views/layouts/app.blade.php`); `language` is applied every request by `App\Http\Middleware\ApplyUserPreferences` (registered globally on the `web` middleware group).
+The `theme` preference drives `data-bs-theme` on `<html>` (`resources/views/layouts/app.blade.php`); `language` is applied every request by `App\Http\Middleware\ApplyUserPreferences` (registered globally on the `web` middleware group). The same `theme` preference also sets `dark: true/false` on every Raccoon Tables grid, so admin datatables match the user's chosen theme.
 
 ## Permissions (Just A Gate)
 
