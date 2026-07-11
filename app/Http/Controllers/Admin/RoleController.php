@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class RoleController extends Controller
@@ -57,11 +58,14 @@ class RoleController extends Controller
     }
 
     /**
-     * Persist a new role.
+     * Persist a new role. The slug is auto-generated from the name.
      */
     public function store(StoreRoleRequest $request): RedirectResponse
     {
-        Role::create($request->only('name', 'slug'));
+        Role::create([
+            'name' => $request->string('name'),
+            'slug' => $this->uniqueSlug($request->string('name')),
+        ]);
 
         return redirect()->route('admin.roles.index')->with('status', 'role-created');
     }
@@ -69,8 +73,12 @@ class RoleController extends Controller
     /**
      * Show the form to edit an existing role.
      */
-    public function edit(Role $role): View
+    public function edit(Role $role): View|RedirectResponse
     {
+        if ($role->is_admin) {
+            return redirect()->route('admin.roles.index')->with('error', 'Il ruolo amministratore non può essere modificato.');
+        }
+
         return view('admin.roles.edit', ['role' => $role]);
     }
 
@@ -79,6 +87,10 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role): RedirectResponse
     {
+        if ($role->is_admin) {
+            return back()->with('error', 'Il ruolo amministratore non può essere modificato.');
+        }
+
         $role->name = $request->string('name');
 
         if (! $role->is_system) {
@@ -107,8 +119,12 @@ class RoleController extends Controller
     /**
      * Show the form to manage a role's assigned permissions.
      */
-    public function editPermissions(Role $role): View
+    public function editPermissions(Role $role): View|RedirectResponse
     {
+        if ($role->is_admin) {
+            return redirect()->route('admin.roles.index')->with('error', 'Il ruolo amministratore ha già accesso completo: non è possibile assegnargli permessi.');
+        }
+
         return view('admin.roles.permissions', [
             'role' => $role,
             'permissions' => $this->groupedPermissions(),
@@ -121,6 +137,10 @@ class RoleController extends Controller
      */
     public function updatePermissions(UpdateRolePermissionsRequest $request, Role $role): RedirectResponse
     {
+        if ($role->is_admin) {
+            return back()->with('error', 'Il ruolo amministratore ha già accesso completo: non è possibile assegnargli permessi.');
+        }
+
         $role->syncPermissions($request->input('permissions', []));
 
         return redirect()->route('admin.roles.index')->with('status', 'role-permissions-updated');
@@ -136,5 +156,22 @@ class RoleController extends Controller
         return Permission::orderBy('key')->get()->groupBy(
             fn (Permission $permission) => explode('.', $permission->key)[0]
         );
+    }
+
+    /**
+     * Slugify the given name, appending a numeric suffix until it's unique.
+     */
+    private function uniqueSlug(string $name): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $suffix = 2;
+
+        while (Role::where('slug', $slug)->exists()) {
+            $slug = "{$base}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
     }
 }

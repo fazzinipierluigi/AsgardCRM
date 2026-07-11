@@ -14,28 +14,25 @@ test('admin can view the roles index', function () {
     $this->actingAs(adminUser())->get(route('admin.roles.index'))->assertOk();
 });
 
-test('admin can create a role', function () {
+test('admin can create a role and its slug is auto-generated', function () {
     $admin = adminUser();
 
     $response = $this->actingAs($admin)->post(route('admin.roles.store'), [
         'name' => 'Editor',
-        'slug' => 'editor',
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));
-    expect(Role::where('slug', 'editor')->exists())->toBeTrue();
+    expect(Role::where('name', 'Editor')->firstOrFail()->slug)->toBe('editor');
 });
 
-test('creating a role requires a unique slug', function () {
+test('auto-generated slugs are unique even for the same name', function () {
     $admin = adminUser();
-    Role::create(['name' => 'Editor', 'slug' => 'editor']);
 
-    $response = $this->actingAs($admin)->post(route('admin.roles.store'), [
-        'name' => 'Editor 2',
-        'slug' => 'editor',
-    ]);
+    $this->actingAs($admin)->post(route('admin.roles.store'), ['name' => 'Editor']);
+    $this->actingAs($admin)->post(route('admin.roles.store'), ['name' => 'Editor']);
 
-    $response->assertSessionHasErrors('slug');
+    $slugs = Role::where('name', 'Editor')->pluck('slug')->sort()->values();
+    expect($slugs->all())->toBe(['editor', 'editor-2']);
 });
 
 test('admin can update a role name', function () {
@@ -93,16 +90,49 @@ test('role permissions must exist', function () {
     $response->assertSessionHasErrors('permissions.0');
 });
 
-test('system role slug cannot be changed', function () {
+test('the admin role edit form is not reachable', function () {
     $admin = adminUser();
     $adminRole = Role::where('slug', 'admin')->firstOrFail();
 
-    $this->actingAs($admin)->put(route('admin.roles.update', $adminRole), [
-        'name' => 'Administrator',
+    $response = $this->actingAs($admin)->get(route('admin.roles.edit', $adminRole));
+
+    $response->assertRedirect(route('admin.roles.index'));
+});
+
+test('the admin role cannot be updated', function () {
+    $admin = adminUser();
+    $adminRole = Role::where('slug', 'admin')->firstOrFail();
+
+    $response = $this->actingAs($admin)->put(route('admin.roles.update', $adminRole), [
+        'name' => 'Renamed',
         'slug' => 'super-admin',
     ]);
 
+    $response->assertRedirect();
+    expect($adminRole->fresh()->name)->toBe('Administrator');
     expect($adminRole->fresh()->slug)->toBe('admin');
+});
+
+test('the admin role permissions form is not reachable', function () {
+    $admin = adminUser();
+    $adminRole = Role::where('slug', 'admin')->firstOrFail();
+
+    $response = $this->actingAs($admin)->get(route('admin.roles.permissions.edit', $adminRole));
+
+    $response->assertRedirect(route('admin.roles.index'));
+});
+
+test('permissions cannot be assigned to the admin role', function () {
+    $admin = adminUser();
+    $adminRole = Role::where('slug', 'admin')->firstOrFail();
+    $permission = Permission::create(['key' => 'contacts.manage', 'name' => 'Manage Contacts']);
+
+    $response = $this->actingAs($admin)->put(route('admin.roles.permissions.update', $adminRole), [
+        'permissions' => [$permission->key],
+    ]);
+
+    $response->assertRedirect();
+    expect($adminRole->fresh()->hasPermission('contacts.manage'))->toBeFalse();
 });
 
 test('system role cannot be deleted', function () {

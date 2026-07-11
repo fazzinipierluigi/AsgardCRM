@@ -121,7 +121,9 @@ Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a
 `/admin/users`, `/admin/roles` — CRUD completo per utenti e ruoli, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
 
 - un utente non può eliminare se stesso;
-- un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato né avere lo slug modificato;
+- un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato;
+- il ruolo **admin** (`is_admin`) non può essere modificato né eliminato, e non gli si possono assegnare permessi (ha già accesso completo) — le voci Modifica/Permessi non compaiono nemmeno in tabella per quel ruolo, e le rotte sono bloccate anche accedendovi direttamente;
+- lo slug di un nuovo ruolo si genera automaticamente dal nome (con suffisso numerico se già esistente) — non è richiesto in fase di creazione, resta modificabile in seguito dalla modifica ruolo (tranne per l'admin, vedi sopra);
 - i permessi da assegnare a un ruolo si scelgono per **chiave** (`key`), non per ID — vedi [DOCUMENTATION.md](DOCUMENTATION.md) per il perché.
 
 Ogni rotta admin è protetta dal middleware `acl` di Just A Gate, che deriva automaticamente la permission key da controller/metodo (es. `Admin\UserController@index` → `user.index`). Per dare accesso a un ruolo non-admin a una singola risorsa, assegna le chiavi `{risorsa}.index`, `.data`, `.create`, `.store`, `.edit`, `.update`, `.destroy` (es. `user.index`, `user.data`, ...) via `php artisan permission:assign`.

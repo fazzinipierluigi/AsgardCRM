@@ -70,8 +70,11 @@
                             var editUrl = @json(route('admin.roles.index')) + '/' + id + '/edit';
                             var permissionsUrl = @json(route('admin.roles.index')) + '/' + id + '/permissions';
                             var deleteUrl = @json(route('admin.roles.index')) + '/' + id;
-                            var html = '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(__('Modifica')) + '</a>';
-                            html += '<a href="' + permissionsUrl + '" class="btn btn-sm btn-outline-secondary me-1">' + @json(__('Permessi')) + '</a>';
+                            var html = '';
+                            if (!params.item.is_admin) {
+                                html += '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(__('Modifica')) + '</a>';
+                                html += '<a href="' + permissionsUrl + '" class="btn btn-sm btn-outline-secondary me-1">' + @json(__('Permessi')) + '</a>';
+                            }
                             if (!params.item.is_system) {
                                 html += '<form method="POST" action="' + deleteUrl + '" style="display:inline" onsubmit="return confirm(' + JSON.stringify(@json(__('Confermi l\'eliminazione?'))) + ');">' +
                                     '<input type="hidden" name="_token" value="' + window.CSRF_TOKEN + '">' +

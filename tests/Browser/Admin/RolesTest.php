@@ -12,7 +12,6 @@ test('admin can create a role and assign a permission to it via the dedicated ac
         $browser->loginAs($admin)
             ->visit('/admin/roles/create')
             ->type('name', 'Editor')
-            ->type('slug', 'editor')
             ->press('Crea ruolo')
             ->waitForLocation('/admin/roles')
             ->waitForText('Editor');
@@ -25,8 +24,8 @@ test('admin can create a role and assign a permission to it via the dedicated ac
                 $grid->waitUntilMissingText('Administrator', 10);
             });
 
-        // The sidebar also has a "Permessi" menu entry, so scope the click
-        // to the grid's own row action instead of clickLink() on the whole page.
+        // "Administrator" also has a "Permessi" row action, so scope the
+        // click to the filtered grid instead of clickLink() on the whole page.
         $browser->within('#roles-grid', function (Browser $grid) {
             $grid->clickLink('Permessi');
         });
@@ -39,4 +38,18 @@ test('admin can create a role and assign a permission to it via the dedicated ac
 
     $role = Role::where('slug', 'editor')->firstOrFail();
     expect($role->hasPermission('contacts.manage'))->toBeTrue();
+});
+
+test('the admin role has no edit or permissions actions in the grid', function () {
+    $admin = adminUser();
+
+    $this->browse(function (Browser $browser) use ($admin) {
+        $browser->loginAs($admin)
+            ->visit('/admin/roles')
+            ->waitForText('Administrator')
+            ->within('#roles-grid', function (Browser $grid) {
+                $grid->assertDontSee('Modifica')
+                    ->assertDontSee('Permessi');
+            });
+    });
 });
