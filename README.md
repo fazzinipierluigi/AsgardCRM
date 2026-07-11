@@ -83,6 +83,20 @@ Per-user preferences exposed today on the personal settings page (`/settings`): 
 
 The `theme` preference drives `data-bs-theme` on `<html>` (`resources/views/layouts/app.blade.php`); `language` is applied every request by `App\Http\Middleware\ApplyUserPreferences` (registered globally on the `web` middleware group). The same `theme` preference also sets `dark: true/false` on every Raccoon Tables grid, so admin datatables match the user's chosen theme.
 
+## Translations (database-backed)
+
+The `translations` table stores `(key, language) => value` triples (unique per key+language pair) — a simple alternative to Laravel's file-based translations, editable at runtime from the admin panel.
+
+```php
+t('dashboard.welcome');                       // resolves using the current user's language, falling back to APP_LOCALE
+t('dashboard.welcome', [], 'en');             // force a specific language
+t('settings.greeting', ['name' => $user->name]); // :name-style placeholder replacement, like trans()
+```
+
+Resolution order: the authenticated user's `language` preference (see Settings above) → `config('app.locale')` (`APP_LOCALE` in `.env`) → the key itself, unchanged, if no translation exists in either language (same convention as Laravel's own missing-translation behavior). Guests always use `APP_LOCALE`.
+
+Manage translations from `/admin/translations` (Utenti/Ruoli/Traduzioni in the admin menu) — plain CRUD: key, language (restricted to `config('preferences.language.options')`, i.e. the same languages selectable as a user preference), value. The same key can exist in multiple languages; the same key+language pair cannot be duplicated.
+
 ## Permissions (Just A Gate)
 
 Roles and permissions are managed by Just A Gate. The `User` model uses the `Authorizable` trait (`app/Models/User.php`).
@@ -112,13 +126,13 @@ To gate a Livewire component or method behind a permission, use the `#[RequiresP
 Layout applicativo unico (`resources/views/layouts/app.blade.php`): sidebar verticale fissa (dark) + navbar superiore fissa, contenuto in un `container-fluid`. Due varianti di menu, entrambe estendono lo shell:
 
 - **`layouts.base`** — menu utente standard: voce "Dashboard" (personalizzabile con widget in futuro) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
-- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, più il link per tornare alla dashboard.
+- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Traduzioni, più il link per tornare alla dashboard.
 
 Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente c'è l'icona notifiche (placeholder, altre icone verranno aggiunte in seguito).
 
 ### Area di amministrazione
 
-`/admin/users`, `/admin/roles` — CRUD completo per utenti e ruoli, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
+`/admin/users`, `/admin/roles`, `/admin/translations` — CRUD completo per utenti, ruoli e traduzioni, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
 
 - un utente non può eliminare se stesso;
 - un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato;

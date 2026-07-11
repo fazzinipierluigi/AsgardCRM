@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\SettingsController;
@@ -34,5 +35,8 @@ Route::middleware('auth')->group(function () {
         Route::get('roles/{role}/permissions', [RoleController::class, 'editPermissions'])->name('roles.permissions.edit');
         Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
         Route::resource('roles', RoleController::class)->except('show');
+
+        Route::get('translations/data', [TranslationController::class, 'data'])->name('translations.data');
+        Route::resource('translations', TranslationController::class)->except('show');
     });
 });

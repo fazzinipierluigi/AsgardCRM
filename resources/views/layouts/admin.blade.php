@@ -12,6 +12,11 @@
                 <span class="nav-link-title">{{ __('Ruoli') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.translations.*') ? 'active' : '' }}" href="{{ route('admin.translations.index') }}" data-testid="menu-translations">
+                <span class="nav-link-title">{{ __('Traduzioni') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">
