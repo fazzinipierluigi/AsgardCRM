@@ -12,11 +12,6 @@
                 <span class="nav-link-title">{{ __('Ruoli') }}</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('admin.permissions.*') ? 'active' : '' }}" href="{{ route('admin.permissions.index') }}" data-testid="menu-permissions">
-                <span class="nav-link-title">{{ __('Permessi') }}</span>
-            </a>
-        </li>
     </ul>
 
     <div class="mt-auto">

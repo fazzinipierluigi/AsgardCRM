@@ -112,13 +112,13 @@ To gate a Livewire component or method behind a permission, use the `#[RequiresP
 Layout applicativo unico (`resources/views/layouts/app.blade.php`): sidebar verticale fissa (dark) + navbar superiore fissa, contenuto in un `container-fluid`. Due varianti di menu, entrambe estendono lo shell:
 
 - **`layouts.base`** — menu utente standard: voce "Dashboard" (personalizzabile con widget in futuro) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
-- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Permessi, più il link per tornare alla dashboard.
+- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, più il link per tornare alla dashboard.
 
 Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente c'è l'icona notifiche (placeholder, altre icone verranno aggiunte in seguito).
 
 ### Area di amministrazione
 
-`/admin/users`, `/admin/roles`, `/admin/permissions` — CRUD completo per utenti, ruoli e permessi, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Regole particolari:
+`/admin/users`, `/admin/roles` — CRUD completo per utenti e ruoli, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
 
 - un utente non può eliminare se stesso;
 - un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato né avere lo slug modificato;
