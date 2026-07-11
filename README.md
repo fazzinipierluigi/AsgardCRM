@@ -1,58 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# AsgardCRM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+CRM application built on Laravel 13.
 
-## About Laravel
+## Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **[Laravel](https://laravel.com)** 13 — application framework.
+- **[Tabler](https://tabler.io)** — UI template (Bootstrap-based), installed via `@tabler/core` (npm).
+- **[Raccoon Tables](https://github.com/fazzinipierluigi/raccoon-tables)** — frontend datatable/grid component, installed via `raccoon-tables` (npm).
+- **[Laraccoon Datasource](https://github.com/fazzinipierluigi/laraccoon_datasource)** — server-side handler that turns Raccoon Tables requests into filtered/paginated Eloquent responses, installed via `fazzinipierluigi/laraccoon_datasource` (composer).
+- **[Just A Gate](https://github.com/fazzinipierluigi/just-a-gate)** — ACL (roles & permissions), installed via `fazzinipierluigi/just-a-gate` (composer).
+- **[Pest](https://pestphp.com)** — feature/unit testing.
+- **[Laravel Dusk](https://laravel.com/docs/dusk)** — browser testing.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+For deep low-level/architectural documentation meant for AI agents working on this codebase, see [DOCUMENTATION.md](DOCUMENTATION.md). For API/webservice/SDK reference, see [SDK.md](SDK.md).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Installation
 
 ```bash
-composer require laravel/boost --dev
+composer install
+npm install
 
-php artisan boost:install
+cp .env.example .env
+php artisan key:generate
+
+touch database/database.sqlite
+php artisan migrate
+
+php artisan vendor:publish --provider="Fazzinipierluigi\JustAGate\JustAGateServiceProvider"
+php artisan permission:init
+
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+`permission:init` runs Just A Gate's migrations (`roles`, `permissions`, `permission_role`, `role_user`) and creates the built-in Administrator role (`slug: admin`).
 
-## Contributing
+Seed a test user (username `test`, password `password`):
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan db:seed
+```
 
-## Code of Conduct
+Run the app:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+composer dev
+```
 
-## Security Vulnerabilities
+## Updating
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+composer update
+npm update
 
-## License
+php artisan migrate
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+npm run build
+```
+
+Re-run `php artisan vendor:publish --provider="Fazzinipierluigi\JustAGate\JustAGateServiceProvider" --force` after a Just A Gate update if `config/acl.php` gained new keys.
+
+## Authentication
+
+Login is **username + password** (not email). Email is still stored on the `users` table but is not used to authenticate.
+
+- Login: `GET/POST /login`
+- Logout: `POST /logout`
+- Dashboard (auth-protected): `GET /dashboard`
+
+Login attempts are rate-limited (5 attempts per username+IP, then a cooldown) — see `app/Http/Requests/Auth/LoginRequest.php`.
+
+## Permissions (Just A Gate)
+
+Roles and permissions are managed by Just A Gate. The `User` model uses the `Authorizable` trait (`app/Models/User.php`).
+
+Creating a new permission:
+
+```bash
+php artisan permission:create {key} {name}
+# e.g. php artisan permission:create contacts.manage "Manage Contacts"
+```
+
+Assigning a permission to a role:
+
+```bash
+php artisan permission:assign {key} {role}
+# e.g. php artisan permission:assign contacts.manage admin
+```
+
+Other useful commands: `php artisan permission:import` (regenerates permissions from `config/acl.php` — custom keys, route-based permissions, role-based permissions — and applies the assignments/cleanup declared there), `php artisan permission:init` (first-time setup, creates the `admin` role). The built-in `admin` role has full access.
+
+To gate a Livewire component or method behind a permission, use the `#[RequiresPermission('key')]` attribute (class-level = checked every lifecycle, method-level = checked only on that action).
+
+## Testing
+
+**Every feature and technical procedure must ship with exhaustive Pest and/or Dusk tests before it's considered done.**
+
+- Pest (feature/unit, fast, no browser):
+
+  ```bash
+  composer test
+  ```
+
+- Dusk (real browser, for UI/JS-driven flows — clicks, forms, datatable interactions, ACL-gated UI):
+
+  ```bash
+  composer test:dusk
+  ```
+
+  Requires Chromium/Chrome installed on the system. The script (`scripts/dusk.sh`) swaps in `.env.dusk.local` (a dedicated SQLite file at `database/testing.sqlite`, since SQLite `:memory:` can't be shared with the browser's separate process), migrates it fresh, starts `php artisan serve` on `127.0.0.1:8000`, runs `php artisan dusk`, then restores your `.env` and stops the server automatically — even on failure.
+
+- Both:
+
+  ```bash
+  composer test:all
+  ```
+
+Dusk browser tests live in `tests/Browser`; Pest feature/unit tests live in `tests/Feature` and `tests/Unit`.

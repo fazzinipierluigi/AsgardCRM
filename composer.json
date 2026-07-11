@@ -56,6 +56,11 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "test:dusk": "bash scripts/dusk.sh",
+        "test:all": [
+            "@test",
+            "@test:dusk"
+        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
