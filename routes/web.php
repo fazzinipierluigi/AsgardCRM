@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,4 +22,18 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::prefix('admin')->name('admin.')->middleware('acl')->group(function () {
+        Route::get('users/data', [UserController::class, 'data'])->name('users.data');
+        Route::resource('users', UserController::class)->except('show');
+
+        Route::get('roles/data', [RoleController::class, 'data'])->name('roles.data');
+        Route::resource('roles', RoleController::class)->except('show');
+
+        Route::get('permissions/data', [PermissionController::class, 'data'])->name('permissions.data');
+        Route::resource('permissions', PermissionController::class)->except('show');
+    });
 });

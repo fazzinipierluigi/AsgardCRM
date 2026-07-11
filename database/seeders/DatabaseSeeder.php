@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,10 +18,17 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $adminRole = Role::firstOrCreate(
+            ['slug' => 'admin'],
+            ['name' => 'Administrator', 'is_admin' => true, 'is_system' => true]
+        );
+
+        $user = User::factory()->create([
             'name' => 'Test User',
             'username' => 'test',
             'email' => 'test@example.com',
         ]);
+
+        $user->assignRole($adminRole);
     }
 }

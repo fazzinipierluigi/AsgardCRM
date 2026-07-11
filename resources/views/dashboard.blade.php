@@ -1,36 +1,15 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>{{ __('Dashboard') }} - {{ config('app.name', 'Laravel') }}</title>
+@extends('layouts.base')
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body>
-        <div class="page">
-            <div class="page-wrapper">
-                <div class="page-body">
-                    <div class="container-xl">
-                        <div class="row row-cards">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h2 class="mb-3">{{ __('Welcome, :name', ['name' => auth()->user()->name]) }}</h2>
+@section('title', __('Dashboard'))
 
-                                        <form action="{{ route('logout') }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-outline-secondary">
-                                                {{ __('Log out') }}
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+@section('content')
+    <div class="row row-cards">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="mb-0">{{ __('Welcome, :name', ['name' => auth()->user()->name]) }}</h2>
                 </div>
             </div>
         </div>
-    </body>
-</html>
+    </div>
+@endsection

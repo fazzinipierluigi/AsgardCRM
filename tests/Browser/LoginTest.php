@@ -41,7 +41,9 @@ test('user can logout', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $browser->loginAs($user)
             ->visit('/dashboard')
-            ->press('Log out')
+            ->click('[data-testid="user-menu-toggle"]')
+            ->waitFor('[data-testid="user-menu-toggle"] + .dropdown-menu.show')
+            ->press('Logout')
             ->waitForLocation('/login');
     });
 });

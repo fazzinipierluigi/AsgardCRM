@@ -91,6 +91,25 @@ Other useful commands: `php artisan permission:import` (regenerates permissions 
 
 To gate a Livewire component or method behind a permission, use the `#[RequiresPermission('key')]` attribute (class-level = checked every lifecycle, method-level = checked only on that action).
 
+## Interfaccia
+
+Layout applicativo unico (`resources/views/layouts/app.blade.php`): sidebar verticale fissa (dark) + navbar superiore fissa, contenuto in un `container-fluid`. Due varianti di menu, entrambe estendono lo shell:
+
+- **`layouts.base`** — menu utente standard: voce "Dashboard" (personalizzabile con widget in futuro) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
+- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Permessi, più il link per tornare alla dashboard.
+
+Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente c'è l'icona notifiche (placeholder, altre icone verranno aggiunte in seguito).
+
+### Area di amministrazione
+
+`/admin/users`, `/admin/roles`, `/admin/permissions` — CRUD completo per utenti, ruoli e permessi, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Regole particolari:
+
+- un utente non può eliminare se stesso;
+- un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato né avere lo slug modificato;
+- i permessi da assegnare a un ruolo si scelgono per **chiave** (`key`), non per ID — vedi [DOCUMENTATION.md](DOCUMENTATION.md) per il perché.
+
+Ogni rotta admin è protetta dal middleware `acl` di Just A Gate, che deriva automaticamente la permission key da controller/metodo (es. `Admin\UserController@index` → `user.index`). Per dare accesso a un ruolo non-admin a una singola risorsa, assegna le chiavi `{risorsa}.index`, `.data`, `.create`, `.store`, `.edit`, `.update`, `.destroy` (es. `user.index`, `user.data`, ...) via `php artisan permission:assign`.
+
 ## Testing
 
 **Every feature and technical procedure must ship with exhaustive Pest and/or Dusk tests before it's considered done.**

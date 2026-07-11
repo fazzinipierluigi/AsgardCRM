@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\DuskTestCase;
@@ -53,4 +55,21 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Create a user with the (system) admin role, which bypasses every
+ * Just A Gate permission check.
+ */
+function adminUser(): User
+{
+    $role = Role::firstOrCreate(
+        ['slug' => 'admin'],
+        ['name' => 'Administrator', 'is_admin' => true, 'is_system' => true]
+    );
+
+    $user = User::factory()->create();
+    $user->assignRole($role);
+
+    return $user;
 }
