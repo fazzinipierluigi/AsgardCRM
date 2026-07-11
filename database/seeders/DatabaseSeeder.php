@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
 
         $user->assignRole($adminRole);
 
+        $this->call(LanguageSeeder::class);
         $this->call(TranslationSeeder::class);
     }
 }

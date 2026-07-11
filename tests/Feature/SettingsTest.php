@@ -75,6 +75,7 @@ test('email must be unique', function () {
 });
 
 test('user can update preferences', function () {
+    seedLanguages();
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->put('/settings/preferences', [

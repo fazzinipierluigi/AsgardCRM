@@ -95,11 +95,13 @@ t('settings.greeting', ['name' => $user->name]); // :name-style placeholder repl
 
 Resolution order: the authenticated user's `language` preference (see Settings above) → `config('app.locale')` (`APP_LOCALE` in `.env`) → the key itself, unchanged, if no translation exists in either language (same convention as Laravel's own missing-translation behavior). Guests always use `APP_LOCALE`.
 
-Manage translations from `/admin/translations` (Utenti/Ruoli/Traduzioni in the admin menu) — plain CRUD: key, language (restricted to `config('preferences.language.options')`, i.e. the same languages selectable as a user preference), value. The same key can exist in multiple languages; the same key+language pair cannot be duplicated.
+Manage translations from `/admin/translations` — one row per **key**, one column per available language (pivoted view, not a flat key+language+value list). Click **Modifica** on a key to edit every language's value together in one form (leave a language blank to remove that language's row for the key); click **Nuova traduzione** to add a brand-new key with as many language values as you want to fill in up front. **Elimina** removes the key entirely, across every language.
+
+**Languages are managed at runtime, not hardcoded in config** — `/admin/languages` (Utenti/Ruoli/Traduzioni/Lingue in the admin menu) lets you add a new language (code + display name), which immediately becomes available both as a translation column and as an option on the personal "language" preference. A language can't be deleted while any translation still uses it. `it`/`en` ship as the two default languages (`LanguageSeeder`).
 
 Every Blade view in this app uses `t('String')` instead of Laravel's `__('String')`/`@lang` for UI text — the string itself is the lookup key, same convention Laravel's own `__()` uses when no translation file matches. Reserve `__()`/`trans()` for anything that must stay tied to Laravel's own file-based translations (validation messages, framework/package strings); use `t()` for everything you write in this app's own views.
 
-**Installation seeds a full set of translations automatically** — `php artisan db:seed` runs `TranslationSeeder`, which bulk-imports the `it`/`en` value for every UI string currently used in the app (both are shipped as first-class languages, not just Italian). Re-running it is safe: existing rows are updated in place, not duplicated. When you add a new `t('...')` call in a view, add its `it`/`en` pair to `database/seeders/TranslationSeeder.php` and re-run `php artisan db:seed --class=TranslationSeeder` so it's not left showing the raw key to users.
+**Installation seeds a full set of translations automatically** — `php artisan db:seed` runs `LanguageSeeder` (it/en) then `TranslationSeeder`, which bulk-imports the `it`/`en` value for every UI string currently used in the app. Both are safe to re-run: existing rows are updated in place, not duplicated. **Whenever you add a new `t('...')` call in a view, add its `it`/`en` pair to `database/seeders/TranslationSeeder.php`'s `$strings` array AND run `php artisan db:seed --class=TranslationSeeder` against the live database** — this is a standing project rule, not just an install-time step, so nobody ends up seeing a raw untranslated key.
 
 ## Permissions (Just A Gate)
 
@@ -130,13 +132,13 @@ To gate a Livewire component or method behind a permission, use the `#[RequiresP
 Layout applicativo unico (`resources/views/layouts/app.blade.php`): sidebar verticale fissa (dark) + navbar superiore fissa, contenuto in un `container-fluid`. Due varianti di menu, entrambe estendono lo shell:
 
 - **`layouts.base`** — menu utente standard: voce "Dashboard" (personalizzabile con widget in futuro) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
-- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Traduzioni, più il link per tornare alla dashboard.
+- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Traduzioni, Lingue, più il link per tornare alla dashboard.
 
 Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente c'è l'icona notifiche (placeholder, altre icone verranno aggiunte in seguito).
 
 ### Area di amministrazione
 
-`/admin/users`, `/admin/roles`, `/admin/translations` — CRUD completo per utenti, ruoli e traduzioni, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
+`/admin/users`, `/admin/roles`, `/admin/translations`, `/admin/languages` — CRUD per utenti, ruoli, traduzioni e lingue, con liste server-side (Raccoon Tables + Laraccoon Datasource) e form Tabler. Non esiste una pagina/CRUD dedicata ai permessi: le chiavi permesso si creano via CLI (`permission:create`/`permission:import`, vedi sopra) e si assegnano a un ruolo dalla schermata Ruoli. Regole particolari:
 
 - un utente non può eliminare se stesso;
 - un ruolo di sistema (`is_system`, es. `admin`) non può essere eliminato;

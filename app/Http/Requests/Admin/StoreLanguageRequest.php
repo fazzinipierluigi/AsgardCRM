@@ -5,7 +5,7 @@ namespace App\Http\Requests\Admin;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateTranslationRequest extends FormRequest
+class StoreLanguageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,8 +23,8 @@ class UpdateTranslationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'values' => ['array'],
-            'values.*' => ['nullable', 'string'],
+            'code' => ['required', 'string', 'max:10', 'alpha_dash', 'unique:languages,code'],
+            'name' => ['required', 'string', 'max:255'],
         ];
     }
 }

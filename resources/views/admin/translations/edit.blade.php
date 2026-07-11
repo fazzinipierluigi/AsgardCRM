@@ -17,6 +17,7 @@
             <form action="{{ route('admin.translations.update', $translation) }}" method="POST">
                 @csrf
                 @method('PUT')
+                @php $keyReadonly = true; @endphp
                 @include('admin.translations._form')
 
                 <div class="form-footer">

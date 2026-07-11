@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Language;
 use App\Models\Translation;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
@@ -75,4 +76,15 @@ function adminUser(): User
     $user->assignRole($role);
 
     return $user;
+}
+
+/**
+ * Seed the "it"/"en" languages (normally done by LanguageSeeder during
+ * install) — needed by any test that touches translations/preferences,
+ * since RefreshDatabase doesn't run seeders automatically.
+ */
+function seedLanguages(): void
+{
+    Language::firstOrCreate(['code' => 'it'], ['name' => 'Italiano']);
+    Language::firstOrCreate(['code' => 'en'], ['name' => 'English']);
 }

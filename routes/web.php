@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
@@ -38,5 +39,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('translations/data', [TranslationController::class, 'data'])->name('translations.data');
         Route::resource('translations', TranslationController::class)->except('show');
+
+        Route::resource('languages', LanguageController::class)->only(['index', 'store', 'destroy']);
     });
 });

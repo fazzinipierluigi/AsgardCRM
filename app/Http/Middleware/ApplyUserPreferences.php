@@ -17,7 +17,7 @@ class ApplyUserPreferences
     public function handle(Request $request, Closure $next): Response
     {
         if ($user = $request->user()) {
-            App::setLocale($user->getSetting('language', config('preferences.language.default')));
+            App::setLocale($user->getSetting('language', config('app.locale')));
         }
 
         return $next($request);

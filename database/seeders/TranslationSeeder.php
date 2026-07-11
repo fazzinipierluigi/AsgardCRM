@@ -19,9 +19,11 @@ class TranslationSeeder extends Seeder
     public function run(): void
     {
         $strings = [
+            'Aggiungi lingua' => ['it' => 'Aggiungi lingua', 'en' => 'Add language'],
             'Amministrazione' => ['it' => 'Amministrazione', 'en' => 'Administration'],
             'Azioni' => ['it' => 'Azioni', 'en' => 'Actions'],
             'Chiave' => ['it' => 'Chiave', 'en' => 'Key'],
+            'Codice' => ['it' => 'Codice', 'en' => 'Code'],
             'Conferma password' => ['it' => 'Conferma password', 'en' => 'Confirm password'],
             "Confermi l'eliminazione?" => ['it' => "Confermi l'eliminazione?", 'en' => 'Confirm deletion?'],
             'Crea ruolo' => ['it' => 'Crea ruolo', 'en' => 'Create role'],
@@ -32,6 +34,7 @@ class TranslationSeeder extends Seeder
             'Date format' => ['it' => 'Formato data', 'en' => 'Date format'],
             'Elimina' => ['it' => 'Elimina', 'en' => 'Delete'],
             'Email' => ['it' => 'Email', 'en' => 'Email'],
+            'Gestisci lingue' => ['it' => 'Gestisci lingue', 'en' => 'Manage languages'],
             'Gestisci permessi' => ['it' => 'Gestisci permessi', 'en' => 'Manage permissions'],
             'Impostazioni' => ['it' => 'Impostazioni', 'en' => 'Settings'],
             'Impostazioni aggiornate.' => ['it' => 'Impostazioni aggiornate.', 'en' => 'Settings updated.'],
@@ -39,6 +42,10 @@ class TranslationSeeder extends Seeder
             'Lascia vuoto per non modificarla' => ['it' => 'Lascia vuoto per non modificarla', 'en' => 'Leave blank to keep it unchanged'],
             'Language' => ['it' => 'Lingua', 'en' => 'Language'],
             'Lingua' => ['it' => 'Lingua', 'en' => 'Language'],
+            'Lingua creata correttamente.' => ['it' => 'Lingua creata correttamente.', 'en' => 'Language created successfully.'],
+            'Lingua eliminata correttamente.' => ['it' => 'Lingua eliminata correttamente.', 'en' => 'Language deleted successfully.'],
+            'Lingue' => ['it' => 'Lingue', 'en' => 'Languages'],
+            'Lingue disponibili' => ['it' => 'Lingue disponibili', 'en' => 'Available languages'],
             'Login' => ['it' => 'Accedi', 'en' => 'Login'],
             'Login to your account' => ['it' => 'Accedi al tuo account', 'en' => 'Login to your account'],
             'Logout' => ['it' => 'Logout', 'en' => 'Logout'],

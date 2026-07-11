@@ -17,7 +17,7 @@ class SettingsController extends Controller
     {
         $user = auth()->user();
 
-        $preferences = collect(config('preferences'))
+        $preferences = collect(preferences())
             ->mapWithKeys(fn (array $preference, string $key) => [
                 $key => $user->getSetting($key, $preference['default']),
             ]);
@@ -51,7 +51,7 @@ class SettingsController extends Controller
     {
         $user = $request->user();
 
-        foreach (array_keys(config('preferences')) as $key) {
+        foreach (array_keys(preferences()) as $key) {
             $user->setSetting($key, $request->string($key)->toString());
         }
 

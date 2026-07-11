@@ -9,6 +9,9 @@
 @endsection
 
 @section('buttons')
+    <a href="{{ route('admin.languages.index') }}" class="btn btn-outline-secondary me-2" data-testid="languages-link">
+        {{ t('Gestisci lingue') }}
+    </a>
     <a href="{{ route('admin.translations.create') }}" class="btn btn-primary" data-testid="translation-create-link">
         {{ t('Nuova traduzione') }}
     </a>
@@ -35,8 +38,22 @@
         <div id="translations-grid" data-testid="translations-grid"></div>
     </div>
 
+    @php
+        $languageColumnsData = $languages->map(function ($language) {
+            return [
+                'id' => $language->code,
+                'index' => $language->code,
+                'text' => $language->name,
+                'sortable' => false,
+                'filterable' => false,
+            ];
+        })->values();
+    @endphp
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            var languageColumns = @json($languageColumnsData);
+
             new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
@@ -44,9 +61,7 @@
                 searchBar: true,
                 columns: [
                     { id: 'key', index: 'key', text: @json(t('Chiave')), sortable: true, filterable: true },
-                    { id: 'language', index: 'language', text: @json(t('Lingua')), sortable: true, filterable: true },
-                    { id: 'value', index: 'value', text: @json(t('Valore')), sortable: true, filterable: true },
-                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
+                ].concat(languageColumns).concat([
                     {
                         id: 'actions',
                         index: 'id',
@@ -67,7 +82,7 @@
                             );
                         },
                     },
-                ],
+                ]),
                 serverAdapter: {
                     url: @json(route('admin.translations.data')),
                     method: 'GET',

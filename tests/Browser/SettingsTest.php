@@ -4,6 +4,7 @@ use App\Models\User;
 use Laravel\Dusk\Browser;
 
 test('user can change preferences and the theme is applied', function () {
+    seedLanguages();
     $user = User::factory()->create();
 
     $this->browse(function (Browser $browser) use ($user) {

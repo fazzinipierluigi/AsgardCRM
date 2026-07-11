@@ -20,87 +20,110 @@ test('admin can view the translations index', function () {
     $this->actingAs(adminUser())->get(route('admin.translations.index'))->assertOk();
 });
 
-test('admin can create a translation', function () {
+test('admin can create a translation key with values for multiple languages', function () {
     $admin = adminUser();
 
     $response = $this->actingAs($admin)->post(route('admin.translations.store'), [
         'key' => 'dashboard.welcome',
-        'language' => 'it',
-        'value' => 'Benvenuto',
+        'values' => ['it' => 'Benvenuto', 'en' => 'Welcome'],
     ]);
 
     $response->assertRedirect(route('admin.translations.index'));
-    expect(Translation::where('key', 'dashboard.welcome')->where('language', 'it')->exists())->toBeTrue();
+    expect(Translation::where('key', 'dashboard.welcome')->where('language', 'it')->value('value'))->toBe('Benvenuto');
+    expect(Translation::where('key', 'dashboard.welcome')->where('language', 'en')->value('value'))->toBe('Welcome');
 });
 
-test('the same key can exist in more than one language', function () {
+test('creating a translation skips languages left blank', function () {
+    $admin = adminUser();
+
+    $this->actingAs($admin)->post(route('admin.translations.store'), [
+        'key' => 'dashboard.welcome',
+        'values' => ['it' => 'Benvenuto', 'en' => ''],
+    ]);
+
+    expect(Translation::where('key', 'dashboard.welcome')->count())->toBe(1);
+});
+
+test('creating a translation requires at least one language value', function () {
+    $admin = adminUser();
+
+    $response = $this->actingAs($admin)->post(route('admin.translations.store'), [
+        'key' => 'dashboard.welcome',
+        'values' => ['it' => '', 'en' => ''],
+    ]);
+
+    $response->assertSessionHasErrors('values');
+});
+
+test('the key must not already exist', function () {
     $admin = adminUser();
     Translation::create(['key' => 'dashboard.welcome', 'language' => 'it', 'value' => 'Benvenuto']);
 
     $response = $this->actingAs($admin)->post(route('admin.translations.store'), [
         'key' => 'dashboard.welcome',
-        'language' => 'en',
-        'value' => 'Welcome',
-    ]);
-
-    $response->assertRedirect(route('admin.translations.index'));
-    expect(Translation::where('key', 'dashboard.welcome')->count())->toBe(2);
-});
-
-test('the same key and language pair must be unique', function () {
-    $admin = adminUser();
-    Translation::create(['key' => 'dashboard.welcome', 'language' => 'it', 'value' => 'Benvenuto']);
-
-    $response = $this->actingAs($admin)->post(route('admin.translations.store'), [
-        'key' => 'dashboard.welcome',
-        'language' => 'it',
-        'value' => 'Duplicato',
+        'values' => ['en' => 'Welcome'],
     ]);
 
     $response->assertSessionHasErrors('key');
 });
 
-test('language must be a supported option', function () {
-    $admin = adminUser();
-
-    $response = $this->actingAs($admin)->post(route('admin.translations.store'), [
-        'key' => 'dashboard.welcome',
-        'language' => 'fr',
-        'value' => 'Bienvenue',
-    ]);
-
-    $response->assertSessionHasErrors('language');
-});
-
-test('admin can update a translation', function () {
+test('admin can view the edit form with existing values prefilled', function () {
+    seedLanguages();
     $admin = adminUser();
     $translation = Translation::create(['key' => 'dashboard.welcome', 'language' => 'it', 'value' => 'Benvenuto']);
 
+    $this->actingAs($admin)->get(route('admin.translations.edit', $translation))
+        ->assertOk()
+        ->assertSee('Benvenuto');
+});
+
+test('admin can update, add and clear language values for a key', function () {
+    $admin = adminUser();
+    $translation = Translation::create(['key' => 'dashboard.welcome', 'language' => 'it', 'value' => 'Benvenuto']);
+    Translation::create(['key' => 'dashboard.welcome', 'language' => 'en', 'value' => 'Welcome']);
+
     $response = $this->actingAs($admin)->put(route('admin.translations.update', $translation), [
-        'key' => 'dashboard.welcome',
-        'language' => 'it',
-        'value' => 'Ciao',
+        'values' => ['it' => 'Ciao', 'en' => ''],
     ]);
 
     $response->assertRedirect(route('admin.translations.index'));
-    expect($translation->fresh()->value)->toBe('Ciao');
+    expect(Translation::where('key', 'dashboard.welcome')->where('language', 'it')->value('value'))->toBe('Ciao');
+    expect(Translation::where('key', 'dashboard.welcome')->where('language', 'en')->exists())->toBeFalse();
 });
 
-test('admin can delete a translation', function () {
+test('admin can delete a translation key across all languages', function () {
     $admin = adminUser();
     $translation = Translation::create(['key' => 'dashboard.welcome', 'language' => 'it', 'value' => 'Benvenuto']);
+    Translation::create(['key' => 'dashboard.welcome', 'language' => 'en', 'value' => 'Welcome']);
 
     $this->actingAs($admin)->delete(route('admin.translations.destroy', $translation));
 
-    expect(Translation::find($translation->id))->toBeNull();
+    expect(Translation::where('key', 'dashboard.welcome')->count())->toBe(0);
 });
 
-test('translations datatable endpoint returns json data', function () {
+test('translations datatable endpoint returns one pivoted row per key', function () {
+    seedLanguages();
     $admin = adminUser();
     Translation::create(['key' => 'findable.key', 'language' => 'it', 'value' => 'Trovabile']);
+    Translation::create(['key' => 'findable.key', 'language' => 'en', 'value' => 'Findable']);
 
     $response = $this->actingAs($admin)->getJson(route('admin.translations.data', ['start' => 0, 'limit' => 25]));
 
     $response->assertOk()->assertJsonStructure(['data', 'total']);
-    expect(collect($response->json('data'))->pluck('key'))->toContain('findable.key');
+    $row = collect($response->json('data'))->firstWhere('key', 'findable.key');
+    expect($row['it'])->toBe('Trovabile');
+    expect($row['en'])->toBe('Findable');
+});
+
+test('translations datatable endpoint supports search', function () {
+    seedLanguages();
+    $admin = adminUser();
+    Translation::create(['key' => 'findable.key', 'language' => 'it', 'value' => 'Trovabile']);
+    Translation::create(['key' => 'other.key', 'language' => 'it', 'value' => 'Altro']);
+
+    $response = $this->actingAs($admin)->getJson(route('admin.translations.data', ['start' => 0, 'limit' => 25, 'globalSearch' => 'findable']));
+
+    $keys = collect($response->json('data'))->pluck('key');
+    expect($keys)->toContain('findable.key');
+    expect($keys)->not->toContain('other.key');
 });

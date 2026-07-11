@@ -23,7 +23,7 @@ class UpdatePreferencesRequest extends FormRequest
      */
     public function rules(): array
     {
-        return collect(config('preferences'))
+        return collect(preferences())
             ->mapWithKeys(fn (array $preference, string $key) => [
                 $key => ['required', Rule::in(array_keys($preference['options']))],
             ])

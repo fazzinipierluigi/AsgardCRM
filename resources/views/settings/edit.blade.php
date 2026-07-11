@@ -95,7 +95,7 @@
                         @method('PUT')
 
                         <div class="row">
-                            @foreach (config('preferences') as $key => $preference)
+                            @foreach (preferences() as $key => $preference)
                                 <div class="col-12 col-lg-6 mb-3">
                                     <label for="{{ $key }}" class="form-label">{{ t(ucfirst(str_replace('_', ' ', $key))) }}</label>
                                     <select

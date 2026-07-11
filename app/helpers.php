@@ -1,6 +1,30 @@
 <?php
 
+use App\Models\Language;
 use App\Models\Translation;
+
+if (! function_exists('preferences')) {
+    /**
+     * The full user-preferences definition (config/preferences.php), with
+     * the "language" entry's options sourced dynamically from the
+     * `languages` table instead of a static config array — use this
+     * instead of config('preferences') directly wherever "language" is
+     * involved (its default is config('app.locale')).
+     *
+     * @return array<string, array{default: string, options: array<string, string>}>
+     */
+    function preferences(): array
+    {
+        $preferences = config('preferences');
+
+        $preferences['language'] = [
+            'default' => config('app.locale'),
+            'options' => Language::options(),
+        ];
+
+        return $preferences;
+    }
+}
 
 if (! function_exists('t')) {
     /**

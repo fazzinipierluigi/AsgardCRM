@@ -22,13 +22,11 @@ return [
         ],
     ],
 
-    'language' => [
-        'default' => 'it',
-        'options' => [
-            'it' => 'Italiano',
-            'en' => 'English',
-        ],
-    ],
+    // 'language' is intentionally not defined here — its options are
+    // sourced dynamically from the `languages` table (App\Models\Language)
+    // instead of a static list, so admins can add a language at runtime.
+    // Use the preferences() helper (app/helpers.php), not config('preferences')
+    // directly, wherever you need the full preference set including language.
 
     'number_format' => [
         'default' => 'it',
