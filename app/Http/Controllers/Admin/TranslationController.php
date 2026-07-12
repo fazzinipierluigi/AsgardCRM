@@ -42,6 +42,8 @@ class TranslationController extends Controller
             $keysQuery->where('key', 'like', "%{$search}%");
         }
 
+        $this->applyKeyFilter($keysQuery, $request);
+
         $total = (clone $keysQuery)->count();
         $keys = $keysQuery->skip($start)->take($limit)->pluck('key');
 
@@ -63,6 +65,39 @@ class TranslationController extends Controller
         })->values();
 
         return response()->json(['data' => $data, 'total' => $total]);
+    }
+
+    /**
+     * Apply the Raccoon Tables filter bar's "key" filter, if present.
+     * This grid doesn't use EloquentSource (see the class docblock), so
+     * filters aren't handled generically — only the one real, filterable
+     * column ("key") needs this by hand.
+     */
+    private function applyKeyFilter($keysQuery, Request $request): void
+    {
+        $raw = $request->input('filters');
+        $filters = is_string($raw) ? json_decode($raw, true) : $raw;
+
+        if (! is_array($filters)) {
+            return;
+        }
+
+        foreach ($filters as $filter) {
+            if (($filter['index'] ?? null) !== 'key') {
+                continue;
+            }
+
+            $value = (string) ($filter['value'] ?? '');
+
+            match ($filter['sign'] ?? '=') {
+                '==' => $keysQuery->where('key', '=', $value),
+                '!==' => $keysQuery->where('key', '!=', $value),
+                '!=' => $keysQuery->where('key', 'not like', "%{$value}%"),
+                'a_' => $keysQuery->where('key', 'like', "{$value}%"),
+                '_a' => $keysQuery->where('key', 'like', "%{$value}"),
+                default => $keysQuery->where('key', 'like', "%{$value}%"),
+            };
+        }
     }
 
     /**

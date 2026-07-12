@@ -187,11 +187,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('field-modal-name').value = fieldEl.querySelector('.field-name-input').value;
         document.getElementById('field-modal-column').value = fieldEl.querySelector('.field-column-input').value;
-        document.getElementById('field-modal-type').value = type;
+        window.setSelectValue('#field-modal-type', type);
         document.getElementById('field-modal-required').checked = fieldEl.querySelector('.field-required-input').value === '1';
         document.getElementById('field-modal-options').value = fieldEl.querySelector('.field-options-input').value;
         document.getElementById('field-modal-code-prefix').value = fieldEl.querySelector('.field-codeprefix-input').value;
-        document.getElementById('field-modal-relation').value = fieldEl.querySelector('.field-relationtarget-input').value;
+        window.setSelectValue('#field-modal-relation', fieldEl.querySelector('.field-relationtarget-input').value);
         document.getElementById('field-modal-default').value = fieldEl.querySelector('.field-defaultvalue-input').value;
 
         syncFieldModalGroups(type);

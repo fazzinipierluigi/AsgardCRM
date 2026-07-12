@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('raccoon-layouts')
+    @raccoonLayoutsDropdown
+@endsection
+
 @if ($canCreate)
     @section('buttons')
         <a href="{{ route('entities.create', $entity) }}" class="btn btn-primary" data-testid="entity-record-create-link">
@@ -37,23 +41,45 @@
         <div id="entity-records-grid" data-testid="entity-records-grid"></div>
     </div>
 
+    @php
+        $fieldColumnsData = $entity->allFields()->map(function ($f) use ($relationLookups) {
+            $isRelation = $f->type->value === 'relation';
+            $column = $isRelation ? "{$f->column_name}_id" : $f->column_name;
+
+            $type = match ($f->type->value) {
+                'checkbox' => 'boolean',
+                'integer', 'decimal' => 'number',
+                default => null,
+            };
+
+            $filterLookup = match (true) {
+                $isRelation => ['options' => $relationLookups[$column] ?? []],
+                $f->type->value === 'select' => ['options' => collect($f->options ?? [])->map(fn ($name, $value) => ['value' => $value, 'name' => $name])->values()->all()],
+                default => null,
+            };
+
+            return array_filter([
+                'id' => $column,
+                'text' => $f->name,
+                'type' => $type,
+                'filterLookup' => $filterLookup,
+            ], fn ($v) => $v !== null);
+        })->values();
+    @endphp
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var fieldColumns = @json($entity->allFields()->map(function ($f) {
-                return [
-                    'id' => $f->type->value === 'relation' ? "{$f->column_name}_id" : $f->column_name,
-                    'text' => $f->name,
-                ];
-            })->values());
+            var fieldColumns = @json($fieldColumnsData);
 
-            var columns = [{ id: 'id', index: 'id', text: 'ID', sortable: true }];
+            var columns = [{ id: 'id', index: 'id', text: 'ID', sortable: true, type: 'number' }];
 
             fieldColumns.forEach(function (f) {
-                columns.push({ id: f.id, index: f.id, text: f.text });
+                f.index = f.id;
+                columns.push(f);
             });
 
-            columns.push({ id: 'owner', index: 'owner', text: @json(t('Proprietario')) });
-            columns.push({ id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true });
+            columns.push({ id: 'owner', index: 'owner', text: @json(t('Proprietario')), filterable: false });
+            columns.push({ id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true, filterable: false });
             columns.push({
                 id: 'actions',
                 index: 'id',
@@ -79,17 +105,21 @@
                 },
             });
 
-            new window.RaccoonGrid({
+            var grid = new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: false,
+                filterBar: true,
                 columns: columns,
                 serverAdapter: {
                     url: @json(route('entities.data', $entity)),
                     method: 'GET',
                 },
             }).render('#entity-records-grid');
+
+            window.wireRaccoonLayouts(grid);
         });
     </script>
+    @raccoonLayoutsScripts
 @endsection

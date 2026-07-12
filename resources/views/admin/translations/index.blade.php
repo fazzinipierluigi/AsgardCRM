@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('raccoon-layouts')
+    @raccoonLayoutsDropdown
+@endsection
+
 @section('buttons')
     <a href="{{ route('admin.languages.index') }}" class="btn btn-outline-secondary me-2" data-testid="languages-link">
         {{ t('Gestisci lingue') }}
@@ -54,11 +58,12 @@
         document.addEventListener('DOMContentLoaded', function () {
             var languageColumns = @json($languageColumnsData);
 
-            new window.RaccoonGrid({
+            var grid = new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
+                filterBar: true,
                 columns: [
                     { id: 'key', index: 'key', text: @json(t('Chiave')), sortable: true, filterable: true },
                 ].concat(languageColumns).concat([
@@ -88,6 +93,9 @@
                     method: 'GET',
                 },
             }).render('#translations-grid');
+
+            window.wireRaccoonLayouts(grid);
         });
     </script>
+    @raccoonLayoutsScripts
 @endsection

@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\EntityRecordController;
+use App\Http\Controllers\GlobalSearchController;
+use App\Http\Controllers\IconController;
 use App\Http\Controllers\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +29,18 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
+
+    // NOT "/icons/..." — Apache's stock httpd-autoindex.conf defines a
+    // server-wide `Alias /icons/ "/usr/share/httpd/icons/"` (FancyIndexing
+    // icons) that intercepts that path before it ever reaches Laravel,
+    // regardless of vhost/.htaccess rewrite rules. Confirmed via the vhost
+    // access/error log: Apache 404s straight from
+    // /usr/share/httpd/icons/..., never invoking index.php.
+    Route::get('tabler-icons/{variant}/{name}', [IconController::class, 'show'])
+        ->name('icons.show')
+        ->where(['variant' => '[a-z]+', 'name' => '[a-z0-9-]+']);
 
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');

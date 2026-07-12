@@ -47,10 +47,12 @@ class EntityRecordController extends Controller
     public function index(Entity $entity): View
     {
         $this->authorizeAction($entity, 'index');
+        $entity->load('tabs.cards.fields');
 
         return view('entities.index', [
-            'entity' => $entity->load('tabs.cards.fields'),
+            'entity' => $entity,
             'canCreate' => request()->user()->can("entity_{$entity->slug}.create"),
+            'relationLookups' => $this->relationLookupsForColumns($entity),
         ]);
     }
 
@@ -257,7 +259,7 @@ class EntityRecordController extends Controller
         $value = $record->{$column};
 
         return match ($field->type) {
-            EntityFieldType::Checkbox => $value ? t('Sì') : t('No'),
+            EntityFieldType::Checkbox => (bool) $value,
             EntityFieldType::Select => $field->options[$value] ?? $value,
             EntityFieldType::Relation => $value === null ? null : ($relationLabels[$field->column_name][$value] ?? "#{$value}"),
             EntityFieldType::RichText => $value === null ? null : strip_tags((string) $value),
@@ -277,6 +279,30 @@ class EntityRecordController extends Controller
         return $entity->allFields()
             ->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
             ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationLabels($f)])
+            ->all();
+    }
+
+    /**
+     * Lookup filter options (raccoon-tables' filterLookup shape:
+     * {value, name}[]) for every Relation field on an entity, keyed by
+     * the field's physical column name — used by the records grid's
+     * filter bar so a relation column filters via a label dropdown
+     * instead of a free-text box against a raw foreign id.
+     *
+     * @return array<string, array<int, array{value: int|string, name: string}>>
+     */
+    private function relationLookupsForColumns(Entity $entity): array
+    {
+        return $entity->allFields()
+            ->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
+            ->mapWithKeys(function (EntityField $f) {
+                $options = collect($this->relationLabels($f))
+                    ->map(fn (string $name, int|string $value) => ['value' => $value, 'name' => $name])
+                    ->values()
+                    ->all();
+
+                return [$this->columnFor($f) => $options];
+            })
             ->all();
     }
 

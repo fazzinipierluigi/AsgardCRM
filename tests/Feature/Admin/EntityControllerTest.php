@@ -44,12 +44,12 @@ test('admin can update an entity name and icon but not its slug', function () {
 
     $response = $this->actingAs($admin)->put(route('admin.entities.update', $entity), [
         'name' => 'Aziende',
-        'icon' => 'ti ti-building',
+        'icon' => 'building',
     ]);
 
     $response->assertRedirect(route('admin.entities.index'));
     expect($entity->fresh()->name)->toBe('Aziende');
-    expect($entity->fresh()->icon)->toBe('ti ti-building');
+    expect($entity->fresh()->icon)->toBe('building');
     expect($entity->fresh()->slug)->toBe('contatti');
 });
 
@@ -90,4 +90,49 @@ test('entities datatable endpoint returns json data', function () {
 
     $response->assertOk()->assertJsonStructure(['data', 'total']);
     expect(collect($response->json('data'))->pluck('name'))->toContain('Findable Entity');
+});
+
+test('the create form renders the icon select with every available icon', function () {
+    $admin = adminUser();
+
+    $response = $this->actingAs($admin)->get(route('admin.entities.create'));
+
+    $response->assertOk();
+    $response->assertSee('data-tom-select-manual', false);
+    $response->assertSee('<option value="building" >building</option>', false);
+    expect(substr_count($response->getContent(), '<option value='))->toBe(count(icon_names()) + 1);
+});
+
+test('the edit form pre-selects the entity current icon', function () {
+    $admin = adminUser();
+    $entity = Entity::create(['name' => 'Contatti', 'slug' => 'contatti', 'table_name' => 'entity_contatti', 'icon' => 'building']);
+
+    $response = $this->actingAs($admin)->get(route('admin.entities.edit', $entity));
+
+    $response->assertOk();
+    $response->assertSee('<option value="building" selected>building</option>', false);
+});
+
+test('creating an entity rejects an icon name that is not a real tabler icon', function () {
+    $admin = adminUser();
+
+    $response = $this->actingAs($admin)->post(route('admin.entities.store'), [
+        'name' => 'Contatti',
+        'icon' => 'ti ti-not-a-real-icon',
+    ]);
+
+    $response->assertSessionHasErrors('icon');
+    expect(Entity::where('name', 'Contatti')->exists())->toBeFalse();
+});
+
+test('an entity can be created without an icon', function () {
+    $admin = adminUser();
+
+    $response = $this->actingAs($admin)->post(route('admin.entities.store'), [
+        'name' => 'Contatti',
+        'icon' => '',
+    ]);
+
+    $response->assertSessionDoesntHaveErrors('icon');
+    expect(Entity::where('name', 'Contatti')->firstOrFail()->icon)->toBeNull();
 });

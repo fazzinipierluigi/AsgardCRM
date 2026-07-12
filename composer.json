@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "fazzinipierluigi/just-a-gate": "^1.0",
+        "fazzinipierluigi/laraccoon-layouts": "^1.0",
         "fazzinipierluigi/laraccoon_datasource": "^1.0",
         "laravel/framework": "^13.8",
         "laravel/tinker": "^3.0"

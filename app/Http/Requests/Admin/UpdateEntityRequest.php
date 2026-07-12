@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateEntityRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class UpdateEntityRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'icon' => ['nullable', 'string', 'max:100'],
+            'icon' => ['nullable', Rule::in(icon_names())],
         ];
     }
 }

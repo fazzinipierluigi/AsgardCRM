@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('raccoon-layouts')
+    @raccoonLayoutsDropdown
+@endsection
+
 @section('buttons')
     <a href="{{ route('admin.entities.import.form') }}" class="btn btn-outline-secondary" data-testid="entity-import-link">
         {{ t('Importa') }}
@@ -56,31 +60,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            new window.RaccoonGrid({
+            var grid = new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
+                filterBar: true,
                 columns: [
                     { id: 'name', index: 'name', text: @json(t('Nome')), sortable: true, filterable: true },
                     { id: 'slug', index: 'slug', text: @json(t('Slug')), sortable: true, filterable: true },
-                    {
-                        id: 'is_system',
-                        index: 'is_system',
-                        text: @json(t('Sistema')),
-                        render: function (params) {
-                            return params.value ? @json(t('Sì')) : @json(t('No'));
-                        },
-                    },
-                    {
-                        id: 'is_installed',
-                        index: 'is_installed',
-                        text: @json(t('Installata')),
-                        render: function (params) {
-                            return params.value ? @json(t('Sì')) : @json(t('No'));
-                        },
-                    },
-                    { id: 'created_at', index: 'created_at', text: @json(t('Creata il')), sortable: true },
+                    { id: 'is_system', index: 'is_system', text: @json(t('Sistema')), type: 'boolean' },
+                    { id: 'is_installed', index: 'is_installed', text: @json(t('Installata')), type: 'boolean' },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creata il')), sortable: true, filterable: false },
                     {
                         id: 'actions',
                         index: 'id',
@@ -130,6 +121,9 @@
                     method: 'GET',
                 },
             }).render('#entities-grid');
+
+            window.wireRaccoonLayouts(grid);
         });
     </script>
+    @raccoonLayoutsScripts
 @endsection

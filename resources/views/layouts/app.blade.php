@@ -1,14 +1,23 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-bs-theme="{{ auth()->user()?->getSetting('theme', config('preferences.theme.default')) }}">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    data-bs-theme="{{ auth()->user()?->getSetting('theme', config('preferences.theme.default')) }}"
+    data-bs-theme-base="{{ auth()->user()?->getSetting('theme_base', config('preferences.theme_base.default')) }}"
+    data-bs-theme-primary="{{ auth()->user()?->getSetting('theme_color', config('preferences.theme_color.default')) }}"
+>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', config('app.name', 'AsgardCRM'))</title>
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
-        <script>window.CSRF_TOKEN = @json(csrf_token());</script>
+        <script>
+            window.CSRF_TOKEN = @json(csrf_token());
+            window.ICONS_BASE_URL = @json(url('/tabler-icons'));
+        </script>
 
         <div class="page">
             <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark" data-testid="sidebar">
@@ -20,6 +29,22 @@
                     <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark">
                         {{ config('app.name', 'Laravel') }}
                     </a>
+
+                    <div class="px-2 pt-3">
+                        <div class="input-icon">
+                            <span class="input-icon-addon">
+                                {!! icon('search') !!}
+                            </span>
+                            <input
+                                type="text"
+                                id="sidebar-menu-search"
+                                class="form-control form-control-dark"
+                                placeholder="{{ t('Cerca nel menù') }}"
+                                autocomplete="off"
+                                data-testid="sidebar-menu-search"
+                            >
+                        </div>
+                    </div>
 
                     <div class="navbar-collapse collapse d-flex flex-column" id="sidebar-menu">
                         @yield('menu')
@@ -33,13 +58,36 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
+                    @unless (request()->routeIs('admin.*'))
+                        <div class="dropdown flex-fill mx-3" style="max-width: 26rem;" data-testid="global-search">
+                            <div class="input-icon">
+                                <span class="input-icon-addon">
+                                    {!! icon('search') !!}
+                                </span>
+                                <input
+                                    type="text"
+                                    id="global-search-input"
+                                    class="form-control"
+                                    placeholder="{{ t('Cerca nelle entità...') }}"
+                                    autocomplete="off"
+                                    data-url="{{ route('search') }}"
+                                    data-testid="global-search-input"
+                                >
+                            </div>
+                            <div
+                                class="dropdown-menu w-100"
+                                id="global-search-results"
+                                style="max-height: 24rem; overflow-y: auto;"
+                                data-no-results="{{ t('Nessun risultato') }}"
+                                data-testid="global-search-results"
+                            ></div>
+                        </div>
+                    @endunless
+
                     <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
                         <div class="nav-item dropdown me-2">
                             <a href="#" class="nav-link px-2" data-bs-toggle="dropdown" aria-label="Notifiche" data-testid="notifications-toggle">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
-                                    <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
-                                </svg>
+                                {!! icon('bell') !!}
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <div class="dropdown-item text-muted">{{ t('Nessuna notifica') }}</div>
@@ -106,6 +154,11 @@
                                     </div>
                                 @endif
                             </div>
+                            @hasSection('raccoon-layouts')
+                                <div class="col-auto d-print-none">
+                                    @yield('raccoon-layouts')
+                                </div>
+                            @endif
                             @hasSection('buttons')
                                 <div class="col-auto ms-auto d-print-none">
                                     <div class="btn-list">

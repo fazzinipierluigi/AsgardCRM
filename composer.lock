@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17a7ca51f94aad1d550227963a0bbea2",
+    "content-hash": "87e59b41875648e628c4789347361124",
     "packages": [
         {
             "name": "brick/math",
@@ -570,6 +570,57 @@
                 "source": "https://github.com/fazzinipierluigi/just-a-gate/tree/1.0.0"
             },
             "time": "2026-06-04T18:41:06+00:00"
+        },
+        {
+            "name": "fazzinipierluigi/laraccoon-layouts",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fazzinipierluigi/laraccoon_layouts.git",
+                "reference": "12eb538d629306c0b034d9babaa7b9f8d9cc8577"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fazzinipierluigi/laraccoon_layouts/zipball/12eb538d629306c0b034d9babaa7b9f8d9cc8577",
+                "reference": "12eb538d629306c0b034d9babaa7b9f8d9cc8577",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/http": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/routing": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "illuminate/support": "^9.0|^10.0|^11.0|^12.0|^13.0",
+                "php": "^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Fazzinipierluigi\\LaraccoonLayouts\\RaccoonLayoutsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fazzinipierluigi\\LaraccoonLayouts\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pierluigi Fazzini",
+                    "email": "gigif91@gmail.com"
+                }
+            ],
+            "description": "Laravel package for saving and managing Raccoon Tables layouts",
+            "support": {
+                "issues": "https://github.com/fazzinipierluigi/laraccoon_layouts/issues",
+                "source": "https://github.com/fazzinipierluigi/laraccoon_layouts/tree/1.0.3"
+            },
+            "time": "2026-06-15T17:06:28+00:00"
         },
         {
             "name": "fazzinipierluigi/laraccoon_datasource",

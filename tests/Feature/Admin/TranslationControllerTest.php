@@ -127,3 +127,30 @@ test('translations datatable endpoint supports search', function () {
     expect($keys)->toContain('findable.key');
     expect($keys)->not->toContain('other.key');
 });
+
+test('translations datatable endpoint supports a filter on the key column', function () {
+    seedLanguages();
+    $admin = adminUser();
+    Translation::create(['key' => 'findable.key', 'language' => 'it', 'value' => 'Trovabile']);
+    Translation::create(['key' => 'other.key', 'language' => 'it', 'value' => 'Altro']);
+
+    $filters = json_encode([['index' => 'key', 'value' => 'findable', 'sign' => '=']]);
+    $response = $this->actingAs($admin)->getJson(route('admin.translations.data', ['start' => 0, 'limit' => 25, 'filters' => $filters]));
+
+    $keys = collect($response->json('data'))->pluck('key');
+    expect($keys)->toContain('findable.key');
+    expect($keys)->not->toContain('other.key');
+});
+
+test('translations datatable endpoint filter supports exact equality', function () {
+    seedLanguages();
+    $admin = adminUser();
+    Translation::create(['key' => 'findable.key', 'language' => 'it', 'value' => 'Trovabile']);
+    Translation::create(['key' => 'findable.key.extra', 'language' => 'it', 'value' => 'Altro']);
+
+    $filters = json_encode([['index' => 'key', 'value' => 'findable.key', 'sign' => '==']]);
+    $response = $this->actingAs($admin)->getJson(route('admin.translations.data', ['start' => 0, 'limit' => 25, 'filters' => $filters]));
+
+    $keys = collect($response->json('data'))->pluck('key');
+    expect($keys->all())->toBe(['findable.key']);
+});

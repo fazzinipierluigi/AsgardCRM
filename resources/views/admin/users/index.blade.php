@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('raccoon-layouts')
+    @raccoonLayoutsDropdown
+@endsection
+
 @section('buttons')
     <a href="{{ route('admin.users.create') }}" class="btn btn-primary" data-testid="user-create-link">
         {{ t('Nuovo utente') }}
@@ -41,17 +45,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            new window.RaccoonGrid({
+            var grid = new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
+                filterBar: true,
                 columns: [
                     { id: 'name', index: 'name', text: @json(t('Nome')), sortable: true, filterable: true },
                     { id: 'username', index: 'username', text: @json(t('Username')), sortable: true, filterable: true },
                     { id: 'email', index: 'email', text: @json(t('Email')), sortable: true, filterable: true },
-                    { id: 'roles', index: 'roles', text: @json(t('Ruoli')) },
-                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
+                    { id: 'roles', index: 'roles', text: @json(t('Ruoli')), sortable: false, filterable: false },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true, filterable: false },
                     {
                         id: 'actions',
                         index: 'id',
@@ -78,6 +83,9 @@
                     method: 'GET',
                 },
             }).render('#users-grid');
+
+            window.wireRaccoonLayouts(grid);
         });
     </script>
+    @raccoonLayoutsScripts
 @endsection

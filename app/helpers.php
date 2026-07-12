@@ -26,6 +26,68 @@ if (! function_exists('preferences')) {
     }
 }
 
+if (! function_exists('icon')) {
+    /**
+     * Inline SVG markup for a Tabler icon, read straight from the Tabler
+     * Icons npm package's static SVG files (config('icons.path')).
+     *
+     * New-code rule: never load the icon webfont — always print an
+     * icon's actual SVG content into the page via this helper (or its JS
+     * equivalent, resources/js/icon.js, for markup built client-side).
+     *
+     * $name/$variant are reduced to their basename before touching the
+     * filesystem, so a caller can never escape the icons directory.
+     * Returns an empty string (not an exception) for an unknown icon —
+     * callers render icons inline in markup, where a missing file
+     * should degrade to "no icon", not a fatal error.
+     */
+    function icon(string $name, ?string $variant = null): string
+    {
+        static $cache = [];
+
+        $variant = basename($variant ?? config('icons.default_variant'));
+        $name = basename($name);
+        $key = "{$variant}/{$name}";
+
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
+        }
+
+        $path = config('icons.path')."/{$variant}/{$name}.svg";
+
+        return $cache[$key] = is_file($path) ? file_get_contents($path) : '';
+    }
+}
+
+if (! function_exists('icon_names')) {
+    /**
+     * Every icon name available for a given Tabler Icons variant — sorted,
+     * without the .svg extension. Backs the entity icon <select> (see
+     * admin/entities/_form.blade.php); values are what icon() expects as
+     * $name.
+     *
+     * @return array<int, string>
+     */
+    function icon_names(?string $variant = null): array
+    {
+        static $cache = [];
+
+        $variant = basename($variant ?? config('icons.default_variant'));
+
+        if (array_key_exists($variant, $cache)) {
+            return $cache[$variant];
+        }
+
+        $names = collect(glob(config('icons.path')."/{$variant}/*.svg") ?: [])
+            ->map(fn (string $file) => basename($file, '.svg'))
+            ->sort()
+            ->values()
+            ->all();
+
+        return $cache[$variant] = $names;
+    }
+}
+
 if (! function_exists('t')) {
     /**
      * Translate the given key using the database-backed translations table.

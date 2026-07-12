@@ -43,4 +43,38 @@ return [
             'dark' => 'Scuro',
         ],
     ],
+
+    // Maps to Tabler's `data-bs-theme-base` attribute (the neutral/gray scale
+    // used for backgrounds, borders and body text).
+    'theme_base' => [
+        'default' => 'gray',
+        'options' => [
+            'gray' => 'Grigio',
+            'slate' => 'Ardesia',
+            'zinc' => 'Zinco',
+            'neutral' => 'Neutro',
+            'stone' => 'Pietra',
+            'pink' => 'Rosa',
+        ],
+    ],
+
+    // Maps to Tabler's `data-bs-theme-primary` attribute (the accent color
+    // used for links, primary buttons, active states, etc.).
+    'theme_color' => [
+        'default' => 'blue',
+        'options' => [
+            'blue' => 'Blu',
+            'azure' => 'Azzurro',
+            'indigo' => 'Indaco',
+            'purple' => 'Viola',
+            'pink' => 'Rosa',
+            'red' => 'Rosso',
+            'orange' => 'Arancione',
+            'yellow' => 'Giallo',
+            'lime' => 'Lime',
+            'green' => 'Verde',
+            'teal' => 'Verde acqua',
+            'cyan' => 'Ciano',
+        ],
+    ],
 ];

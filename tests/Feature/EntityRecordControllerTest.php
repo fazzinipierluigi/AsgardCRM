@@ -82,3 +82,17 @@ test('an installed entity is hidden from the sidebar menu without permission', f
 
     $this->actingAs($user)->get(route('dashboard'))->assertDontSee('Contatti');
 });
+
+test('an entity icon renders as inline svg in the sidebar menu, not a webfont class', function () {
+    $entity = installedEntityWithNameColumn();
+    $entity->update(['icon' => 'building']);
+    $user = User::factory()->create();
+    $role = Role::create(['name' => 'Operatore', 'slug' => 'operatore']);
+    $role->givePermission(Permission::where('key', 'entity_contatti.index')->firstOrFail());
+    $user->assignRole($role);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertSee(icon('building'), false);
+    $response->assertDontSee('<i class="building">', false);
+});

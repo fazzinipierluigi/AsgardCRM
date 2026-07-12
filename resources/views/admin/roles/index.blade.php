@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('raccoon-layouts')
+    @raccoonLayoutsDropdown
+@endsection
+
 @section('buttons')
     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary" data-testid="role-create-link">
         {{ t('Nuovo ruolo') }}
@@ -41,24 +45,18 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            new window.RaccoonGrid({
+            var grid = new window.RaccoonGrid({
                 theme: 'tabler',
                 dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
+                filterBar: true,
                 columns: [
                     { id: 'name', index: 'name', text: @json(t('Nome')), sortable: true, filterable: true },
                     { id: 'slug', index: 'slug', text: @json(t('Slug')), sortable: true, filterable: true },
-                    { id: 'permissions_count', index: 'permissions_count', text: @json(t('Permessi')), type: 'number' },
-                    {
-                        id: 'is_system',
-                        index: 'is_system',
-                        text: @json(t('Sistema')),
-                        render: function (params) {
-                            return params.value ? @json(t('Sì')) : @json(t('No'));
-                        },
-                    },
-                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true },
+                    { id: 'permissions_count', index: 'permissions_count', text: @json(t('Permessi')), type: 'number', sortable: false, filterable: false },
+                    { id: 'is_system', index: 'is_system', text: @json(t('Sistema')), type: 'boolean' },
+                    { id: 'created_at', index: 'created_at', text: @json(t('Creato il')), sortable: true, filterable: false },
                     {
                         id: 'actions',
                         index: 'id',
@@ -91,6 +89,9 @@
                     method: 'GET',
                 },
             }).render('#roles-grid');
+
+            window.wireRaccoonLayouts(grid);
         });
     </script>
+    @raccoonLayoutsScripts
 @endsection

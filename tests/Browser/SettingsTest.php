@@ -10,6 +10,7 @@ test('user can change preferences and the theme is applied', function () {
     $this->browse(function (Browser $browser) use ($user) {
         $browser->loginAs($user)
             ->visit('/settings')
+            ->assertPresent('#theme ~ .ts-wrapper')
             ->select('theme', 'dark')
             ->select('language', 'en')
             ->press('Salva preferenze')

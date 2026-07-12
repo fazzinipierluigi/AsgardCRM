@@ -83,6 +83,8 @@ test('user can update preferences', function () {
         'language' => 'en',
         'number_format' => 'en',
         'theme' => 'dark',
+        'theme_base' => 'slate',
+        'theme_color' => 'azure',
     ]);
 
     $response->assertRedirect();
@@ -90,6 +92,8 @@ test('user can update preferences', function () {
     expect($user->getSetting('language'))->toBe('en');
     expect($user->getSetting('number_format'))->toBe('en');
     expect($user->getSetting('theme'))->toBe('dark');
+    expect($user->getSetting('theme_base'))->toBe('slate');
+    expect($user->getSetting('theme_color'))->toBe('azure');
 });
 
 test('preferences reject values outside the allowed options', function () {
@@ -100,16 +104,37 @@ test('preferences reject values outside the allowed options', function () {
         'language' => 'en',
         'number_format' => 'en',
         'theme' => 'dark',
+        'theme_base' => 'slate',
+        'theme_color' => 'azure',
     ]);
 
     $response->assertSessionHasErrors('date_format');
 });
 
+test('preferences reject a theme base or color outside the allowed options', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->put('/settings/preferences', [
+        'date_format' => 'd/m/Y',
+        'language' => 'en',
+        'number_format' => 'en',
+        'theme' => 'dark',
+        'theme_base' => 'not-a-real-base',
+        'theme_color' => 'not-a-real-color',
+    ]);
+
+    $response->assertSessionHasErrors(['theme_base', 'theme_color']);
+});
+
 test('theme preference is reflected on the page', function () {
     $user = User::factory()->create();
     $user->setSetting('theme', 'dark');
+    $user->setSetting('theme_base', 'slate');
+    $user->setSetting('theme_color', 'azure');
 
     $response = $this->actingAs($user)->get('/dashboard');
 
     $response->assertSee('data-bs-theme="dark"', false);
+    $response->assertSee('data-bs-theme-base="slate"', false);
+    $response->assertSee('data-bs-theme-primary="azure"', false);
 });
