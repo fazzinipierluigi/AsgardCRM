@@ -11,13 +11,19 @@
     </li>
 @endsection
 
+@if ($roles->isNotEmpty())
+    @section('buttons')
+        <button type="submit" form="entity-visibility-form" class="btn btn-primary" data-testid="entity-visibility-submit">{{ t('Salva visibilità') }}</button>
+    @endsection
+@endif
+
 @section('content')
     <div class="card">
         <div class="card-body">
             @if ($roles->isEmpty())
                 <div class="text-muted" data-testid="entity-visibility-no-roles">{{ t('Nessun ruolo configurabile.') }}</div>
             @else
-                <form action="{{ route('admin.entities.visibility.update', $entity) }}" method="POST">
+                <form action="{{ route('admin.entities.visibility.update', $entity) }}" method="POST" id="entity-visibility-form">
                     @csrf
                     @method('PUT')
 
@@ -53,9 +59,6 @@
                         </tbody>
                     </table>
 
-                    <div class="form-footer">
-                        <button type="submit" class="btn btn-primary" data-testid="entity-visibility-submit">{{ t('Salva visibilità') }}</button>
-                    </div>
                 </form>
             @endif
         </div>

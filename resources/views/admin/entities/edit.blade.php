@@ -11,20 +11,20 @@
     </li>
 @endsection
 
+@section('buttons')
+    <a href="{{ route('admin.entities.builder.edit', $entity) }}" class="btn btn-link" data-testid="entity-manage-builder-link">
+        {{ t('Progetta struttura') }}
+    </a>
+    <button type="submit" form="entity-form" class="btn btn-primary" data-testid="entity-submit">{{ t('Salva modifiche') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.entities.update', $entity) }}" method="POST">
+            <form action="{{ route('admin.entities.update', $entity) }}" method="POST" id="entity-form">
                 @csrf
                 @method('PUT')
                 @include('admin.entities._form', ['entity' => $entity])
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="entity-submit">{{ t('Salva modifiche') }}</button>
-                    <a href="{{ route('admin.entities.builder.edit', $entity) }}" class="btn btn-link" data-testid="entity-manage-builder-link">
-                        {{ t('Progetta struttura') }}
-                    </a>
-                </div>
             </form>
         </div>
     </div>

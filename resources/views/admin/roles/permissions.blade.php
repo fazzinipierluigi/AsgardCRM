@@ -11,6 +11,10 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="role-permissions-form" class="btn btn-primary" data-testid="role-permissions-submit">{{ t('Salva permessi') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
@@ -20,7 +24,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('admin.roles.permissions.update', $role) }}" method="POST">
+            <form action="{{ route('admin.roles.permissions.update', $role) }}" method="POST" id="role-permissions-form">
                 @csrf
                 @method('PUT')
 
@@ -48,9 +52,6 @@
                     @endforelse
                 </div>
 
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="role-permissions-submit">{{ t('Salva permessi') }}</button>
-                </div>
             </form>
         </div>
     </div>

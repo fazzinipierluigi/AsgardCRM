@@ -11,17 +11,17 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="user-form" class="btn btn-primary" data-testid="user-submit">{{ t('Salva modifiche') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.users.update', $user) }}" method="POST">
+            <form action="{{ route('admin.users.update', $user) }}" method="POST" id="user-form">
                 @csrf
                 @method('PUT')
                 @include('admin.users._form', ['user' => $user, 'roles' => $roles, 'userRoleIds' => $userRoleIds])
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ t('Salva modifiche') }}</button>
-                </div>
             </form>
         </div>
     </div>

@@ -11,16 +11,16 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="user-form" class="btn btn-primary" data-testid="user-submit">{{ t('Crea utente') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.users.store') }}" method="POST">
+            <form action="{{ route('admin.users.store') }}" method="POST" id="user-form">
                 @csrf
                 @include('admin.users._form', ['user' => null, 'roles' => $roles, 'userRoleIds' => []])
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="user-submit">{{ t('Crea utente') }}</button>
-                </div>
             </form>
         </div>
     </div>

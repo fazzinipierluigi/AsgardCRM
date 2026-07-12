@@ -11,16 +11,16 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="role-form" class="btn btn-primary" data-testid="role-submit">{{ t('Crea ruolo') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.roles.store') }}" method="POST">
+            <form action="{{ route('admin.roles.store') }}" method="POST" id="role-form">
                 @csrf
                 @include('admin.roles._form', ['role' => null])
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="role-submit">{{ t('Crea ruolo') }}</button>
-                </div>
             </form>
         </div>
     </div>

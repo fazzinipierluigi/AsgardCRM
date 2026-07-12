@@ -2,6 +2,11 @@
 
 @section('title', t('Impostazioni'))
 
+@section('buttons')
+    <button type="submit" form="settings-form" class="btn btn-primary" data-testid="settings-submit">{{ t('Salva') }}</button>
+    <button type="submit" form="preferences-form" class="btn btn-primary" data-testid="preferences-submit">{{ t('Salva preferenze') }}</button>
+@endsection
+
 @section('content')
     <div class="row row-cards">
         <div class="col-12 col-md-6">
@@ -14,7 +19,7 @@
                         <div class="alert alert-success" data-testid="settings-updated">{{ t('Impostazioni aggiornate.') }}</div>
                     @endif
 
-                    <form action="{{ route('settings.update') }}" method="POST">
+                    <form action="{{ route('settings.update') }}" method="POST" id="settings-form">
                         @csrf
                         @method('PUT')
 
@@ -72,9 +77,6 @@
                             </div>
                         </div>
 
-                        <div class="form-footer">
-                            <button type="submit" class="btn btn-primary">{{ t('Salva') }}</button>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -90,7 +92,7 @@
                         <div class="alert alert-success" data-testid="preferences-updated">{{ t('Preferenze aggiornate.') }}</div>
                     @endif
 
-                    <form action="{{ route('settings.preferences.update') }}" method="POST">
+                    <form action="{{ route('settings.preferences.update') }}" method="POST" id="preferences-form">
                         @csrf
                         @method('PUT')
 
@@ -117,9 +119,6 @@
                             @endforeach
                         </div>
 
-                        <div class="form-footer">
-                            <button type="submit" class="btn btn-primary" data-testid="preferences-submit">{{ t('Salva preferenze') }}</button>
-                        </div>
                     </form>
                 </div>
             </div>

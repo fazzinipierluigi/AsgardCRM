@@ -11,17 +11,17 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="translation-form" class="btn btn-primary" data-testid="translation-submit">{{ t('Crea traduzione') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.translations.store') }}" method="POST">
+            <form action="{{ route('admin.translations.store') }}" method="POST" id="translation-form">
                 @csrf
                 @php $translation = null; @endphp
                 @include('admin.translations._form')
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="translation-submit">{{ t('Crea traduzione') }}</button>
-                </div>
             </form>
         </div>
     </div>

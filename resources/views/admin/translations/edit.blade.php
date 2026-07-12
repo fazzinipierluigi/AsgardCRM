@@ -11,18 +11,18 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="translation-form" class="btn btn-primary" data-testid="translation-submit">{{ t('Salva modifiche') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.translations.update', $translation) }}" method="POST">
+            <form action="{{ route('admin.translations.update', $translation) }}" method="POST" id="translation-form">
                 @csrf
                 @method('PUT')
                 @php $keyReadonly = true; @endphp
                 @include('admin.translations._form')
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="translation-submit">{{ t('Salva modifiche') }}</button>
-                </div>
             </form>
         </div>
     </div>

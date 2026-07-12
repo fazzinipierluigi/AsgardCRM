@@ -8,6 +8,10 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="language-form" class="btn btn-primary" data-testid="language-submit">{{ t('Aggiungi lingua') }}</button>
+@endsection
+
 @section('content')
     <div class="row row-cards">
         <div class="col-12 col-md-6">
@@ -60,7 +64,7 @@
                     <h3 class="card-title">{{ t('Aggiungi lingua') }}</h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('admin.languages.store') }}" method="POST">
+                    <form action="{{ route('admin.languages.store') }}" method="POST" id="language-form">
                         @csrf
 
                         <div class="mb-3">
@@ -93,9 +97,6 @@
                             @enderror
                         </div>
 
-                        <div class="form-footer">
-                            <button type="submit" class="btn btn-primary" data-testid="language-submit">{{ t('Aggiungi lingua') }}</button>
-                        </div>
                     </form>
                 </div>
             </div>

@@ -11,16 +11,16 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="entity-form" class="btn btn-primary" data-testid="entity-submit">{{ t('Crea entità') }}</button>
+@endsection
+
 @section('content')
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.entities.store') }}" method="POST">
+            <form action="{{ route('admin.entities.store') }}" method="POST" id="entity-form">
                 @csrf
                 @include('admin.entities._form', ['entity' => null])
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="entity-submit">{{ t('Crea entità') }}</button>
-                </div>
             </form>
         </div>
     </div>

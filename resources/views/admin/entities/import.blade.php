@@ -11,6 +11,10 @@
     </li>
 @endsection
 
+@section('buttons')
+    <button type="submit" form="entity-import-form" class="btn btn-primary" data-testid="entity-import-submit">{{ t('Importa') }}</button>
+@endsection
+
 @section('content')
     @if (session('error'))
         <div class="alert alert-danger" data-testid="entities-error">{{ session('error') }}</div>
@@ -18,7 +22,7 @@
 
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('admin.entities.import') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.entities.import') }}" method="POST" enctype="multipart/form-data" id="entity-import-form">
                 @csrf
 
                 <div class="mb-3">
@@ -27,10 +31,6 @@
                     @error('file')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                </div>
-
-                <div class="form-footer">
-                    <button type="submit" class="btn btn-primary" data-testid="entity-import-submit">{{ t('Importa') }}</button>
                 </div>
             </form>
         </div>
