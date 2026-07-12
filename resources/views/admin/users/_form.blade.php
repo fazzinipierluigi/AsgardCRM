@@ -63,17 +63,19 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">{{ t('Ruoli') }}</label>
-    @foreach ($roles as $role)
-        <label class="form-check">
-            <input
-                type="checkbox"
-                class="form-check-input"
-                name="roles[]"
-                value="{{ $role->id }}"
-                @checked(in_array($role->id, old('roles', $userRoleIds)))
-            >
-            <span class="form-check-label">{{ $role->name }}</span>
-        </label>
-    @endforeach
+    <label for="roles" class="form-label">{{ t('Ruoli') }}</label>
+    <select
+        id="roles"
+        name="roles[]"
+        multiple
+        class="form-select @error('roles') is-invalid @enderror"
+        data-testid="user-roles-select"
+    >
+        @foreach ($roles as $role)
+            <option value="{{ $role->id }}" @selected(in_array($role->id, old('roles', $userRoleIds)))>{{ $role->name }}</option>
+        @endforeach
+    </select>
+    @error('roles')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
 </div>

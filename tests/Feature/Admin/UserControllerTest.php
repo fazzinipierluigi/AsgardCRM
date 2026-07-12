@@ -24,6 +24,31 @@ test('admin can view the create user form', function () {
     $this->actingAs(adminUser())->get(route('admin.users.create'))->assertOk();
 });
 
+test('the roles field is a multi-select listing every role', function () {
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+
+    $response = $this->actingAs(adminUser())->get(route('admin.users.create'));
+
+    $response->assertOk();
+    $response->assertSee('<select', false);
+    $response->assertSee('id="roles"', false);
+    $response->assertSee('name="roles[]"', false);
+    $response->assertSee('multiple', false);
+    $response->assertSee('<option value="'.$role->id.'"', false);
+});
+
+test('the edit form pre-selects the users current roles in the multi-select', function () {
+    $admin = adminUser();
+    $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);
+    $user = User::factory()->create();
+    $user->assignRole($role);
+
+    $response = $this->actingAs($admin)->get(route('admin.users.edit', $user));
+
+    $response->assertOk();
+    $response->assertSee('<option value="'.$role->id.'" selected>', false);
+});
+
 test('admin can create a user with roles', function () {
     $admin = adminUser();
     $role = Role::create(['name' => 'Editor', 'slug' => 'editor']);

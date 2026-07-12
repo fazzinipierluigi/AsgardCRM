@@ -66,7 +66,7 @@ class UserController extends Controller
             'password' => Hash::make($request->string('password')),
         ]);
 
-        $user->syncRoles($request->input('roles', []));
+        $user->syncRoles($this->roleIds($request));
 
         return redirect()->route('admin.users.index')->with('status', 'user-created');
     }
@@ -96,9 +96,23 @@ class UserController extends Controller
 
         $user->save();
 
-        $user->syncRoles($request->input('roles', []));
+        $user->syncRoles($this->roleIds($request));
 
         return redirect()->route('admin.users.index')->with('status', 'user-updated');
+    }
+
+    /**
+     * Role IDs from the request, cast to int — Just A Gate's
+     * Authorizable::resolveRole() only treats a genuine PHP int as an id
+     * (is_int('2') is false), otherwise falling back to a slug lookup
+     * that 404s (ModelNotFoundException) for a real form submission,
+     * where every value arrives as a string over HTTP.
+     *
+     * @return array<int, int>
+     */
+    private function roleIds(Request $request): array
+    {
+        return array_map('intval', $request->input('roles', []));
     }
 
     /**
