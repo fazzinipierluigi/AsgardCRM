@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Models\LoginProvider;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
@@ -51,7 +52,10 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return view('admin.users.create', ['roles' => Role::orderBy('name')->get()]);
+        return view('admin.users.create', [
+            'roles' => Role::orderBy('name')->get(),
+            'loginProviders' => LoginProvider::where('is_active', true)->orderBy('name')->get(),
+        ]);
     }
 
     /**
@@ -64,6 +68,8 @@ class UserController extends Controller
             'username' => $request->string('username'),
             'email' => $request->string('email'),
             'password' => Hash::make($request->string('password')),
+            'login_provider_id' => $request->integer('login_provider_id') ?: null,
+            'provider_identifier' => $request->string('provider_identifier')->value() ?: null,
         ]);
 
         $user->syncRoles($this->roleIds($request));
@@ -80,6 +86,7 @@ class UserController extends Controller
             'user' => $user,
             'roles' => Role::orderBy('name')->get(),
             'userRoleIds' => $user->getRoles()->pluck('id')->all(),
+            'loginProviders' => LoginProvider::where('is_active', true)->orderBy('name')->get(),
         ]);
     }
 
@@ -89,6 +96,8 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $user->fill($request->only('name', 'username', 'email'));
+        $user->login_provider_id = $request->integer('login_provider_id') ?: null;
+        $user->provider_identifier = $request->string('provider_identifier')->value() ?: null;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->string('password'));

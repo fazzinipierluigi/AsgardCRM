@@ -8,10 +8,11 @@ use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password'])]
+#[Fillable(['name', 'username', 'email', 'password', 'login_provider_id', 'provider_identifier'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -29,6 +30,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function loginProvider(): BelongsTo
+    {
+        return $this->belongsTo(LoginProvider::class);
+    }
+
+    /**
+     * The provider this user authenticates through — the local provider
+     * when none is explicitly assigned.
+     */
+    public function effectiveLoginProvider(): LoginProvider
+    {
+        return $this->loginProvider ?? LoginProvider::local();
     }
 
     /**

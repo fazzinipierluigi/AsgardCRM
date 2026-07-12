@@ -19,6 +19,14 @@
                 <span class="nav-link-title">{{ t('Ruoli') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.login-providers.*') ? 'active' : '' }}" href="{{ route('admin.login-providers.index') }}" data-testid="menu-login-providers">
+                <span class="nav-link-icon">
+                    {!! icon('key') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Login provider') }}</span>
+            </a>
+        </li>
 
         @include('layouts._menu_section_title', ['title' => t('Localizzazione')])
         <li class="nav-item">

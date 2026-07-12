@@ -14,6 +14,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->appendToGroup('web', ApplyUserPreferences::class);
+
+        // The SAML Assertion Consumer Service receives its POST straight
+        // from the IdP, which never had a CSRF token from this app.
+        $middleware->validateCsrfTokens(except: [
+            'login/saml/*/acs',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

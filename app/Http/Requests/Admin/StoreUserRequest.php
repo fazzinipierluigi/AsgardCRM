@@ -31,6 +31,8 @@ class StoreUserRequest extends FormRequest
             'password' => ['required', 'confirmed', Password::defaults()],
             'roles' => ['array'],
             'roles.*' => ['integer', 'exists:'.(new Role)->getTable().',id'],
+            'login_provider_id' => ['nullable', 'integer', 'exists:login_providers,id'],
+            'provider_identifier' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\LoginProvider;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -120,6 +121,67 @@ test('admin can delete another user', function () {
     $this->actingAs($admin)->delete(route('admin.users.destroy', $user));
 
     expect(User::find($user->id))->toBeNull();
+});
+
+test('admin can create a user linked to an ldap provider', function () {
+    $admin = adminUser();
+    $ldap = LoginProvider::create(['type' => 'ldap', 'name' => 'Corporate LDAP', 'slug' => 'corporate-ldap']);
+
+    $response = $this->actingAs($admin)->post(route('admin.users.store'), [
+        'name' => 'Jane Doe',
+        'username' => 'janedoe',
+        'email' => 'jane@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'login_provider_id' => $ldap->id,
+        'provider_identifier' => 'uid=janedoe,dc=example,dc=com',
+    ]);
+
+    $response->assertRedirect(route('admin.users.index'));
+    $user = User::where('username', 'janedoe')->firstOrFail();
+    expect($user->login_provider_id)->toBe($ldap->id);
+    expect($user->provider_identifier)->toBe('uid=janedoe,dc=example,dc=com');
+});
+
+test('a user with no login provider selected defaults to local on read', function () {
+    LoginProvider::create(['type' => 'local', 'name' => 'Locale', 'slug' => 'local', 'is_system' => true]);
+    $user = User::factory()->create(['login_provider_id' => null]);
+
+    expect($user->effectiveLoginProvider()->slug)->toBe('local');
+});
+
+test('admin can change a users login provider', function () {
+    $admin = adminUser();
+    $user = User::factory()->create();
+    $ldap = LoginProvider::create(['type' => 'ldap', 'name' => 'Corporate LDAP', 'slug' => 'corporate-ldap']);
+
+    $response = $this->actingAs($admin)->put(route('admin.users.update', $user), [
+        'name' => $user->name,
+        'username' => $user->username,
+        'email' => $user->email,
+        'login_provider_id' => $ldap->id,
+        'provider_identifier' => 'uid=someone,dc=example,dc=com',
+    ]);
+
+    $response->assertRedirect(route('admin.users.index'));
+    $fresh = $user->fresh();
+    expect($fresh->login_provider_id)->toBe($ldap->id);
+    expect($fresh->provider_identifier)->toBe('uid=someone,dc=example,dc=com');
+});
+
+test('login_provider_id must reference an existing provider', function () {
+    $admin = adminUser();
+
+    $response = $this->actingAs($admin)->post(route('admin.users.store'), [
+        'name' => 'Jane Doe',
+        'username' => 'janedoe',
+        'email' => 'jane@example.com',
+        'password' => 'password123',
+        'password_confirmation' => 'password123',
+        'login_provider_id' => 99999,
+    ]);
+
+    $response->assertSessionHasErrors('login_provider_id');
 });
 
 test('users datatable endpoint returns json data', function () {

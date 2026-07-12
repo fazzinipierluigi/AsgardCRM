@@ -4,10 +4,13 @@ use App\Http\Controllers\Admin\EntityBuilderController;
 use App\Http\Controllers\Admin\EntityController;
 use App\Http\Controllers\Admin\EntityVisibilityController;
 use App\Http\Controllers\Admin\LanguageController;
+use App\Http\Controllers\Admin\LoginProviderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\SamlLoginController;
+use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\EntityRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
@@ -21,7 +24,20 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('login/{provider:slug}/redirect', [SocialLoginController::class, 'redirect'])->name('login.social.redirect');
+    Route::get('login/{provider:slug}/callback', [SocialLoginController::class, 'callback'])->name('login.social.callback');
+
+    Route::get('login/saml/{provider:slug}/redirect', [SamlLoginController::class, 'redirect'])->name('login.saml.redirect');
 });
+
+// Reachable by an unauthenticated IdP-initiated POST, so outside the
+// `guest` group (which only guards routes meant to bounce logged-in users
+// away, not ones an external party needs to reach regardless of session
+// state) — and the ACS route is exempted from CSRF in bootstrap/app.php
+// since the POST body comes from the IdP, not a form this app rendered.
+Route::get('login/saml/{provider:slug}/metadata', [SamlLoginController::class, 'metadata'])->name('login.saml.metadata');
+Route::post('login/saml/{provider:slug}/acs', [SamlLoginController::class, 'acs'])->name('login.saml.acs');
 
 Route::middleware('auth')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -54,6 +70,11 @@ Route::middleware('auth')->group(function () {
         Route::get('roles/{role}/permissions', [RoleController::class, 'editPermissions'])->name('roles.permissions.edit');
         Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
         Route::resource('roles', RoleController::class)->except('show');
+
+        Route::get('login-providers/data', [LoginProviderController::class, 'data'])->name('login-providers.data');
+        Route::resource('login-providers', LoginProviderController::class)
+            ->except('show')
+            ->parameters(['login-providers' => 'loginProvider']);
 
         Route::get('translations/data', [TranslationController::class, 'data'])->name('translations.data');
         Route::resource('translations', TranslationController::class)->except('show');

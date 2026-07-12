@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Services\Auth\LdapAuthenticator;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,13 +36,38 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Attempt to authenticate the request's credentials. Routes to the
+     * user's assigned login provider — the local database check for
+     * `local` (or an unrecognized username), an LDAP bind for `ldap`.
+     * OAuth/OIDC/SAML users authenticate via a redirect flow instead
+     * (see SocialLoginController/SamlLoginController) and are rejected here.
      */
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('username', 'password'), $this->boolean('remember'))) {
+        $user = User::where('username', $this->string('username'))->first();
+        $provider = $user?->effectiveLoginProvider();
+
+        if ($provider && in_array($provider->type, ['oauth', 'oidc', 'saml'], true)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'username' => trans('auth.provider_redirect', ['provider' => $provider->name]),
+            ]);
+        }
+
+        if ($provider?->type === 'ldap') {
+            $authenticated = app(LdapAuthenticator::class)->attempt($provider, $user, $this->string('password')->value());
+
+            if ($authenticated) {
+                Auth::login($user, $this->boolean('remember'));
+            }
+        } else {
+            $authenticated = Auth::attempt($this->only('username', 'password'), $this->boolean('remember'));
+        }
+
+        if (! $authenticated) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

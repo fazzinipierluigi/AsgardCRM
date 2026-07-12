@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\LoginProvider;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -21,6 +22,11 @@ class DatabaseSeeder extends Seeder
         $adminRole = Role::firstOrCreate(
             ['slug' => 'admin'],
             ['name' => 'Administrator', 'is_admin' => true, 'is_system' => true]
+        );
+
+        LoginProvider::firstOrCreate(
+            ['slug' => 'local'],
+            ['name' => 'Locale', 'type' => 'local', 'is_active' => true, 'is_system' => true]
         );
 
         $user = User::factory()->create([

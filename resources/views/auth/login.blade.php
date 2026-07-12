@@ -65,6 +65,22 @@
                                 </button>
                             </div>
                         </form>
+
+                        @if ($redirectProviders->isNotEmpty())
+                            <div class="hr-text">{{ t('or') }}</div>
+
+                            <div class="d-grid gap-2">
+                                @foreach ($redirectProviders as $provider)
+                                    <a
+                                        href="{{ $provider->type === 'saml' && Route::has('login.saml.redirect') ? route('login.saml.redirect', $provider) : route('login.social.redirect', $provider) }}"
+                                        class="btn btn-outline-secondary w-100"
+                                        data-testid="login-provider-{{ $provider->slug }}"
+                                    >
+                                        {{ t('Sign in with :provider', ['provider' => $provider->name]) }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

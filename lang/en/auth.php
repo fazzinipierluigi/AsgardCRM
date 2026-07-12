@@ -16,5 +16,8 @@ return [
     'failed' => 'These credentials do not match our records.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'provider_redirect' => 'This account signs in through :provider. Use the button below instead.',
+    'provider_failed' => 'Sign-in with :provider failed. Please try again.',
+    'provider_unlinked' => 'No account is linked to this :provider identity.',
 
 ];
