@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\EntityFieldType;
+use App\Http\Requests\Concerns\BuildsEntityFieldRules;
 use App\Models\Entity;
-use App\Models\EntityField;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreEntityRecordRequest extends FormRequest
 {
+    use BuildsEntityFieldRules;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -44,31 +44,5 @@ class StoreEntityRecordRequest extends FormRequest
         }
 
         return $rules;
-    }
-
-    /**
-     * @return array<int, string|ValidationRule>
-     */
-    private function rulesFor(EntityField $field): array
-    {
-        $required = $field->required ? 'required' : 'nullable';
-
-        return match ($field->type) {
-            EntityFieldType::Checkbox => ['nullable', 'boolean'],
-            EntityFieldType::String, EntityFieldType::ColorPicker => [$required, 'string', 'max:255'],
-            EntityFieldType::Select => [$required, Rule::in(array_keys($field->options ?? []))],
-            EntityFieldType::IntegerNumber => [$required, 'integer'],
-            EntityFieldType::DecimalNumber => [$required, 'numeric'],
-            EntityFieldType::Textarea, EntityFieldType::RichText => [$required, 'string'],
-            EntityFieldType::Relation => [$required, 'integer'],
-            EntityFieldType::Date => [$required, 'date'],
-            EntityFieldType::Time => [$required, 'date_format:H:i'],
-            EntityFieldType::DateTime => [$required, 'date'],
-        };
-    }
-
-    private function columnFor(EntityField $field): string
-    {
-        return $field->type === EntityFieldType::Relation ? "{$field->column_name}_id" : $field->column_name;
     }
 }

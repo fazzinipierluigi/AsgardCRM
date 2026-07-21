@@ -22,7 +22,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Widened beyond the original `api/*`-only check: the app has no
+        // api/* routes, but does have fetch()-driven JSON endpoints on
+        // regular web routes (e.g. CalendarController) that need a JSON
+        // 422/403/404 instead of the default redirect-with-flashed-errors
+        // behavior meant for traditional form posts.
         $exceptions->shouldRenderJsonWhen(
-            fn (Request $request) => $request->is('api/*'),
+            fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
     })->create();

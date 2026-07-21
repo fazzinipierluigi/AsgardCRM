@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Entity;
 use Fazzinipierluigi\JustAGate\Facades\JustAGate;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
 /**
@@ -46,9 +47,17 @@ class EntityInstaller
         $entity->loadMissing('tabs.cards.fields');
         $this->assertStructureIsComplete($entity);
 
-        DB::transaction(function () use ($entity) {
+        // CREATE TABLE implicitly commits on MySQL/MariaDB, ending any
+        // surrounding transaction early — DB::transaction()'s own closing
+        // commit() then fails with "There is no active transaction". So the
+        // DDL runs on its own (Schema::hasTable guards it being skipped on
+        // a retry after a previous partial failure), and only the plain
+        // inserts/updates are wrapped in a real transaction.
+        if (! Schema::hasTable($entity->table_name)) {
             $this->schemaBuilder->create($entity);
+        }
 
+        DB::transaction(function () use ($entity) {
             foreach ($this->permissionDefinitions($entity) as $key => $name) {
                 JustAGate::createPermission($key, $name);
             }
@@ -70,9 +79,12 @@ class EntityInstaller
             throw new RuntimeException('Le entità di sistema non possono essere disinstallate.');
         }
 
+        // DROP TABLE is DDL too (see install()) — do it last, after the
+        // transactional bookkeeping below has committed, so a failure here
+        // still leaves the entity correctly marked uninstalled and its
+        // permissions gone (a stray physical table is harmless: install()
+        // skips CREATE TABLE when one already exists).
         DB::transaction(function () use ($entity) {
-            $this->schemaBuilder->dropTable($entity);
-
             foreach (array_keys($this->permissionDefinitions($entity)) as $key) {
                 $permission = JustAGate::findPermission($key);
 
@@ -83,6 +95,8 @@ class EntityInstaller
 
             $entity->update(['is_installed' => false]);
         });
+
+        $this->schemaBuilder->dropTable($entity);
     }
 
     private function assertStructureIsComplete(Entity $entity): void

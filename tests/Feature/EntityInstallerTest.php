@@ -79,6 +79,26 @@ test('a relation field gets a foreign key to the target entity table when both a
     expect(Schema::hasColumn('entity_ordini', 'contatto_id'))->toBeTrue();
 });
 
+test('a calendar entity gets polymorphic relatable columns on install', function () {
+    $entity = Entity::create(['name' => 'Calendario', 'slug' => 'calendario', 'table_name' => 'entity_calendario', 'is_calendar' => true]);
+    $tab = EntityTab::create(['entity_id' => $entity->id, 'name' => 'Generale', 'position' => 0]);
+    $card = EntityCard::create(['entity_tab_id' => $tab->id, 'name' => 'Dettagli', 'position' => 0]);
+    $card->fields()->create(['name' => 'Titolo', 'column_name' => 'title', 'type' => EntityFieldType::String, 'position' => 0]);
+
+    app(EntityInstaller::class)->install($entity);
+
+    expect(Schema::hasColumns('entity_calendario', ['relatable_type', 'relatable_id']))->toBeTrue();
+});
+
+test('a non-calendar entity does not get relatable columns', function () {
+    $entity = installableEntity();
+
+    app(EntityInstaller::class)->install($entity);
+
+    expect(Schema::hasColumn('entity_contatti', 'relatable_type'))->toBeFalse();
+    expect(Schema::hasColumn('entity_contatti', 'relatable_id'))->toBeFalse();
+});
+
 test('uninstalling an entity drops its table and removes its permissions', function () {
     $entity = installableEntity();
     app(EntityInstaller::class)->install($entity);

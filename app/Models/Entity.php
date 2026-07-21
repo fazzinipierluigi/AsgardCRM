@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'slug', 'table_name', 'icon', 'is_system', 'is_installed'])]
+#[Fillable(['name', 'slug', 'table_name', 'icon', 'is_system', 'is_calendar', 'is_installed'])]
 class Entity extends Model
 {
     protected function casts(): array
     {
         return [
             'is_system' => 'boolean',
+            'is_calendar' => 'boolean',
             'is_installed' => 'boolean',
         ];
     }

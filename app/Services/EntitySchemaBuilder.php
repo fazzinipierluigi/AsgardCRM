@@ -20,11 +20,15 @@ class EntitySchemaBuilder
      * Reserved column names every dynamic entity table already uses for
      * its own bookkeeping.
      */
-    public const RESERVED_COLUMN_NAMES = ['id', 'user_id', 'created_at', 'updated_at', 'deleted_at'];
+    public const RESERVED_COLUMN_NAMES = ['id', 'user_id', 'created_at', 'updated_at', 'deleted_at', 'relatable_type', 'relatable_id'];
 
     /**
      * Create the entity's table with its base ownership columns plus
-     * one column per currently-defined field.
+     * one column per currently-defined field. Calendar entities also get
+     * a polymorphic relatable_type/relatable_id pair (the "relationship
+     * with an entity" hardcoded on every calendar event, resolved via
+     * EntityRelationTargetType the same way a Relation field's target is
+     * — but not exposed as an editable EntityField, since it isn't one).
      */
     public function create(Entity $entity): void
     {
@@ -34,6 +38,12 @@ class EntitySchemaBuilder
 
             foreach ($entity->allFields() as $field) {
                 $this->addColumnToBlueprint($table, $field);
+            }
+
+            if ($entity->is_calendar) {
+                $table->string('relatable_type')->nullable();
+                $table->unsignedBigInteger('relatable_id')->nullable();
+                $table->index(['relatable_type', 'relatable_id']);
             }
 
             $table->timestamps();

@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Enums\EntityFieldType;
-use App\Enums\EntityRelationTargetType;
 use App\Http\Requests\StoreEntityRecordRequest;
 use App\Http\Requests\UpdateEntityRecordRequest;
 use App\Models\Entity;
 use App\Models\EntityField;
 use App\Models\EntityRecord;
-use App\Models\User;
 use App\Services\EntityCodeGenerator;
 use App\Services\EntityRecordAuthorizer;
+use App\Services\EntityRelationResolver;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -39,6 +38,7 @@ class EntityRecordController extends Controller
     public function __construct(
         private readonly EntityRecordAuthorizer $authorizer,
         private readonly EntityCodeGenerator $codeGenerator,
+        private readonly EntityRelationResolver $relationResolver,
     ) {}
 
     /**
@@ -70,7 +70,7 @@ class EntityRecordController extends Controller
         $this->authorizer->scopeQuery($records, $request->user(), $entity);
 
         $relationLabels = $fields->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
-            ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationLabels($f)]);
+            ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationResolver->labelsForField($f)]);
 
         $source = new EloquentSource;
         $source->apply($records, $request, null, []);
@@ -278,7 +278,7 @@ class EntityRecordController extends Controller
     {
         return $entity->allFields()
             ->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
-            ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationLabels($f)])
+            ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationResolver->labelsForField($f)])
             ->all();
     }
 
@@ -296,42 +296,13 @@ class EntityRecordController extends Controller
         return $entity->allFields()
             ->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
             ->mapWithKeys(function (EntityField $f) {
-                $options = collect($this->relationLabels($f))
+                $options = collect($this->relationResolver->labelsForField($f))
                     ->map(fn (string $name, int|string $value) => ['value' => $value, 'name' => $name])
                     ->values()
                     ->all();
 
                 return [$this->columnFor($f) => $options];
             })
-            ->all();
-    }
-
-    /**
-     * @return array<int|string, string>
-     */
-    private function relationLabels(EntityField $field): array
-    {
-        if ($field->relation_target_type === EntityRelationTargetType::Model) {
-            $class = $field->relation_target;
-
-            if ($class === User::class) {
-                return User::query()->orderBy('name')->pluck('name', 'id')->all();
-            }
-
-            return [];
-        }
-
-        $target = Entity::where('slug', $field->relation_target)->where('is_installed', true)->first();
-
-        if ($target === null) {
-            return [];
-        }
-
-        $labelField = $target->allFields()->first(fn (EntityField $f) => $f->type === EntityFieldType::String);
-        $columns = $labelField !== null ? ['id', $labelField->column_name] : ['id'];
-
-        return EntityRecord::forEntity($target)->newQuery()->get($columns)
-            ->mapWithKeys(fn (EntityRecord $r) => [$r->id => ($labelField !== null ? $r->{$labelField->column_name} : null) ?: "#{$r->id}"])
             ->all();
     }
 }

@@ -6,12 +6,15 @@ use App\Enums\EntityFieldType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateEntityBuilderRequest;
 use App\Models\Entity;
+use App\Services\EntityRelationResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class EntityBuilderController extends Controller
 {
+    public function __construct(private readonly EntityRelationResolver $relationResolver) {}
+
     /**
      * Show the tab/card/field builder for an entity.
      */
@@ -22,32 +25,8 @@ class EntityBuilderController extends Controller
         return view('admin.entities.builder', [
             'entity' => $entity,
             'fieldTypes' => EntityFieldType::options(),
-            'relationTargets' => $this->relationTargetOptions($entity),
+            'relationTargets' => $this->relationResolver->targetOptions($entity),
         ]);
-    }
-
-    /**
-     * Build the grouped option list for a Relazione field's target
-     * picker: every other entity, plus the configured system models.
-     *
-     * @return array<string, array<string, string>>
-     */
-    private function relationTargetOptions(Entity $entity): array
-    {
-        $entityTargets = Entity::where('id', '!=', $entity->id)
-            ->orderBy('name')
-            ->get()
-            ->mapWithKeys(fn (Entity $target) => ["entity:{$target->slug}" => $target->name])
-            ->all();
-
-        $modelTargets = collect(config('entities.relatable_models', []))
-            ->mapWithKeys(fn (string $label, string $class) => ["model:{$class}" => $label])
-            ->all();
-
-        return [
-            'Entità' => $entityTargets,
-            'Modelli' => $modelTargets,
-        ];
     }
 
     /**

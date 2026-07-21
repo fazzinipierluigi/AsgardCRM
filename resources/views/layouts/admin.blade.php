@@ -55,6 +55,16 @@
                 <span class="nav-link-title">{{ t('Entità') }}</span>
             </a>
         </li>
+
+        @include('layouts._menu_section_title', ['title' => t('Integrazioni')])
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.connectors.*') ? 'active' : '' }}" href="{{ route('admin.connectors.index') }}" data-testid="menu-connectors">
+                <span class="nav-link-icon">
+                    {!! icon('plug-connected') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Connettori') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">

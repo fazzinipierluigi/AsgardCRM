@@ -11,7 +11,19 @@
             </a>
         </li>
 
-        @foreach (\App\Models\Entity::where('is_installed', true)->orderBy('name')->get() as $installedEntity)
+        @can('entity_calendario.index')
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('calendar.*') ? 'active' : '' }}" href="{{ route('calendar.index') }}" data-testid="menu-calendar">
+                    <span class="nav-link-icon">{!! icon('calendar') !!}</span>
+                    <span class="nav-link-title">{{ t('Calendario') }}</span>
+                </a>
+            </li>
+        @endcan
+
+        {{-- The Calendar entity gets its own dedicated FullCalendar UI above
+             (see CalendarController) instead of the generic per-entity grid
+             every other installed entity gets here. --}}
+        @foreach (\App\Models\Entity::where('is_installed', true)->where('is_calendar', false)->orderBy('name')->get() as $installedEntity)
             @can("entity_{$installedEntity->slug}.index")
                 <li class="nav-item">
                     <a

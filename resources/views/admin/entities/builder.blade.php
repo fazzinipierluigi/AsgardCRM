@@ -72,8 +72,9 @@
     @endif
 
     @if ($entity->is_installed)
-        <div class="alert alert-info" data-testid="entity-builder-installed-notice">
-            {{ t('Questa entità è installata: la struttura non è più modificabile da qui.') }}
+        <div class="alert alert-info d-flex align-items-center justify-content-between" data-testid="entity-builder-installed-notice">
+            <span>{{ t('Questa entità è installata: la struttura non è più modificabile da qui.') }}</span>
+            <a href="{{ route('admin.entities.fields.create', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-add-field-link">{{ t('Aggiungi campo') }}</a>
         </div>
     @endif
 

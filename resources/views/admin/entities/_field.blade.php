@@ -22,7 +22,12 @@
         <span class="remove-row-btn position-absolute text-danger" style="top: 2px; right: 16px; cursor: pointer; font-size: .75rem;" title="{{ t('Rimuovi campo') }}" data-testid="field-remove-btn">✕</span>
 
         <div class="lh-1">
-            <div class="fw-bold small field-preview-name" data-testid="field-preview-name">{{ $field?->name ?: t('Nuovo campo') }}</div>
+            <div class="fw-bold small field-preview-name" data-testid="field-preview-name">
+                {{ $field?->name ?: t('Nuovo campo') }}
+                @if ($field?->is_locked)
+                    <span title="{{ t('Campo bloccato') }}" data-testid="field-locked-badge">🔒</span>
+                @endif
+            </div>
             <div class="text-muted field-preview-type" style="font-size: .7rem;">{{ $fieldTypes[$type] ?? '' }}</div>
         </div>
 
