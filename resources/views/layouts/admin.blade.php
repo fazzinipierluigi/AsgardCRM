@@ -65,6 +65,14 @@
                 <span class="nav-link-title">{{ t('Connettori') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.importers.*') ? 'active' : '' }}" href="{{ route('admin.importers.index') }}" data-testid="menu-importers">
+                <span class="nav-link-icon">
+                    {!! icon('database-import') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Importatori') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">

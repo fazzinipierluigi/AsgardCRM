@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EntityBuilderController;
 use App\Http\Controllers\Admin\EntityController;
 use App\Http\Controllers\Admin\EntityFieldController;
 use App\Http\Controllers\Admin\EntityVisibilityController;
+use App\Http\Controllers\Admin\ImporterController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
 use App\Http\Controllers\Admin\RoleController;
@@ -117,6 +118,16 @@ Route::middleware('auth')->group(function () {
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
         Route::put('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'update'])->name('connectors.mailboxes.update');
         Route::resource('connectors', ConnectorController::class)->except('show');
+
+        Route::get('importers/data', [ImporterController::class, 'data'])->name('importers.data');
+        Route::post('importers/preview', [ImporterController::class, 'preview'])->name('importers.preview');
+        Route::get('importers/{importer}/runs/data', [ImporterController::class, 'runsData'])->name('importers.runs.data');
+        Route::post('importers/{importer}/run', [ImporterController::class, 'run'])->name('importers.run');
+        // ->except('show') registered before the catch-all {importer} show
+        // route below, so the resource's literal 'importers/create' segment
+        // isn't swallowed by the {importer} wildcard first.
+        Route::resource('importers', ImporterController::class)->except('show');
+        Route::get('importers/{importer}', [ImporterController::class, 'show'])->name('importers.show');
     });
 
     // Installed entities' own records — not admin-only. Permission and

@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\RunDueImporters;
 use App\Console\Commands\SyncCalendarConnectors;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -14,3 +15,7 @@ Artisan::command('inspire', function () {
 // SyncCalendarConnectors::isDue()) — the per-connector interval is
 // enforced in the command itself, not by this schedule's own cadence.
 Schedule::command(SyncCalendarConnectors::class)->everyMinute()->withoutOverlapping();
+
+// Same pattern as above: the per-importer cron_expression due-ness is
+// evaluated inside RunDueImporters::isDue(), not by this schedule.
+Schedule::command(RunDueImporters::class)->everyMinute()->withoutOverlapping();
