@@ -73,6 +73,16 @@
                 <span class="nav-link-title">{{ t('Importatori') }}</span>
             </a>
         </li>
+
+        @include('layouts._menu_section_title', ['title' => t('Automazione')])
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.workflows.*') ? 'active' : '' }}" href="{{ route('admin.workflows.index') }}" data-testid="menu-workflows">
+                <span class="nav-link-icon">
+                    {!! icon('sitemap') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Workflows') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">

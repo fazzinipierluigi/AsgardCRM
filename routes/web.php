@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\LoginProviderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\WorkflowBuilderController;
+use App\Http\Controllers\Admin\WorkflowController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SamlLoginController;
 use App\Http\Controllers\Auth\SocialLoginController;
@@ -21,6 +23,7 @@ use App\Http\Controllers\EntityRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -128,6 +131,20 @@ Route::middleware('auth')->group(function () {
         // isn't swallowed by the {importer} wildcard first.
         Route::resource('importers', ImporterController::class)->except('show');
         Route::get('importers/{importer}', [ImporterController::class, 'show'])->name('importers.show');
+
+        Route::get('workflows/data', [WorkflowController::class, 'data'])->name('workflows.data');
+        Route::get('workflows/import', [WorkflowController::class, 'importForm'])->name('workflows.import.form');
+        Route::post('workflows/import', [WorkflowController::class, 'import'])->name('workflows.import');
+        Route::get('workflows/{workflow}/export', [WorkflowController::class, 'export'])->name('workflows.export');
+        Route::post('workflows/{workflow}/run', [WorkflowController::class, 'run'])->name('workflows.run');
+        Route::get('workflows/{workflow}/instances/data', [WorkflowController::class, 'instancesData'])->name('workflows.instances.data');
+        Route::get('workflows/{workflow}/builder', [WorkflowBuilderController::class, 'edit'])->name('workflows.builder.edit');
+        Route::put('workflows/{workflow}/builder', [WorkflowBuilderController::class, 'update'])->name('workflows.builder.update');
+        // ->except('show') registered before the catch-all {workflow} show
+        // route below, so the resource's literal 'workflows/create' segment
+        // isn't swallowed by the {workflow} wildcard first.
+        Route::resource('workflows', WorkflowController::class)->except('show');
+        Route::get('workflows/{workflow}', [WorkflowController::class, 'show'])->name('workflows.show');
     });
 
     // Installed entities' own records — not admin-only. Permission and
@@ -141,4 +158,12 @@ Route::middleware('auth')->group(function () {
     Route::get('entities/{entity:slug}/{record}/edit', [EntityRecordController::class, 'edit'])->name('entities.edit');
     Route::put('entities/{entity:slug}/{record}', [EntityRecordController::class, 'update'])->name('entities.update');
     Route::delete('entities/{entity:slug}/{record}', [EntityRecordController::class, 'destroy'])->name('entities.destroy');
+
+    // A workflow user task can be assigned to anyone, not just admins —
+    // access is checked by hand in WorkflowUserTaskController (the task
+    // must be assigned to the current user, or to a role they hold).
+    Route::get('workflow-tasks', [WorkflowUserTaskController::class, 'index'])->name('workflow-tasks.index');
+    Route::get('workflow-tasks/data', [WorkflowUserTaskController::class, 'data'])->name('workflow-tasks.data');
+    Route::get('workflow-tasks/{workflowUserTask}', [WorkflowUserTaskController::class, 'edit'])->name('workflow-tasks.edit');
+    Route::put('workflow-tasks/{workflowUserTask}', [WorkflowUserTaskController::class, 'update'])->name('workflow-tasks.update');
 });

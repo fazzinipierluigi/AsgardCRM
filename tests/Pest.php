@@ -3,6 +3,8 @@
 use App\Models\Language;
 use App\Models\Translation;
 use App\Models\User;
+use App\Models\Workflow;
+use App\Models\WorkflowVersion;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -87,4 +89,21 @@ function seedLanguages(): void
 {
     Language::firstOrCreate(['code' => 'it'], ['name' => 'Italiano']);
     Language::firstOrCreate(['code' => 'en'], ['name' => 'English']);
+}
+
+/**
+ * Creates a Workflow with an empty, published WorkflowVersion #1 as
+ * its current_version_id — the state every real workflow is in after
+ * its first builder save. Tests build the version's nodes/edges via
+ * `WorkflowNode::factory()->for($workflow->currentVersion)`.
+ *
+ * @param  array<string, mixed>  $attributes
+ */
+function wfWorkflowWithVersion(array $attributes = []): Workflow
+{
+    $workflow = Workflow::factory()->create($attributes);
+    $version = WorkflowVersion::factory()->for($workflow)->create(['version' => 1]);
+    $workflow->update(['current_version_id' => $version->id]);
+
+    return $workflow->fresh();
 }

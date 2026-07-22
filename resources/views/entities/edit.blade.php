@@ -16,6 +16,21 @@
 @endsection
 
 @section('content')
+    @if (($workflowTasks ?? collect())->isNotEmpty())
+        <div class="card mb-3" data-testid="entity-workflow-tasks">
+            <div class="card-header">
+                <h3 class="card-title">{{ t('Task da completare') }}</h3>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach ($workflowTasks as $task)
+                    <a href="{{ route('workflow-tasks.edit', $task) }}" class="list-group-item list-group-item-action">
+                        {{ $task->node->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     <form action="{{ route('entities.update', [$entity, $record]) }}" method="POST" id="entity-record-form">
         @csrf
         @method('PUT')

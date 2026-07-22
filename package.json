@@ -19,9 +19,11 @@
         "@fullcalendar/interaction": "^6.1.21",
         "@fullcalendar/list": "^6.1.21",
         "@fullcalendar/timegrid": "^6.1.21",
+        "@maxgraph/core": "^0.24.0",
         "@tabler/core": "^1.4.0",
         "@tabler/icons": "^3.44.0",
         "bootstrap": "^5.3.7",
+        "jsonlogic-editor-core": "^1.0.0",
         "raccoon-tables": "^1.1.2",
         "sortablejs": "^1.15.7"
     }

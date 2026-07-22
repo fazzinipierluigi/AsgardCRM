@@ -14,10 +14,12 @@
         "fazzinipierluigi/just-a-gate": "^1.0",
         "fazzinipierluigi/laraccoon-layouts": "^1.0",
         "fazzinipierluigi/laraccoon_datasource": "^1.0",
+        "jwadhams/json-logic-php": "^1.5",
         "laravel/framework": "^13.8",
         "laravel/socialite": "^5.28",
         "laravel/tinker": "^3.0",
-        "onelogin/php-saml": "^4.3"
+        "onelogin/php-saml": "^4.3",
+        "symfony/expression-language": "^7.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

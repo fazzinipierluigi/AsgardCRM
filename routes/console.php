@@ -1,6 +1,8 @@
 <?php
 
+use App\Console\Commands\FireDueWorkflowTimers;
 use App\Console\Commands\RunDueImporters;
+use App\Console\Commands\RunDueWorkflows;
 use App\Console\Commands\SyncCalendarConnectors;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -19,3 +21,11 @@ Schedule::command(SyncCalendarConnectors::class)->everyMinute()->withoutOverlapp
 // Same pattern as above: the per-importer cron_expression due-ness is
 // evaluated inside RunDueImporters::isDue(), not by this schedule.
 Schedule::command(RunDueImporters::class)->everyMinute()->withoutOverlapping();
+
+// Same pattern again, this time for workflows whose start node is
+// configured with the "Avvio via timer/cron" trigger.
+Schedule::command(RunDueWorkflows::class)->everyMinute()->withoutOverlapping();
+
+// Resumes any token parked on a Timer node once its computed run_at
+// has passed.
+Schedule::command(FireDueWorkflowTimers::class)->everyMinute()->withoutOverlapping();

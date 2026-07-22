@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\EntityFieldType;
+use App\Enums\WorkflowUserTaskStatus;
 use App\Http\Requests\StoreEntityRecordRequest;
 use App\Http\Requests\UpdateEntityRecordRequest;
 use App\Models\Entity;
 use App\Models\EntityField;
 use App\Models\EntityRecord;
+use App\Models\WorkflowUserTask;
 use App\Services\EntityCodeGenerator;
 use App\Services\EntityRecordAuthorizer;
 use App\Services\EntityRelationResolver;
@@ -134,7 +136,25 @@ class EntityRecordController extends Controller
             'entity' => $entity->load('tabs.cards.fields'),
             'record' => $recordModel,
             'relationOptions' => $this->relationOptionsForEntity($entity),
+            'workflowTasks' => $this->pendingWorkflowTasks($entity, $recordModel),
         ]);
+    }
+
+    /**
+     * Pending "Task utente" workflow steps bound to this exact record,
+     * limited to ones whose node was configured to surface here (see
+     * WorkflowNode.config.show_in_entity_detail).
+     *
+     * @return Collection<int, WorkflowUserTask>
+     */
+    private function pendingWorkflowTasks(Entity $entity, EntityRecord $record): Collection
+    {
+        return WorkflowUserTask::query()
+            ->where('status', WorkflowUserTaskStatus::Pending->value)
+            ->whereHas('instance', fn ($query) => $query->where('entity_slug', $entity->slug)->where('entity_id', $record->getKey()))
+            ->whereHas('node', fn ($query) => $query->where('config->show_in_entity_detail', true))
+            ->with('node')
+            ->get();
     }
 
     /**
