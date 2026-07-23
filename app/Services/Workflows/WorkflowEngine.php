@@ -17,6 +17,8 @@ use App\Models\WorkflowNode;
 use App\Models\WorkflowTimer;
 use App\Models\WorkflowToken;
 use App\Models\WorkflowUserTask;
+use App\Services\Workflows\TaskExecutors\QueuedTaskExecutor;
+use App\Services\Workflows\TaskExecutors\SyncTaskExecutor;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
@@ -28,8 +30,9 @@ use Throwable;
  * engine keeps advancing every token synchronously until each either
  * finishes at a Nodo di fine or parks on a node that needs an external
  * event to continue (Task utente, Timer, Semaforo, Subworkflow in
- * attesa). Those parked tokens are resumed later by completeUserTask(),
- * fireTimer(), or a child instance completing.
+ * attesa, or a Task processo/script running through a queue). Those
+ * parked tokens are resumed later by completeUserTask(), fireTimer(),
+ * ExecuteServiceTaskJob, or a child instance completing.
  *
  * Every instance is pinned to the Workflow's *current* WorkflowVersion
  * at the moment it starts (see WorkflowGraphPersister) — editing the
@@ -42,6 +45,9 @@ class WorkflowEngine
         private readonly WorkflowActionExecutor $actions,
         private readonly WorkflowExpressionEvaluator $evaluator,
         private readonly WorkflowConditionEvaluator $conditions,
+        private readonly WorkflowTokenTransitioner $transitioner,
+        private readonly SyncTaskExecutor $syncTaskExecutor,
+        private readonly QueuedTaskExecutor $queuedTaskExecutor,
     ) {}
 
     /**
@@ -192,7 +198,7 @@ class WorkflowEngine
 
         match ($node->type) {
             WorkflowNodeType::Start => $this->handleThroughNode($instance, $token, $node),
-            WorkflowNodeType::ServiceTask => $this->handleThroughNode($instance, $token, $node),
+            WorkflowNodeType::ServiceTask => $this->handleServiceTask($instance, $token, $node),
             WorkflowNodeType::UserTask => $this->handleUserTask($instance, $token, $node),
             WorkflowNodeType::ExclusiveGateway => $this->handleExclusiveGateway($instance, $token, $node),
             WorkflowNodeType::ParallelGateway => $this->handleParallelGateway($instance, $token, $node),
@@ -219,6 +225,21 @@ class WorkflowEngine
         }
 
         $this->traverse($instance, $token, $edge);
+    }
+
+    /**
+     * Unlike every other node type, a Task processo/script's activity may
+     * be configured (`config.execution_mode === 'async'`) to run through
+     * a queue instead of in-process — the engine itself never executes
+     * it either way, it only picks which TaskExecutor does.
+     */
+    private function handleServiceTask(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
+    {
+        $executor = ($node->config['execution_mode'] ?? 'sync') === 'async'
+            ? $this->queuedTaskExecutor
+            : $this->syncTaskExecutor;
+
+        $executor->execute($node, $instance, $token);
     }
 
     private function handleUserTask(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
@@ -451,20 +472,12 @@ class WorkflowEngine
      */
     private function traverse(WorkflowInstance $instance, WorkflowToken $token, WorkflowEdge $edge): void
     {
-        $this->runActions($instance, $edge, WorkflowActionPhase::Before);
-        $this->runActions($instance, $edge, WorkflowActionPhase::After);
-
-        $token->workflow_node_id = $edge->target_node_id;
-        $token->via_edge_id = $edge->id;
-        $token->status = WorkflowTokenStatus::Active;
-        $token->save();
+        $this->transitioner->traverse($instance, $token, $edge);
     }
 
     private function runActions(WorkflowInstance $instance, Model $actionable, WorkflowActionPhase $phase): void
     {
-        foreach ($actionable->actionsFor($phase)->get() as $action) {
-            $this->actions->execute($action, $instance);
-        }
+        $this->transitioner->runActions($instance, $actionable, $phase);
     }
 
     /**

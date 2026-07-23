@@ -3,24 +3,29 @@
 use App\Enums\EntityFieldType;
 use App\Enums\WorkflowActionPhase;
 use App\Enums\WorkflowActionType;
+use App\Enums\WorkflowActivityExecutionStatus;
 use App\Enums\WorkflowInstanceStatus;
 use App\Enums\WorkflowNodeType;
 use App\Enums\WorkflowTimerStatus;
 use App\Enums\WorkflowTokenStatus;
 use App\Enums\WorkflowUserTaskStatus;
+use App\Jobs\Workflows\ExecuteServiceTaskJob;
 use App\Models\Entity;
 use App\Models\EntityCard;
 use App\Models\EntityRecord;
 use App\Models\EntityTab;
 use App\Models\User;
 use App\Models\Workflow;
+use App\Models\WorkflowActivityExecution;
 use App\Models\WorkflowEdge;
 use App\Models\WorkflowInstance;
 use App\Models\WorkflowNode;
 use App\Services\EntityInstaller;
+use App\Services\Workflows\TaskExecutors\SyncTaskExecutor;
 use App\Services\Workflows\WorkflowEngine;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 
 uses(RefreshDatabase::class);
 
@@ -303,6 +308,109 @@ test('a timer blocks the instance until fired', function () {
     $instance->refresh();
     expect($instance->status)->toBe(WorkflowInstanceStatus::Completed)
         ->and($timerRow->fresh()->status)->toBe(WorkflowTimerStatus::Fired);
+});
+
+test('a service task defaults to running synchronously in-process', function () {
+    Queue::fake();
+
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create(['type' => WorkflowNodeType::ServiceTask]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    expect($instance->status)->toBe(WorkflowInstanceStatus::Completed);
+    Queue::assertNothingPushed();
+});
+
+test('a service task with execution_mode async parks its token and dispatches a queued job', function () {
+    Queue::fake();
+
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::ServiceTask,
+        'config' => ['execution_mode' => 'async'],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    expect($instance->status)->toBe(WorkflowInstanceStatus::Running)
+        ->and($instance->tokens()->first()->status)->toBe(WorkflowTokenStatus::WaitingActivity);
+
+    Queue::assertPushed(ExecuteServiceTaskJob::class, fn (ExecuteServiceTaskJob $job) => $job->node->is($task) && $job->instance->is($instance));
+});
+
+test('running the queued job for a service task applies its actions and resumes the instance', function () {
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::ServiceTask,
+        'config' => ['execution_mode' => 'async'],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $task->actions()->create([
+        'workflow_version_id' => $version->id,
+        'phase' => WorkflowActionPhase::After,
+        'type' => WorkflowActionType::SetVariable,
+        'config' => ['variable' => 'saluto', 'expression' => "'ciao ' ~ 'mondo'"],
+    ]);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $token = $instance->tokens()->first();
+
+    $job = new ExecuteServiceTaskJob($task, $instance, $token);
+    $job->handle(app(SyncTaskExecutor::class), app(WorkflowEngine::class));
+
+    $instance->refresh();
+    expect($instance->status)->toBe(WorkflowInstanceStatus::Completed)
+        ->and($instance->getVariable('saluto'))->toBe('ciao mondo')
+        ->and($token->fresh()->status)->toBe(WorkflowTokenStatus::Completed)
+        ->and(WorkflowActivityExecution::where('workflow_token_id', $token->id)->first()->status)->toBe(WorkflowActivityExecutionStatus::Completed);
+});
+
+test('a redelivered job for an already-completed service task activity is a no-op', function () {
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::ServiceTask,
+        'config' => ['execution_mode' => 'async'],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $version->variables()->create(['name' => 'contatore', 'type' => 'integer', 'default_value' => 0]);
+    $task->actions()->create([
+        'workflow_version_id' => $version->id,
+        'phase' => WorkflowActionPhase::After,
+        'type' => WorkflowActionType::SetVariable,
+        'config' => ['variable' => 'contatore', 'expression' => 'contatore + 1'],
+    ]);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $token = $instance->tokens()->first();
+
+    $job = new ExecuteServiceTaskJob($task, $instance, $token);
+    $job->handle(app(SyncTaskExecutor::class), app(WorkflowEngine::class));
+    $job->handle(app(SyncTaskExecutor::class), app(WorkflowEngine::class));
+
+    $instance->refresh();
+    expect($instance->getVariable('contatore'))->toBe(1)
+        ->and(WorkflowActivityExecution::where('workflow_token_id', $token->id)->count())->toBe(1);
 });
 
 test('a waiting subworkflow resumes the parent once the child instance completes', function () {
