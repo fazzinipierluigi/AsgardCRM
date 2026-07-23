@@ -125,43 +125,53 @@
 
     {{-- Templates used by workflow-builder.js to render the floating editor window and action rows without inline string-building --}}
     <template id="tpl-node-inspector">
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label">{{ t('Nome') }}</label>
-                    <input type="text" class="form-control" data-field="name">
-                </div>
-                <div data-node-config></div>
+        <div>
+            <div class="mb-3">
+                <label class="form-label">{{ t('Nome') }}</label>
+                <input type="text" class="form-control" data-field="name">
             </div>
-            <div class="col-lg-6">
-                <div data-actions-before></div>
-                <hr>
-                <div data-actions-after></div>
+            <div data-node-config></div>
+            <hr>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div data-actions-before></div>
+                </div>
+                <div class="col-lg-6">
+                    <div data-actions-after></div>
+                </div>
             </div>
         </div>
     </template>
 
     <template id="tpl-edge-inspector">
-        <div class="row g-4">
-            <div class="col-lg-6">
-                <div class="mb-3">
-                    <label class="form-label">{{ t('Etichetta') }}</label>
-                    <input type="text" class="form-control" data-field="label">
+        <div>
+            <div class="row g-4 mb-1">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label">{{ t('Etichetta') }}</label>
+                        <input type="text" class="form-control" data-field="label">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">{{ t('Condizione (gate esclusivo)') }}</label>
-                    <div data-condition-editor></div>
-                    <small class="form-hint">{{ t('Valutata in sequenza dal Gate esclusivo di partenza; vuota = ramo di default.') }}</small>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">{{ t('Ordine') }}</label>
-                    <input type="number" class="form-control" data-field="sequence" value="0">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label class="form-label">{{ t('Ordine') }}</label>
+                        <input type="number" class="form-control" data-field="sequence" value="0">
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div data-actions-before></div>
-                <hr>
-                <div data-actions-after></div>
+            <div class="mb-3">
+                <label class="form-label">{{ t('Condizione (gate esclusivo)') }}</label>
+                <div data-condition-editor></div>
+                <small class="form-hint">{{ t('Valutata in sequenza dal Gate esclusivo di partenza; vuota = ramo di default.') }}</small>
+            </div>
+            <hr>
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div data-actions-before></div>
+                </div>
+                <div class="col-lg-6">
+                    <div data-actions-after></div>
+                </div>
             </div>
         </div>
     </template>
@@ -214,6 +224,14 @@
                         <tbody id="workflow-variables-body"></tbody>
                     </table>
                     <button type="button" class="btn btn-outline-primary btn-sm" id="workflow-variable-add">+ {{ t('Variabile') }}</button>
+
+                    <div id="workflow-entity-variable-info" class="mt-3" style="display: none;">
+                        <h6>{{ t('Variabile di sistema') }}</h6>
+                        <small class="form-hint d-block mb-2">{{ t("I campi di tipo relazione riportano l'id grezzo, non il record collegato.") }}</small>
+                        <table class="table table-sm">
+                            <tbody id="workflow-entity-variable-body"></tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ t('Chiudi') }}</button>
@@ -252,6 +270,7 @@
                 timerUnits: @json($timerUnits),
                 entities: @json($entities),
                 roles: @json($roles),
+                users: @json($users),
                 otherWorkflows: @json($otherWorkflows),
             },
             labels: {
@@ -265,6 +284,9 @@
                 edgeWindowTitle: @json(t('Arco')),
                 deleteNode: @json(t('Elimina nodo')),
                 deleteEdge: @json(t('Elimina arco')),
+                confirm: @json(t('Sì')),
+                cancel: @json(t('Annulla')),
+                create: @json(t('Crea')),
             },
             i18n: {
                 onlyOneStart: @json(t('Il workflow può avere un solo nodo di avvio.')),
@@ -283,6 +305,13 @@
                 unit: @json(t('Unità')),
                 none: @json(t('— nessuno —')),
                 assignedRole: @json(t('Ruolo assegnato')),
+                assignmentMode: @json(t('Modalità assegnazione')),
+                assignmentModeRole: @json(t('Ruolo')),
+                assignmentModeUser: @json(t('Utente')),
+                assignmentModeExpression: @json(t('Da espressione')),
+                assignedUser: @json(t('Utente assegnato')),
+                assigneeExpression: @json(t('Espressione assegnatario')),
+                insertVariable: @json(t('Inserisci variabile')),
                 showInEntityDetail: @json(t('Mostra nel dettaglio entità')),
                 formFields: @json(t('Campi form')),
                 field: @json(t('Campo')),
@@ -312,6 +341,7 @@
                 doubleClickToEdit: @json(t('Doppio click per modificare')),
                 newField: @json(t('Nuovo campo')),
                 noVariable: @json(t('— nessuna —')),
+                nodeNamePrompt: @json(t('Nome del nodo')),
             },
         };
     </script>

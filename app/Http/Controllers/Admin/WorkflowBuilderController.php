@@ -12,6 +12,7 @@ use App\Enums\WorkflowVariableType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateWorkflowGraphRequest;
 use App\Models\Entity;
+use App\Models\User;
 use App\Models\Workflow;
 use App\Services\Workflows\WorkflowGraphPersister;
 use Fazzinipierluigi\JustAGate\Models\Role;
@@ -51,6 +52,7 @@ class WorkflowBuilderController extends Controller
                 ])->values(),
             ])->values(),
             'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'users' => User::orderBy('name')->get(['id', 'name']),
             'otherWorkflows' => Workflow::where('id', '!=', $workflow->id)->orderBy('name')->get(['id', 'name']),
         ]);
     }

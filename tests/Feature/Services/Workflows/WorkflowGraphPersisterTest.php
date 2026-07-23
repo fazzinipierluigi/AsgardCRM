@@ -55,6 +55,19 @@ test('replace publishes a version 1 and toArray hydrates it back with real keys'
         ->and(collect($array['nodes'])->firstWhere('type', 'end')['actions']['after'][0]['type'])->toBe('set_variable');
 });
 
+test('replace round-trips manually-dragged edge waypoints instead of losing them', function () {
+    $workflow = Workflow::factory()->create();
+    $graph = wfSampleGraph();
+    $graph['edges'][1]['waypoints'] = [['x' => 250, 'y' => 80], ['x' => 350, 'y' => 80]];
+
+    app(WorkflowGraphPersister::class)->replace($workflow, $graph);
+
+    $array = app(WorkflowGraphPersister::class)->toArray($workflow);
+
+    expect(collect($array['edges'])->firstWhere('condition_logic'))
+        ->waypoints->toBe([['x' => 250, 'y' => 80], ['x' => 350, 'y' => 80]]);
+});
+
 test('replace rejects a graph without exactly one start node', function () {
     $workflow = Workflow::factory()->create();
     $graph = wfSampleGraph();

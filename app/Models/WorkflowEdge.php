@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['workflow_version_id', 'source_node_id', 'target_node_id', 'label', 'sequence', 'condition_logic'])]
+#[Fillable(['workflow_version_id', 'source_node_id', 'target_node_id', 'label', 'sequence', 'condition_logic', 'waypoints'])]
 class WorkflowEdge extends Model
 {
     /** @use HasFactory<WorkflowEdgeFactory> */
@@ -20,6 +20,7 @@ class WorkflowEdge extends Model
     {
         return [
             'condition_logic' => 'array',
+            'waypoints' => 'array',
         ];
     }
 

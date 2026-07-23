@@ -2,9 +2,12 @@ import '@tabler/core/dist/js/tabler.min.js';
 import { RaccoonGrid } from 'raccoon-tables';
 import { icon } from './icon.js';
 import './tom-select.js';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
 
 window.RaccoonGrid = RaccoonGrid;
 window.icon = icon;
+window.Swal = Swal.mixin({ buttonsStyling: false, customClass: { confirmButton: 'btn btn-primary', cancelButton: 'btn btn-link' } });
 
 /**
  * Wire a RaccoonGrid instance up to the laraccoon-layouts dropdown

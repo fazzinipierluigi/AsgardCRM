@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\EntityFieldType;
 use App\Enums\WorkflowActionPhase;
 use App\Enums\WorkflowActionType;
 use App\Enums\WorkflowInstanceStatus;
@@ -7,11 +8,18 @@ use App\Enums\WorkflowNodeType;
 use App\Enums\WorkflowTimerStatus;
 use App\Enums\WorkflowTokenStatus;
 use App\Enums\WorkflowUserTaskStatus;
+use App\Models\Entity;
+use App\Models\EntityCard;
+use App\Models\EntityRecord;
+use App\Models\EntityTab;
+use App\Models\User;
 use App\Models\Workflow;
 use App\Models\WorkflowEdge;
 use App\Models\WorkflowInstance;
 use App\Models\WorkflowNode;
+use App\Services\EntityInstaller;
 use App\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -155,6 +163,117 @@ test('a user task blocks the instance until completed, then resumes and binds th
     expect($instance->status)->toBe(WorkflowInstanceStatus::Completed)
         ->and($instance->getVariable('approvato'))->toBeTrue()
         ->and($userTask->fresh()->status)->toBe(WorkflowUserTaskStatus::Completed);
+});
+
+test('a user task with assignment_mode user assigns the fixed user directly', function () {
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $assignee = User::factory()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::UserTask,
+        'config' => ['assignment_mode' => 'user', 'assigned_user_id' => $assignee->id],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    $userTask = $instance->userTasks()->first();
+    expect($userTask->assigned_user_id)->toBe($assignee->id)
+        ->and($userTask->assigned_role_id)->toBeNull();
+});
+
+test('a user task with assignment_mode role keeps the existing role-based behaviour', function () {
+    $role = Role::create(['name' => 'Revisore', 'slug' => 'revisore-'.uniqid()]);
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::UserTask,
+        'config' => ['assignment_mode' => 'role', 'assigned_role_id' => $role->id],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    $userTask = $instance->userTasks()->first();
+    expect($userTask->assigned_role_id)->toBe($role->id)
+        ->and($userTask->assigned_user_id)->toBeNull();
+});
+
+test('a user task without assignment_mode in config falls back to role for backward compatibility', function () {
+    $role = Role::create(['name' => 'Revisore legacy', 'slug' => 'revisore-legacy-'.uniqid()]);
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::UserTask,
+        'config' => ['assigned_role_id' => $role->id],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    $userTask = $instance->userTasks()->first();
+    expect($userTask->assigned_role_id)->toBe($role->id)
+        ->and($userTask->assigned_user_id)->toBeNull();
+});
+
+test('a user task with assignment_mode expression resolves the assignee from the triggering entity', function () {
+    $entity = Entity::create(['name' => 'Pratica WF', 'slug' => 'pratica-wf-'.uniqid(), 'table_name' => 'entity_pratica_wf_'.uniqid()]);
+    $tab = EntityTab::create(['entity_id' => $entity->id, 'name' => 'Generale', 'position' => 0]);
+    $card = EntityCard::create(['entity_tab_id' => $tab->id, 'name' => 'Anagrafica', 'position' => 0]);
+    $card->fields()->create(['name' => 'Titolo', 'column_name' => 'titolo', 'type' => EntityFieldType::String, 'position' => 0]);
+    app(EntityInstaller::class)->install($entity);
+
+    $responsabile = User::factory()->create();
+    $record = EntityRecord::forEntity($entity)->create(['titolo' => 'Pratica 1', 'user_id' => $responsabile->id]);
+
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create([
+        'config' => ['trigger_type' => 'entity_created', 'entity_slug' => $entity->slug],
+    ]);
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::UserTask,
+        'config' => ['assignment_mode' => 'expression', 'assignee_expression' => 'entity.user_id'],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow, [], $record, null, $entity->slug);
+
+    $userTask = $instance->userTasks()->first();
+    expect($userTask->assigned_user_id)->toBe($responsabile->id)
+        ->and($userTask->assigned_role_id)->toBeNull();
+});
+
+test('a user task with assignment_mode expression resolving to a nonexistent user leaves it unassigned', function () {
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create([
+        'type' => WorkflowNodeType::UserTask,
+        'config' => ['assignment_mode' => 'expression', 'assignee_expression' => '999999'],
+    ]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+
+    expect($instance->status)->toBe(WorkflowInstanceStatus::Running);
+
+    $userTask = $instance->userTasks()->first();
+    expect($userTask->assigned_user_id)->toBeNull()
+        ->and($userTask->assigned_role_id)->toBeNull();
 });
 
 test('a timer blocks the instance until fired', function () {

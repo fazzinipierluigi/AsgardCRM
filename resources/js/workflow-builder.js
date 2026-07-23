@@ -1,6 +1,6 @@
 import '@maxgraph/core/css/common.css';
 import { Graph, InternalEvent, getDefaultPlugins, Point, ImageBox, CellOverlay, UndoManager } from '@maxgraph/core';
-import { Modal } from 'bootstrap';
+import { Modal, Dropdown } from 'bootstrap';
 import Sortable from 'sortablejs';
 import JSONLogicEditor from 'jsonlogic-editor-core';
 import 'jsonlogic-editor-core/dist/jsonlogic-editor.css';
@@ -17,16 +17,19 @@ document.addEventListener('DOMContentLoaded', function () {
     var I18N = DATA.i18n;
     var OPTIONS = DATA.options;
 
+    // Colors, shapes and border widths mirror the palette preview swatches
+    // (see the $palettePreviews array in builder.blade.php) exactly, so a
+    // node looks on the canvas the way it looked when picked from the palette.
     var NODE_STYLES = {
-        start: { shape: 'ellipse', fillColor: '#2fb344', strokeColor: '#1a7431', fontColor: '#2fb344', verticalLabelPosition: 'bottom', verticalAlign: 'top' },
+        start: { shape: 'ellipse', fillColor: '#2fb344', strokeColor: '#1a7431', strokeWidth: 2, fontColor: '#2fb344', verticalLabelPosition: 'bottom', verticalAlign: 'top' },
         end: { shape: 'ellipse', fillColor: '#9aa0a6', strokeColor: '#495057', strokeWidth: 5, fontColor: '#495057', verticalLabelPosition: 'bottom', verticalAlign: 'top' },
-        user_task: { shape: 'rectangle', rounded: true, fillColor: '#4263eb', strokeColor: '#28408f', fontColor: '#ffffff' },
-        service_task: { shape: 'rectangle', rounded: true, fillColor: '#206bc4', strokeColor: '#164b8a', fontColor: '#ffffff' },
-        exclusive_gateway: { shape: 'rhombus', fillColor: '#f59f00', strokeColor: '#a66a00', fontColor: '#ffffff' },
-        parallel_gateway: { shape: 'rhombus', fillColor: '#f76707', strokeColor: '#a34600', fontColor: '#ffffff' },
-        timer: { shape: 'ellipse', fillColor: '#ae3ec9', strokeColor: '#6e2680', fontColor: '#ffffff' },
+        user_task: { shape: 'rectangle', rounded: true, fillColor: '#4263eb', strokeColor: '#28408f', strokeWidth: 2, fontColor: '#ffffff' },
+        service_task: { shape: 'rectangle', rounded: true, fillColor: '#206bc4', strokeColor: '#164b8a', strokeWidth: 2, fontColor: '#ffffff' },
+        exclusive_gateway: { shape: 'rhombus', fillColor: '#f59f00', strokeColor: '#a66a00', strokeWidth: 2, fontColor: '#ffffff' },
+        parallel_gateway: { shape: 'rhombus', fillColor: '#f76707', strokeColor: '#a34600', strokeWidth: 2, fontColor: '#ffffff' },
+        timer: { shape: 'ellipse', fillColor: '#ae3ec9', strokeColor: '#6e2680', strokeWidth: 2, fontColor: '#ffffff' },
         semaphore: { shape: 'ellipse', fillColor: '#f8f9fa', strokeColor: '#2fb344', strokeWidth: 3, fontColor: '#2fb344', verticalLabelPosition: 'bottom', verticalAlign: 'top' },
-        subworkflow: { shape: 'rectangle', rounded: true, dashed: true, fillColor: '#495057', strokeColor: '#212529', fontColor: '#ffffff' },
+        subworkflow: { shape: 'rectangle', rounded: true, dashed: true, fillColor: '#495057', strokeColor: '#212529', strokeWidth: 2, fontColor: '#ffffff' },
     };
 
     // Small badge icon in the top-left corner for the two task types, a
@@ -34,15 +37,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // CellOverlay centers the image on its align/valign anchor point, so
     // a 'left'/'top' overlay needs a positive offset of roughly half its
     // own size to land fully inside the shape instead of straddling the
-    // corner.
+    // corner. `color` matches the palette preview's badge/icon color
+    // (see IconController::show — an inline SVG can inherit currentColor
+    // from the page, but an overlay loaded as a standalone image can't).
     var NODE_ICONS = {
-        user_task: { name: 'user', variant: 'filled', align: 'left', valign: 'top', size: 22, offset: [17, 17] },
-        service_task: { name: 'settings', variant: 'filled', align: 'left', valign: 'top', size: 22, offset: [17, 17] },
-        semaphore: { name: 'traffic-lights', variant: 'outline', align: 'center', valign: 'middle', size: 30, offset: [0, -6] },
+        user_task: { name: 'user', variant: 'filled', align: 'left', valign: 'top', size: 22, offset: [17, 17], color: 'ffffff' },
+        service_task: { name: 'settings', variant: 'filled', align: 'left', valign: 'top', size: 22, offset: [17, 17], color: 'ffffff' },
+        semaphore: { name: 'traffic-lights', variant: 'outline', align: 'center', valign: 'middle', size: 30, offset: [0, -6], color: '2fb344' },
     };
 
-    function iconUrl(name, variant) {
-        return DATA.iconBaseUrl + '/' + (variant || 'outline') + '/' + name;
+    function iconUrl(name, variant, color) {
+        var url = DATA.iconBaseUrl + '/' + (variant || 'outline') + '/' + name;
+        return color ? url + '?color=' + color : url;
     }
 
     function attachNodeIcon(cell, type) {
@@ -52,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        var image = new ImageBox(iconUrl(spec.name, spec.variant), spec.size, spec.size);
+        var image = new ImageBox(iconUrl(spec.name, spec.variant, spec.color), spec.size, spec.size);
         var overlay = new CellOverlay(image, '', spec.align, spec.valign, new Point(spec.offset[0], spec.offset[1]));
         overlay.cursor = 'move';
         graph.addCellOverlay(cell, overlay);
@@ -150,6 +156,12 @@ document.addEventListener('DOMContentLoaded', function () {
             value: edge.label || '',
         });
 
+        if (edge.waypoints && edge.waypoints.length) {
+            var geo = cell.getGeometry().clone();
+            geo.points = edge.waypoints.map(function (p) { return new Point(p.x, p.y); });
+            graph.getDataModel().setGeometry(cell, geo);
+        }
+
         cell.workflowData = {
             label: edge.label || '',
             sequence: edge.sequence || 0,
@@ -175,27 +187,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function createNodeAt(type, x, y) {
         if (type === 'start' && hasStartNode()) {
-            alert(I18N.onlyOneStart);
-            return null;
+            window.Swal.fire({ text: I18N.onlyOneStart, icon: 'warning', confirmButtonText: LABELS.confirm });
+            return;
         }
 
-        var size = sizeFor(type);
-        var cell;
-        graph.batchUpdate(function () {
-            cell = addNodeCell({
-                key: newKey(),
-                type: type,
-                name: OPTIONS.nodeTypes[type] || type,
-                pos_x: Math.round(x - size.w / 2),
-                pos_y: Math.round(y - size.h / 2),
-                config: {},
-                actions: { before: [], after: [] },
+        var defaultName = OPTIONS.nodeTypes[type] || type;
+
+        window.Swal.fire({
+            title: I18N.nodeNamePrompt,
+            input: 'text',
+            inputValue: defaultName,
+            showCancelButton: true,
+            confirmButtonText: LABELS.create,
+            cancelButtonText: LABELS.cancel,
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            var name = (result.value || '').trim() || defaultName;
+            var size = sizeFor(type);
+            var cell;
+            graph.batchUpdate(function () {
+                cell = addNodeCell({
+                    key: newKey(),
+                    type: type,
+                    name: name,
+                    pos_x: Math.round(x - size.w / 2),
+                    pos_y: Math.round(y - size.h / 2),
+                    config: {},
+                    actions: { before: [], after: [] },
+                });
             });
+
+            selectCell(cell);
         });
-
-        selectCell(cell);
-
-        return cell;
     }
 
     document.querySelectorAll('.workflow-palette-item').forEach(function (item) {
@@ -264,10 +290,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         floatDeleteBtn.textContent = cell.vertex ? LABELS.deleteNode : LABELS.deleteEdge;
         floatDeleteBtn.onclick = function () {
-            if (confirm(LABELS.confirmDelete)) {
+            window.Swal.fire({
+                text: LABELS.confirmDelete,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: LABELS.confirm,
+                cancelButtonText: LABELS.cancel,
+            }).then(function (result) {
+                if (!result.isConfirmed) {
+                    return;
+                }
+
                 graph.removeCells([cell]);
                 closeFloatWindow();
-            }
+            });
         };
 
         floatWindow.style.display = 'block';
@@ -275,6 +311,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function closeFloatWindow() {
         destroyConditionEditors();
+        destroyVariablePickers();
         floatBody.innerHTML = '';
         floatDeleteBtn.onclick = null;
         floatWindow.style.display = 'none';
@@ -374,6 +411,87 @@ document.addEventListener('DOMContentLoaded', function () {
         activeConditionEditors = [];
     }
 
+    // "Insert variable" pickers (mountVariablePicker, below) mounted in the
+    // currently-rendered inspector panel — same teardown-before-every-
+    // re-render rule as the JSONLogicEditor instances above.
+    var activeVariablePickers = [];
+
+    function destroyVariablePickers() {
+        activeVariablePickers.forEach(function (dropdown) { dropdown.dispose(); });
+        activeVariablePickers = [];
+    }
+
+    // Adds an "insert variable" button overlaid on a text input/textarea
+    // that already has a plain input listener wired up (see the `text()`/
+    // `textInput()` helpers below): picking a variable inserts it at the
+    // caret and dispatches a real `input` event, so the existing listener
+    // persists the new value without this helper knowing anything about
+    // where the field's value is stored.
+    //
+    // `options.wrap`: true for a `{{ }}` template field (e.g. the email
+    // action's to/subject/body), false/omitted for a bare ExpressionLanguage
+    // field (e.g. a `set_variable` expression) — the caller always knows
+    // which kind of field it's attaching to, so this is never guessed.
+    function mountVariablePicker(inputEl, variableDefs, options) {
+        var wrap = !!(options && options.wrap);
+
+        var wrapper = document.createElement('div');
+        wrapper.className = 'position-relative';
+        inputEl.parentNode.insertBefore(wrapper, inputEl);
+        wrapper.appendChild(inputEl);
+        inputEl.style.paddingRight = '28px';
+
+        var toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'btn btn-icon btn-sm position-absolute';
+        toggle.style.cssText = 'top: 2px; right: 2px; width: 22px; height: 22px; padding: 0; z-index: 2;';
+        toggle.title = I18N.insertVariable;
+        window.icon('code', 'outline').then(function (svg) { toggle.innerHTML = svg; });
+        wrapper.appendChild(toggle);
+
+        var menu = document.createElement('div');
+        menu.className = 'dropdown-menu';
+        menu.style.cssText = 'max-height: 260px; overflow-y: auto;';
+
+        if (!variableDefs.length) {
+            var empty = document.createElement('span');
+            empty.className = 'dropdown-item-text text-secondary small';
+            empty.textContent = I18N.noVariable;
+            menu.appendChild(empty);
+        }
+
+        variableDefs.forEach(function (v) {
+            var item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'dropdown-item';
+            item.textContent = v.label !== v.name ? v.label + ' (' + v.name + ')' : v.name;
+            item.addEventListener('click', function () {
+                var token = wrap ? '{{ ' + v.name + ' }}' : v.name;
+                var start = inputEl.selectionStart != null ? inputEl.selectionStart : inputEl.value.length;
+                var end = inputEl.selectionEnd != null ? inputEl.selectionEnd : inputEl.value.length;
+
+                inputEl.value = inputEl.value.slice(0, start) + token + inputEl.value.slice(end);
+                inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+                inputEl.focus();
+                inputEl.setSelectionRange(start + token.length, start + token.length);
+            });
+            menu.appendChild(item);
+        });
+
+        wrapper.appendChild(menu);
+
+        // No `data-bs-toggle="dropdown"` attribute: Tabler's own bundled
+        // copy of Bootstrap already listens for that at the document level
+        // (see @tabler/core/dist/js/tabler.min.js, imported in app.js) and
+        // would create a second, independent Dropdown instance for the
+        // same button — the two would then fight over open/close on every
+        // click. Driving it entirely through this instance's own API
+        // (same approach as the Modal import above) sidesteps that.
+        var dropdown = new Dropdown(toggle);
+        toggle.addEventListener('click', function () { dropdown.toggle(); });
+        activeVariablePickers.push(dropdown);
+    }
+
     function mountConditionEditor(container, value, variableDefs, onChange) {
         jsonLogicEditorSeq += 1;
         var mountId = 'jle-' + jsonLogicEditorSeq;
@@ -421,6 +539,16 @@ document.addEventListener('DOMContentLoaded', function () {
         return starts.length ? (starts[0].workflowData.config || {}) : {};
     }
 
+    // Workflow variables plus, when the Start node is bound to an entity
+    // trigger, that entity's fields (exposed at runtime as `entity.*` —
+    // see WorkflowActionExecutor::buildContext()) — the single source of
+    // truth for every variable-aware autocomplete/picker in the inspector.
+    function currentVariableDefs() {
+        var startCfg = currentStartNodeConfig();
+
+        return workflowVariableDefs().concat(startCfg.entity_slug ? entityFieldDefs(startCfg.entity_slug) : []);
+    }
+
     function clearInspector() {
         closeFloatWindow();
     }
@@ -432,6 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         destroyConditionEditors();
+        destroyVariablePickers();
         inspector.innerHTML = '';
         floatTitle.textContent = (cell.vertex ? LABELS.nodeWindowTitle : LABELS.edgeWindowTitle) + ': ' +
             (cell.vertex ? (graph.convertValueToString(cell) || '') : (cell.workflowData && cell.workflowData.label ? cell.workflowData.label : ('#' + cell.id)));
@@ -483,9 +612,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         inspector.appendChild(root);
 
-        var startConfig = currentStartNodeConfig();
-        var edgeVariableDefs = workflowVariableDefs().concat(startConfig.entity_slug ? entityFieldDefs(startConfig.entity_slug) : []);
-        mountConditionEditor(root.querySelector('[data-condition-editor]'), data.condition_logic, edgeVariableDefs, function (value) {
+        mountConditionEditor(root.querySelector('[data-condition-editor]'), data.condition_logic, currentVariableDefs(), function (value) {
             data.condition_logic = value;
         });
 
@@ -620,9 +747,32 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (data.type === 'user_task') {
-            var roleOptions = { '': I18N.none };
-            OPTIONS.roles.forEach(function (r) { roleOptions[r.id] = r.name; });
-            container.appendChild(field(I18N.assignedRole, select(roleOptions, config.assigned_role_id || '', function (v) { config.assigned_role_id = v || null; })));
+            var assignmentModeOptions = {
+                role: I18N.assignmentModeRole,
+                user: I18N.assignmentModeUser,
+                expression: I18N.assignmentModeExpression,
+            };
+            container.appendChild(field(I18N.assignmentMode, select(assignmentModeOptions, config.assignment_mode || 'role', function (v) {
+                config.assignment_mode = v;
+                config.assigned_role_id = null;
+                config.assigned_user_id = null;
+                config.assignee_expression = '';
+                renderNodeConfig(container, cell);
+            })));
+
+            if ((config.assignment_mode || 'role') === 'user') {
+                var userOptions = { '': I18N.none };
+                OPTIONS.users.forEach(function (u) { userOptions[u.id] = u.name; });
+                container.appendChild(field(I18N.assignedUser, select(userOptions, config.assigned_user_id || '', function (v) { config.assigned_user_id = v || null; })));
+            } else if (config.assignment_mode === 'expression') {
+                var expressionField = field(I18N.assigneeExpression, text(config.assignee_expression, function (v) { config.assignee_expression = v; }, 'entity.responsabile_id'));
+                mountVariablePicker(expressionField.querySelector('input'), currentVariableDefs());
+                container.appendChild(expressionField);
+            } else {
+                var roleOptions = { '': I18N.none };
+                OPTIONS.roles.forEach(function (r) { roleOptions[r.id] = r.name; });
+                container.appendChild(field(I18N.assignedRole, select(roleOptions, config.assigned_role_id || '', function (v) { config.assigned_role_id = v || null; })));
+            }
 
             container.appendChild(checkbox(config.show_in_entity_detail, I18N.showInEntityDetail, function (v) { config.show_in_entity_detail = v; }));
 
@@ -804,14 +954,18 @@ document.addEventListener('DOMContentLoaded', function () {
             branchesTitle.textContent = I18N.exclusiveBranches;
             branchesWrap.appendChild(branchesTitle);
 
-            var startCfg = currentStartNodeConfig();
-            var branchVariableDefs = workflowVariableDefs().concat(startCfg.entity_slug ? entityFieldDefs(startCfg.entity_slug) : []);
+            var branchVariableDefs = currentVariableDefs();
 
             var outEdges = allCells().filter(function (c) {
                 return c.edge && c.workflowData && c.getTerminal(true) === cell;
             }).sort(function (a, b) {
                 return (a.workflowData.sequence || 0) - (b.workflowData.sequence || 0);
             });
+
+            // Appended before the loop below: mountConditionEditor() looks
+            // up its mount point with document.querySelector(), so each
+            // card must already be attached to the live DOM when it runs.
+            container.appendChild(branchesWrap);
 
             if (!outEdges.length) {
                 var branchesHint = document.createElement('p');
@@ -834,16 +988,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 branchLabel.textContent = (idx + 1) + '. → ' + targetName;
                 body.appendChild(branchLabel);
 
+                card.appendChild(body);
+                branchesWrap.appendChild(card);
+
                 var edgeData = edgeCell.workflowData;
                 mountConditionEditor(body, edgeData.condition_logic, branchVariableDefs, function (value) {
                     edgeData.condition_logic = value;
                 });
-
-                card.appendChild(body);
-                branchesWrap.appendChild(card);
             });
-
-            container.appendChild(branchesWrap);
         }
 
         if (data.type === 'subworkflow') {
@@ -972,31 +1124,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (action.type === 'set_variable') {
             row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
-            row(I18N.expression, textInput(config.expression, function (v) { config.expression = v; }, 'quantita * prezzo'));
+            var expressionInput = textInput(config.expression, function (v) { config.expression = v; }, 'quantita * prezzo');
+            row(I18N.expression, expressionInput);
+            mountVariablePicker(expressionInput, currentVariableDefs());
         }
 
         if (action.type === 'assign_entity_to_variable') {
             row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
             row(I18N.entity, entitySelect(config.entity_slug, function (v) { config.entity_slug = v; }));
-            row(I18N.idExpression, textInput(config.id_expression, function (v) { config.id_expression = v; }));
+            var assignIdExpr = textInput(config.id_expression, function (v) { config.id_expression = v; });
+            row(I18N.idExpression, assignIdExpr);
+            mountVariablePicker(assignIdExpr, currentVariableDefs());
         }
 
         if (action.type === 'send_email') {
-            row(I18N.to, textInput(config.to, function (v) { config.to = v; }, '{{ entity.email }}'));
-            row(I18N.subject, textInput(config.subject, function (v) { config.subject = v; }));
+            var toInput = textInput(config.to, function (v) { config.to = v; }, '{{ entity.email }}');
+            row(I18N.to, toInput);
+            mountVariablePicker(toInput, currentVariableDefs(), { wrap: true });
+
+            var subjectInput = textInput(config.subject, function (v) { config.subject = v; });
+            row(I18N.subject, subjectInput);
+            mountVariablePicker(subjectInput, currentVariableDefs(), { wrap: true });
+
             var bodyEl = document.createElement('textarea');
             bodyEl.className = 'form-control form-control-sm';
             bodyEl.rows = 3;
             bodyEl.value = config.body || '';
             bodyEl.addEventListener('input', function () { config.body = bodyEl.value; });
             row(I18N.body, bodyEl);
+            mountVariablePicker(bodyEl, currentVariableDefs(), { wrap: true });
         }
 
         if (action.type === 'update_entity' || action.type === 'create_entity') {
             row(I18N.entity, entitySelect(config.entity_slug, function (v) { config.entity_slug = v; }));
 
             if (action.type === 'update_entity') {
-                row(I18N.idExpression, textInput(config.id_expression, function (v) { config.id_expression = v; }));
+                var updateIdExpr = textInput(config.id_expression, function (v) { config.id_expression = v; });
+                row(I18N.idExpression, updateIdExpr);
+                mountVariablePicker(updateIdExpr, currentVariableDefs());
             } else {
                 row(I18N.assignToVariable, textInput(config.assign_to_variable, function (v) { config.assign_to_variable = v; }));
             }
@@ -1025,6 +1190,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     line.appendChild(exprInput);
                     line.appendChild(removeBtn);
                     fieldsList.appendChild(line);
+                    mountVariablePicker(exprInput, currentVariableDefs());
                 });
             }
 
@@ -1068,6 +1234,41 @@ document.addEventListener('DOMContentLoaded', function () {
             typeSelect.addEventListener('change', function (evt) { variable.type = evt.target.value; });
         });
         window.tomSelectAll(variablesBody);
+        renderEntityVariableInfo();
+    }
+
+    // Read-only, un-removable: `entity` isn't a real WorkflowVariable (it's
+    // never added to the `variables` array serializeGraph() saves) — it's
+    // always available at runtime as soon as the Start node's trigger is
+    // bound to an entity (see WorkflowActionExecutor::buildContext()), so
+    // this just surfaces that fact instead of letting the user rediscover
+    // it by trial and error.
+    function renderEntityVariableInfo() {
+        var startCfg = currentStartNodeConfig();
+        var isEntityBound = ['entity_created', 'entity_updated', 'entity_created_or_updated'].indexOf(startCfg.trigger_type) !== -1;
+        var wrap = document.getElementById('workflow-entity-variable-info');
+        var body = document.getElementById('workflow-entity-variable-body');
+
+        wrap.style.display = (isEntityBound && startCfg.entity_slug) ? '' : 'none';
+
+        if (!isEntityBound || !startCfg.entity_slug) {
+            return;
+        }
+
+        body.innerHTML = '';
+        entityFieldDefs(startCfg.entity_slug).forEach(function (f) {
+            var row = document.createElement('tr');
+            var nameCell = document.createElement('td');
+            var code = document.createElement('code');
+            code.textContent = f.name;
+            nameCell.appendChild(code);
+            var labelCell = document.createElement('td');
+            labelCell.className = 'text-secondary';
+            labelCell.textContent = f.label;
+            row.appendChild(nameCell);
+            row.appendChild(labelCell);
+            body.appendChild(row);
+        });
     }
 
     document.getElementById('workflow-variable-add').addEventListener('click', function () {
@@ -1103,12 +1304,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return cell.edge && cell.getTerminal(true) && cell.getTerminal(false);
         }).forEach(function (cell) {
             var data = cell.workflowData || {};
+            var geo = cell.getGeometry();
+            var waypoints = (geo && geo.points || []).map(function (p) { return { x: Math.round(p.x), y: Math.round(p.y) }; });
+
             edges.push({
                 source_key: cell.getTerminal(true).workflowData.key,
                 target_key: cell.getTerminal(false).workflowData.key,
                 label: data.label || '',
                 sequence: data.sequence || 0,
                 condition_logic: data.condition_logic || null,
+                waypoints: waypoints,
                 actions: data.actions || { before: [], after: [] },
             });
         });
@@ -1151,11 +1356,12 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(function (err) {
                 statusEl.textContent = '';
-                alert(err.message || LABELS.saveError);
+                window.Swal.fire({ text: err.message || LABELS.saveError, icon: 'error', confirmButtonText: LABELS.confirm });
             });
     });
 
     document.getElementById('workflow-variables-btn').addEventListener('click', function () {
+        renderEntityVariableInfo();
         var modalEl = document.getElementById('workflow-variables-modal');
         new Modal(modalEl).show();
     });
@@ -1178,10 +1384,24 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('wf-delete').addEventListener('click', function () {
         var cells = graph.getSelectionCells();
 
-        if (cells.length && confirm(LABELS.confirmDelete)) {
+        if (!cells.length) {
+            return;
+        }
+
+        window.Swal.fire({
+            text: LABELS.confirmDelete,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: LABELS.confirm,
+            cancelButtonText: LABELS.cancel,
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                return;
+            }
+
             graph.removeCells(cells);
             closeFloatWindow();
-        }
+        });
     });
 
     // ---------------------------------------------------------------

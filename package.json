@@ -25,6 +25,7 @@
         "bootstrap": "^5.3.7",
         "jsonlogic-editor-core": "^1.0.0",
         "raccoon-tables": "^1.1.2",
-        "sortablejs": "^1.15.7"
+        "sortablejs": "^1.15.7",
+        "sweetalert2": "^11.26.25"
     }
 }

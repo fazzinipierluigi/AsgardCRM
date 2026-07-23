@@ -75,6 +75,7 @@ class WorkflowGraphPersister
                 'label' => $edge->label,
                 'sequence' => $edge->sequence,
                 'condition_logic' => $edge->condition_logic,
+                'waypoints' => $edge->waypoints,
                 'actions' => $this->actionsArray($edge->actions),
             ])->values()->all(),
         ];
@@ -146,6 +147,7 @@ class WorkflowGraphPersister
                     'label' => $edgeInput['label'] ?? null,
                     'sequence' => $edgeInput['sequence'] ?? $index,
                     'condition_logic' => $edgeInput['condition_logic'] ?? null,
+                    'waypoints' => $edgeInput['waypoints'] ?? null,
                 ]);
 
                 $this->createActions($version, $edge, $edgeInput['actions'] ?? []);

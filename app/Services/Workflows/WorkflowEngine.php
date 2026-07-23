@@ -231,13 +231,50 @@ class WorkflowEngine
             'workflow_instance_id' => $instance->id,
             'workflow_node_id' => $node->id,
             'workflow_token_id' => $token->id,
-            'assigned_role_id' => $config['assigned_role_id'] ?? null,
-            'assigned_user_id' => $config['assigned_user_id'] ?? null,
+            ...$this->resolveAssignee($instance, $config),
             'status' => WorkflowUserTaskStatus::Pending,
         ]);
 
         $token->status = WorkflowTokenStatus::WaitingUserTask;
         $token->save();
+    }
+
+    /**
+     * A Task utente's assignee, per its `config.assignment_mode`:
+     * - 'role' (also the default when the key is missing, so nodes saved
+     *   before this mode existed keep behaving exactly as before): the
+     *   fixed `assigned_role_id`.
+     * - 'user': the fixed `assigned_user_id`.
+     * - 'expression': `assignee_expression` evaluated against the same
+     *   context (variables + triggering entity) as any other expression
+     *   in the engine — e.g. `entity.responsabile_id`. A result that
+     *   isn't an existing user's id leaves the task unassigned (open
+     *   queue, same as a node with no assignee configured at all) rather
+     *   than failing the instance; a broken expression itself still
+     *   throws and fails the instance, like every other expression.
+     *
+     * @param  array<string, mixed>  $config
+     * @return array{assigned_role_id: ?int, assigned_user_id: ?int}
+     */
+    private function resolveAssignee(WorkflowInstance $instance, array $config): array
+    {
+        $mode = $config['assignment_mode'] ?? 'role';
+
+        if ($mode === 'user') {
+            return ['assigned_role_id' => null, 'assigned_user_id' => $config['assigned_user_id'] ?? null];
+        }
+
+        if ($mode === 'expression') {
+            $value = $this->evaluator->evaluate($config['assignee_expression'] ?? null, $this->actions->buildContext($instance));
+            $userId = is_numeric($value) ? (int) $value : null;
+
+            return [
+                'assigned_role_id' => null,
+                'assigned_user_id' => $userId && User::whereKey($userId)->exists() ? $userId : null,
+            ];
+        }
+
+        return ['assigned_role_id' => $config['assigned_role_id'] ?? null, 'assigned_user_id' => null];
     }
 
     private function handleExclusiveGateway(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
