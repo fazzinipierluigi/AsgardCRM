@@ -10,6 +10,16 @@ test('guests are redirected to login', function () {
     $this->get(route('admin.sql-connections.index'))->assertRedirect(route('login'));
 });
 
+test('admin can view the create form', function () {
+    $this->actingAs(adminUser())->get(route('admin.sql-connections.create'))->assertOk();
+});
+
+test('admin can view the edit form', function () {
+    $connection = WorkflowSqlConnection::create(['name' => 'Da modificare', 'config' => ['driver' => 'sqlite', 'database' => '/tmp/x.sqlite']]);
+
+    $this->actingAs(adminUser())->get(route('admin.sql-connections.edit', $connection))->assertOk();
+});
+
 test('admin can create a global sql connection with an encrypted password', function () {
     $response = $this->actingAs(adminUser())->post(route('admin.sql-connections.store'), [
         'name' => 'Magazzino esterno',

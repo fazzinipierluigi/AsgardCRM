@@ -31,7 +31,9 @@
 
     <div class="field-preview border rounded mb-2 position-relative d-flex align-items-center justify-content-center text-center" style="cursor: pointer; min-height: 34px; padding: 4px 22px;" title="{{ t('Doppio click per modificare') }}" data-testid="field-preview">
         <span class="field-drag-handle position-absolute" style="top: 2px; left: 4px; cursor: move; font-size: .75rem; color: var(--tblr-secondary-color, #6c7a91);" title="{{ t('Trascina per riordinare') }}" data-testid="field-drag-handle">⠿</span>
-        <span class="remove-row-btn position-absolute text-danger" style="top: 2px; right: 16px; cursor: pointer; font-size: .75rem;" title="{{ t('Rimuovi campo') }}" data-testid="field-remove-btn">✕</span>
+        @unless ($field?->is_locked)
+            <span class="remove-row-btn position-absolute text-danger" style="top: 2px; right: 16px; cursor: pointer; font-size: .75rem;" title="{{ t('Rimuovi campo') }}" data-testid="field-remove-btn">✕</span>
+        @endunless
 
         <div class="lh-1">
             <div class="fw-bold small field-preview-name" data-testid="field-preview-name">

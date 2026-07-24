@@ -29,7 +29,7 @@ class WorkflowSqlConnectionController extends Controller
 
     public function create(): View
     {
-        return view('admin.workflow-sql-connections.form', [
+        return view('admin.workflow-sql-connections.create', [
             'connection' => null,
             'workflows' => Workflow::orderBy('name')->get(['id', 'name']),
         ]);
@@ -48,7 +48,7 @@ class WorkflowSqlConnectionController extends Controller
 
     public function edit(WorkflowSqlConnection $sqlConnection): View
     {
-        return view('admin.workflow-sql-connections.form', [
+        return view('admin.workflow-sql-connections.edit', [
             'connection' => $sqlConnection,
             'workflows' => Workflow::orderBy('name')->get(['id', 'name']),
         ]);

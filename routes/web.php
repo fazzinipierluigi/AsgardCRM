@@ -111,8 +111,7 @@ Route::middleware('auth')->group(function () {
         Route::get('entities/data', [EntityController::class, 'data'])->name('entities.data');
         Route::get('entities/{entity}/builder', [EntityBuilderController::class, 'edit'])->name('entities.builder.edit');
         Route::put('entities/{entity}/builder', [EntityBuilderController::class, 'update'])->name('entities.builder.update');
-        Route::get('entities/{entity}/fields/create', [EntityFieldController::class, 'create'])->name('entities.fields.create');
-        Route::post('entities/{entity}/fields', [EntityFieldController::class, 'store'])->name('entities.fields.store');
+        Route::get('entities/{entity}/fields/{field}/usage', [EntityFieldController::class, 'usage'])->name('entities.fields.usage');
         Route::get('entities/{entity}/widgets', [EntityListWidgetController::class, 'index'])->name('entities.widgets.index');
         Route::get('entities/{entity}/widgets/create', [EntityListWidgetController::class, 'create'])->name('entities.widgets.create');
         Route::post('entities/{entity}/widgets', [EntityListWidgetController::class, 'store'])->name('entities.widgets.store');

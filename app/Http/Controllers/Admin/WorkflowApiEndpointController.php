@@ -29,7 +29,7 @@ class WorkflowApiEndpointController extends Controller
 
     public function create(): View
     {
-        return view('admin.workflow-api-endpoints.form', [
+        return view('admin.workflow-api-endpoints.create', [
             'endpoint' => null,
             'workflows' => Workflow::orderBy('name')->get(['id', 'name']),
         ]);
@@ -49,7 +49,7 @@ class WorkflowApiEndpointController extends Controller
 
     public function edit(WorkflowApiEndpoint $apiEndpoint): View
     {
-        return view('admin.workflow-api-endpoints.form', [
+        return view('admin.workflow-api-endpoints.edit', [
             'endpoint' => $apiEndpoint,
             'workflows' => Workflow::orderBy('name')->get(['id', 'name']),
         ]);

@@ -11,11 +11,12 @@
     </li>
 @endsection
 
-@unless ($entity->is_installed)
-    @section('buttons')
-        <button type="submit" form="entity-builder-form" class="btn btn-primary" data-testid="entity-builder-submit">{{ t('Salva struttura') }}</button>
-    @endsection
-@endunless
+@section('buttons')
+    @if ($entity->is_installed)
+        <a href="{{ route('admin.entities.widgets.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-widgets-link">{{ t('Gestisci widget lista') }}</a>
+    @endif
+    <button type="submit" form="entity-builder-form" class="btn btn-primary" data-testid="entity-builder-submit">{{ t('Salva struttura') }}</button>
+@endsection
 
 @section('content')
     <style>
@@ -72,46 +73,67 @@
     @endif
 
     @if ($entity->is_installed)
-        <div class="alert alert-info d-flex align-items-center justify-content-between" data-testid="entity-builder-installed-notice">
-            <span>{{ t('Questa entità è installata: la struttura non è più modificabile da qui.') }}</span>
-            <div class="btn-list">
-                <a href="{{ route('admin.entities.widgets.index', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-widgets-link">{{ t('Gestisci widget lista') }}</a>
-                <a href="{{ route('admin.entities.fields.create', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-add-field-link">{{ t('Aggiungi campo') }}</a>
-            </div>
+        <div class="alert alert-info" data-testid="entity-builder-installed-notice">
+            {{ t('Entità installata: puoi aggiungere/rinominare tab e card, aggiungere nuovi campi, modificare i metadati dei campi esistenti (etichetta, obbligatorietà, opzioni, larghezza, ordine) ed eliminarli — su un campo già esistente nome colonna e tipo restano fissi.') }}
         </div>
     @endif
 
-    <form action="{{ route('admin.entities.builder.update', $entity) }}" method="POST" id="entity-builder-form" data-installed="{{ $entity->is_installed ? '1' : '0' }}">
+    <form action="{{ route('admin.entities.builder.update', $entity) }}" method="POST" id="entity-builder-form" data-installed="{{ $entity->is_installed ? '1' : '0' }}" data-usage-url-template="{{ $entity->is_installed ? route('admin.entities.fields.usage', [$entity, '__FIELD__']) : '' }}">
         @csrf
         @method('PUT')
 
-        <fieldset @if ($entity->is_installed) disabled @endif>
+        <fieldset>
             <ul class="nav nav-tabs mb-2" id="tabs-nav" role="tablist">
                 @foreach ($entity->tabs as $tab)
-                    @include('admin.entities._tab_nav', ['tab' => $tab, 'tabToken' => $tab->id, 'active' => $loop->first])
+                    @include('admin.entities._tab_nav', ['tab' => $tab, 'tabToken' => $tab->id, 'active' => $loop->first, 'entity' => $entity])
                 @endforeach
             </ul>
             <button type="button" class="btn btn-sm btn-outline-primary mb-3" id="add-tab-btn" data-testid="entity-builder-add-tab">{{ t('Aggiungi tab') }}</button>
 
             <div class="tab-content" id="tabs-content">
                 @foreach ($entity->tabs as $tab)
-                    @include('admin.entities._tab', ['tabToken' => $tab->id, 'tab' => $tab, 'active' => $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes])
+                    @include('admin.entities._tab', ['tabToken' => $tab->id, 'tab' => $tab, 'active' => $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
                 @endforeach
             </div>
         </fieldset>
     </form>
 
     <template id="tab-nav-template">
-        @include('admin.entities._tab_nav', ['tab' => null, 'tabToken' => '__TAB__', 'active' => false])
+        @include('admin.entities._tab_nav', ['tab' => null, 'tabToken' => '__TAB__', 'active' => false, 'entity' => $entity])
     </template>
     <template id="tab-pane-template">
-        @include('admin.entities._tab', ['tabToken' => '__TAB__', 'tab' => null, 'active' => false, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes])
+        @include('admin.entities._tab', ['tabToken' => '__TAB__', 'tab' => null, 'active' => false, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
     </template>
     <template id="card-template">
-        @include('admin.entities._card', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'card' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes])
+        @include('admin.entities._card', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'card' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
     </template>
     <template id="field-template">
-        @include('admin.entities._field', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'fieldToken' => '__FIELD__', 'field' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes])
+        @include('admin.entities._field', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'fieldToken' => '__FIELD__', 'field' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+    </template>
+    <template id="table-column-row-template">
+        <div class="row g-2 align-items-center table-column-row" data-testid="table-column-row">
+            <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm table-column-name" placeholder="{{ t('es. quantita') }}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control form-control-sm table-column-label" placeholder="{{ t('Etichetta') }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm table-column-type" data-tom-select-manual>
+                    <option value="string">{{ t('Testo') }}</option>
+                    <option value="integer">{{ t('Numero intero') }}</option>
+                    <option value="decimal">{{ t('Numero decimale') }}</option>
+                    <option value="date">{{ t('Data') }}</option>
+                    <option value="checkbox">{{ t('Checkbox') }}</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-center justify-content-center">
+                <input type="checkbox" class="form-check-input table-column-required mt-0" title="{{ t('Obbligatoria') }}">
+            </div>
+            <div class="col-md-1 d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-danger table-column-remove-btn" title="{{ t('Rimuovi colonna') }}" data-testid="table-column-remove-btn">✕</button>
+            </div>
+        </div>
     </template>
 
     {{-- Reused for naming/renaming both tabs and cards --}}
@@ -147,6 +169,7 @@
                     <div class="mb-2">
                         <label class="form-label">{{ t('Nome colonna') }}</label>
                         <input type="text" class="form-control" id="field-modal-column" placeholder="es. cognome" data-testid="field-modal-column">
+                        <small class="form-hint d-none" id="field-modal-column-locked-hint">{{ t('Non modificabile: l\'entità è già installata.') }}</small>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">{{ t('Tipo') }}</label>
@@ -155,6 +178,7 @@
                                 <option value="{{ $value }}">{{ $label }}</option>
                             @endforeach
                         </select>
+                        <small class="form-hint d-none" id="field-modal-type-locked-hint">{{ t('Non modificabile: l\'entità è già installata.') }}</small>
                     </div>
                     <div class="mb-2">
                         <label class="form-check">
@@ -212,9 +236,17 @@
                         </div>
                     </div>
                     <div class="mb-2 field-modal-table-group d-none">
-                        <label class="form-label">{{ t('Colonne (una per riga, formato: nome_colonna:Etichetta:tipo:obbligatoria)') }}</label>
-                        <textarea class="form-control font-monospace" id="field-modal-table-columns" rows="4" placeholder="quantita:Quantità:integer:si"></textarea>
-                        <small class="form-hint">{{ t('Tipo: string, integer, decimal, date, checkbox. Obbligatoria: si/no.') }}</small>
+                        <label class="form-label">{{ t('Colonne') }}</label>
+                        <div class="row g-2 mb-1 d-none d-md-flex" id="field-modal-table-columns-header">
+                            <div class="col-md-3"><small class="form-hint">{{ t('Nome colonna') }}</small></div>
+                            <div class="col-md-4"><small class="form-hint">{{ t('Etichetta') }}</small></div>
+                            <div class="col-md-3"><small class="form-hint">{{ t('Tipo colonna') }}</small></div>
+                            <div class="col-md-1 text-center"><small class="form-hint">{{ t('Obbl') }}</small></div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div id="field-modal-table-columns-rows" class="d-flex flex-column gap-2 mb-2"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="field-modal-table-columns-add" data-testid="table-column-add-btn">{{ t('Aggiungi colonna') }}</button>
+                        <input type="hidden" id="field-modal-table-columns">
                     </div>
                     <div class="mb-2">
                         <label class="form-label">{{ t('Valore predefinito') }}</label>

@@ -9,11 +9,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreEntityFieldRequest;
 use App\Http\Requests\Admin\UpdateEntityBuilderRequest;
 use App\Models\Entity;
+use App\Models\EntityCard;
+use App\Models\EntityField;
+use App\Models\EntityTab;
 use App\Models\Workflow;
 use App\Services\EntityRelationResolver;
+use App\Services\EntitySchemaBuilder;
+use App\Services\Workflows\WorkflowFieldReferenceCleaner;
 use App\Support\ButtonConfigValidator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -38,12 +44,17 @@ class EntityBuilderController extends Controller
 
     /**
      * Replace an entity's whole tab/card/field tree with the submitted
-     * one. Rejected by UpdateEntityBuilderRequest if the entity is
-     * already installed — its structure becomes append-only from the
-     * installer's own tooling once that exists.
+     * one (not-yet-installed entities), or apply the narrower diff
+     * updateInstalled() allows once the entity is live — see
+     * UpdateEntityBuilderRequest for why the two payloads look
+     * different.
      */
-    public function update(UpdateEntityBuilderRequest $request, Entity $entity): RedirectResponse
+    public function update(UpdateEntityBuilderRequest $request, Entity $entity, EntitySchemaBuilder $schemaBuilder, WorkflowFieldReferenceCleaner $referenceCleaner): RedirectResponse
     {
+        if ($entity->is_installed) {
+            return $this->updateInstalled($request, $entity, $schemaBuilder, $referenceCleaner);
+        }
+
         DB::transaction(function () use ($request, $entity) {
             $entity->tabs()->delete();
 
@@ -78,6 +89,145 @@ class EntityBuilderController extends Controller
         });
 
         return redirect()->route('admin.entities.builder.edit', $entity)->with('status', 'entity-structure-saved');
+    }
+
+    /**
+     * Diffs the submitted tree against the entity's current one instead
+     * of replacing it: new tabs/cards/fields are created exactly like the
+     * not-yet-installed flow does (same builder UI, same per-type field
+     * rules — see UpdateEntityBuilderRequest — the only difference is a
+     * new field's column is appended live via
+     * EntitySchemaBuilder::addColumn() instead of the table being built
+     * from scratch), existing tabs and cards can be renamed, existing
+     * fields have only their metadata updated (name/required/
+     * default_value/width/options — never column_name/type/
+     * relation_target, immutable once the physical column exists), and
+     * any existing field missing from the payload (the admin removed it,
+     * after confirming the data-loss alert client-side) gets its column
+     * dropped and its row deleted — unless it's is_locked, in which case
+     * the whole save is rejected and nothing is persisted.
+     *
+     * Deliberately NOT wrapped in a DB::transaction(): on MySQL/MariaDB
+     * every ALTER TABLE (addColumn/dropColumn) causes an implicit commit,
+     * silently ending any open transaction out from under Laravel and
+     * making the eventual commit/rollback fail with "There is no active
+     * transaction" — DDL was never really rollback-able here to begin
+     * with. The is_locked check therefore runs as a fail-fast guard up
+     * front, before anything is touched, rather than as a mid-flight
+     * rollback trigger.
+     */
+    private function updateInstalled(UpdateEntityBuilderRequest $request, Entity $entity, EntitySchemaBuilder $schemaBuilder, WorkflowFieldReferenceCleaner $referenceCleaner): RedirectResponse
+    {
+        $existingFieldIds = $entity->allFields()->pluck('id');
+        $submittedFieldIds = $this->submittedFieldIds($request);
+
+        $lockedFieldBeingDeleted = EntityField::whereIn('id', $existingFieldIds->diff($submittedFieldIds))
+            ->where('is_locked', true)
+            ->first();
+
+        if ($lockedFieldBeingDeleted) {
+            return redirect()->route('admin.entities.builder.edit', $entity)
+                ->withErrors(['tabs' => "Il campo «{$lockedFieldBeingDeleted->name}» è protetto e non può essere eliminato."]);
+        }
+
+        foreach ($request->input('tabs', []) as $tabToken => $tabInput) {
+            if (ctype_digit((string) $tabToken)) {
+                $tab = EntityTab::where('entity_id', $entity->id)->findOrFail((int) $tabToken);
+                $tab->update(['name' => $tabInput['name']]);
+            } else {
+                $tab = $entity->tabs()->create(['name' => $tabInput['name'], 'position' => $entity->tabs()->max('position') + 1]);
+            }
+
+            foreach (($tabInput['cards'] ?? []) as $cardToken => $cardInput) {
+                if (ctype_digit((string) $cardToken)) {
+                    $card = EntityCard::where('entity_tab_id', $tab->id)->findOrFail((int) $cardToken);
+                    $card->update(['name' => $cardInput['name']]);
+                } else {
+                    $card = $tab->cards()->create(['name' => $cardInput['name'], 'position' => $tab->cards()->max('position') + 1]);
+                }
+
+                $position = 0;
+
+                foreach (($cardInput['fields'] ?? []) as $fieldToken => $fieldInput) {
+                    if (! ctype_digit((string) $fieldToken)) {
+                        $field = $card->fields()->create([
+                            'name' => $fieldInput['name'],
+                            'column_name' => $fieldInput['column_name'],
+                            'type' => $fieldInput['type'],
+                            'options' => $this->parseOptions($fieldInput),
+                            'relation_target_type' => $this->relationTargetType($fieldInput),
+                            'relation_target' => $this->relationTarget($fieldInput),
+                            'required' => (bool) ($fieldInput['required'] ?? false),
+                            'default_value' => $fieldInput['default_value'] ?? null,
+                            'position' => $position,
+                            'width' => min(12, max(1, (int) ($fieldInput['width'] ?? 12))),
+                            'is_locked' => false,
+                        ]);
+
+                        $schemaBuilder->addColumn($entity, $field);
+                        $position++;
+
+                        continue;
+                    }
+
+                    $field = EntityField::where('id', (int) $fieldToken)
+                        ->whereHas('card.tab', fn ($query) => $query->where('entity_id', $entity->id))
+                        ->firstOrFail();
+
+                    $fieldInput['type'] = $field->type->value;
+
+                    $field->update([
+                        'name' => $fieldInput['name'],
+                        'entity_card_id' => $card->id,
+                        'position' => $position,
+                        'width' => min(12, max(1, (int) ($fieldInput['width'] ?? 12))),
+                        'required' => (bool) ($fieldInput['required'] ?? false),
+                        'default_value' => $fieldInput['default_value'] ?? null,
+                        'options' => $this->parseOptions($fieldInput),
+                    ]);
+                    $position++;
+                }
+            }
+        }
+
+        foreach ($existingFieldIds->diff($submittedFieldIds) as $deletedId) {
+            $field = EntityField::find($deletedId);
+
+            if (! $field) {
+                continue;
+            }
+
+            $schemaBuilder->dropColumn($entity, $field);
+            $referenceCleaner->removeReferencesToField($entity, $field);
+            $field->delete();
+        }
+
+        return redirect()->route('admin.entities.builder.edit', $entity)->with('status', 'entity-structure-saved');
+    }
+
+    /**
+     * The set of existing (numeric-token) field ids present anywhere in
+     * the submitted payload — used both to fail fast on a locked-field
+     * deletion before touching anything, and to know which existing
+     * fields are missing from the payload (and therefore being removed).
+     *
+     * @return Collection<int, int>
+     */
+    private function submittedFieldIds(UpdateEntityBuilderRequest $request): Collection
+    {
+        $ids = collect();
+
+        foreach ($request->input('tabs', []) as $tabInput) {
+            foreach (($tabInput['cards'] ?? []) as $cardInput) {
+                foreach (($cardInput['fields'] ?? []) as $fieldToken => $fieldInput) {
+                    if (ctype_digit((string) $fieldToken)) {
+                        $ids->push((int) $fieldToken);
+                    }
+                }
+            }
+        }
+
+        return $ids;
     }
 
     /**
@@ -157,7 +307,7 @@ class EntityBuilderController extends Controller
      * Active workflows whose start node is configured for manual
      * launch — the only ones a Button field can offer to run.
      */
-    private function manualWorkflows(): Collection
+    private function manualWorkflows(): EloquentCollection
     {
         return Workflow::where('is_active', true)
             ->whereHas('currentVersion.nodes', function ($query) {

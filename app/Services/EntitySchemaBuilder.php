@@ -8,6 +8,7 @@ use App\Models\Entity;
 use App\Models\EntityField;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Throwable;
 
 /**
  * Creates/extends/drops the real, dedicated SQL table backing an
@@ -67,6 +68,35 @@ class EntitySchemaBuilder
     public function dropTable(Entity $entity): void
     {
         Schema::dropIfExists($entity->table_name);
+    }
+
+    /**
+     * Drop a single field's physical column from an installed entity's
+     * table — the irreversible half of removing a field post-install
+     * (see EntityBuilderController::updateInstalled()). A Button field
+     * never had a column to begin with, so this is a no-op for it.
+     */
+    public function dropColumn(Entity $entity, EntityField $field): void
+    {
+        if ($field->type->isAction()) {
+            return;
+        }
+
+        $column = $field->type === EntityFieldType::Relation ? "{$field->column_name}_id" : $field->column_name;
+
+        Schema::table($entity->table_name, function (Blueprint $table) use ($field, $column) {
+            if ($field->type === EntityFieldType::Relation) {
+                try {
+                    $table->dropForeign([$column]);
+                } catch (Throwable) {
+                    // No FK constraint to drop — either its target never
+                    // resolved at creation time, or the driver (sqlite,
+                    // in tests) doesn't support altering constraints.
+                }
+            }
+
+            $table->dropColumn($column);
+        });
     }
 
     private function addColumnToBlueprint(Blueprint $table, EntityField $field): void

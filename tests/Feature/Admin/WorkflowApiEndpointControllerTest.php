@@ -10,6 +10,16 @@ test('guests are redirected to login', function () {
     $this->get(route('admin.api-endpoints.index'))->assertRedirect(route('login'));
 });
 
+test('admin can view the create form', function () {
+    $this->actingAs(adminUser())->get(route('admin.api-endpoints.create'))->assertOk();
+});
+
+test('admin can view the edit form', function () {
+    $endpoint = WorkflowApiEndpoint::create(['name' => 'Da modificare', 'base_url' => 'https://api.example.com', 'config' => ['auth_type' => 'none']]);
+
+    $this->actingAs(adminUser())->get(route('admin.api-endpoints.edit', $endpoint))->assertOk();
+});
+
 test('admin can create a global bearer-auth endpoint with an encrypted token', function () {
     $response = $this->actingAs(adminUser())->post(route('admin.api-endpoints.store'), [
         'name' => 'CRM esterno',
