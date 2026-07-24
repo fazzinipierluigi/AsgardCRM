@@ -6,6 +6,7 @@ use App\Enums\EntityFieldType;
 use App\Models\Entity;
 use App\Models\EntityCard;
 use App\Services\EntitySchemaBuilder;
+use App\Support\ButtonConfigValidator;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -48,6 +49,12 @@ class StoreEntityFieldRequest extends FormRequest
             'required' => ['nullable', 'boolean'],
             'default_value' => ['nullable', 'string', 'max:255'],
             'width' => ['nullable', 'integer', 'between:1,12'],
+            'button_action' => ['required_if:type,button', Rule::in(['workflow', 'importer', 'javascript'])],
+            'button_workflow_id' => ['nullable', 'integer'],
+            'button_importer_ids' => ['nullable', 'array'],
+            'button_importer_ids.*' => ['integer', Rule::exists('importers', 'id')],
+            'button_javascript' => ['nullable', 'string'],
+            'table_columns' => ['required_if:type,table', 'string'],
         ];
     }
 
@@ -88,7 +95,59 @@ class StoreEntityFieldRequest extends FormRequest
             if ($type === EntityFieldType::Relation->value && empty($this->input('relation_target'))) {
                 $validator->errors()->add('relation_target', 'Seleziona il target della relazione.');
             }
+
+            if ($type === EntityFieldType::Button->value) {
+                foreach (ButtonConfigValidator::errors($this->all()) as $field => $message) {
+                    $validator->errors()->add($field, $message);
+                }
+            }
+
+            if ($type === EntityFieldType::Table->value && self::parseTableColumns((string) $this->input('table_columns', '')) === []) {
+                $validator->errors()->add('table_columns', 'Definisci almeno una colonna valida per la tabella.');
+            }
         });
+    }
+
+    /**
+     * Parses the "one column per line" textarea format shared by the
+     * add-field form and the pre-install structural builder:
+     * `nome_colonna:Etichetta:tipo:obbligatoria`, tipo one of
+     * string|integer|decimal|date|checkbox (default string),
+     * obbligatoria si/1/true (default no).
+     *
+     * @return list<array{name: string, label: string, type: string, required: bool}>
+     */
+    public static function parseTableColumns(string $raw): array
+    {
+        $allowedTypes = ['string', 'integer', 'decimal', 'date', 'checkbox'];
+        $columns = [];
+
+        foreach (preg_split('/\R/', $raw) as $line) {
+            $line = trim($line);
+
+            if ($line === '') {
+                continue;
+            }
+
+            [$name, $label, $type, $required] = array_pad(explode(':', $line, 4), 4, null);
+            $name = trim((string) $name);
+
+            if ($name === '') {
+                continue;
+            }
+
+            $type = trim((string) $type);
+            $type = in_array($type, $allowedTypes, true) ? $type : 'string';
+
+            $columns[] = [
+                'name' => $name,
+                'label' => trim((string) ($label ?? $name)) ?: $name,
+                'type' => $type,
+                'required' => in_array(mb_strtolower(trim((string) $required)), ['si', '1', 'true'], true),
+            ];
+        }
+
+        return $columns;
     }
 
     /**

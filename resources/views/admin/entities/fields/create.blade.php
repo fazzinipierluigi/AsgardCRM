@@ -113,6 +113,62 @@
                     @enderror
                 </div>
 
+                <div class="field-button-group d-none">
+                    <div class="mb-3">
+                        <label for="button_action" class="form-label">{{ t('Azione al click') }}</label>
+                        <select id="button_action" name="button_action" class="form-select @error('button_action') is-invalid @enderror">
+                            <option value="workflow" @selected(old('button_action') === 'workflow')>{{ t('Avvia un flusso (workflow manuale)') }}</option>
+                            <option value="importer" @selected(old('button_action') === 'importer')>{{ t('Lancia uno o più importatori') }}</option>
+                            <option value="javascript" @selected(old('button_action') === 'javascript')>{{ t('Esegui codice JavaScript') }}</option>
+                        </select>
+                        @error('button_action')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3 field-button-workflow-group d-none">
+                        <label for="button_workflow_id" class="form-label">{{ t('Workflow da avviare') }}</label>
+                        <select id="button_workflow_id" name="button_workflow_id" class="form-select @error('button_workflow_id') is-invalid @enderror">
+                            <option value="">{{ t('Seleziona...') }}</option>
+                            @foreach ($manualWorkflows as $workflow)
+                                <option value="{{ $workflow->id }}" @selected((string) old('button_workflow_id') === (string) $workflow->id)>{{ $workflow->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('button_workflow_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3 field-button-importer-group d-none">
+                        <label for="button_importer_ids" class="form-label">{{ t('Importatori da lanciare') }}</label>
+                        <select id="button_importer_ids" name="button_importer_ids[]" multiple class="form-select @error('button_importer_ids') is-invalid @enderror">
+                            @foreach ($importers as $importer)
+                                <option value="{{ $importer->id }}" @selected(in_array((string) $importer->id, (array) old('button_importer_ids', []), true))>{{ $importer->title }}</option>
+                            @endforeach
+                        </select>
+                        @error('button_importer_ids')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3 field-button-javascript-group d-none">
+                        <label for="button_javascript" class="form-label">{{ t('Codice JavaScript') }}</label>
+                        <textarea id="button_javascript" name="button_javascript" rows="6" class="form-control font-monospace @error('button_javascript') is-invalid @enderror">{{ old('button_javascript') }}</textarea>
+                        @error('button_javascript')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="mb-3 field-table-group d-none">
+                    <label for="table_columns" class="form-label">{{ t('Colonne (una per riga, formato: nome_colonna:Etichetta:tipo:obbligatoria)') }}</label>
+                    <textarea id="table_columns" name="table_columns" rows="4" class="form-control font-monospace @error('table_columns') is-invalid @enderror" placeholder="quantita:Quantità:integer:si">{{ old('table_columns') }}</textarea>
+                    <small class="form-hint">{{ t('Tipo: string, integer, decimal, date, checkbox. Obbligatoria: si/no.') }}</small>
+                    @error('table_columns')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <div class="row">
                     <div class="col-md-8 mb-3">
                         <label for="default_value" class="form-label">{{ t('Valore predefinito') }}</label>
@@ -140,16 +196,33 @@
             const optionsGroup = document.querySelector('.field-options-group');
             const codeGroup = document.querySelector('.field-code-group');
             const relationGroup = document.querySelector('.field-relation-group');
+            const buttonGroup = document.querySelector('.field-button-group');
+            const buttonActionSelect = document.getElementById('button_action');
+            const buttonWorkflowGroup = document.querySelector('.field-button-workflow-group');
+            const buttonImporterGroup = document.querySelector('.field-button-importer-group');
+            const buttonJavascriptGroup = document.querySelector('.field-button-javascript-group');
+            const tableGroup = document.querySelector('.field-table-group');
+
+            function syncButtonGroups() {
+                const action = buttonActionSelect.value;
+                buttonWorkflowGroup.classList.toggle('d-none', action !== 'workflow');
+                buttonImporterGroup.classList.toggle('d-none', action !== 'importer');
+                buttonJavascriptGroup.classList.toggle('d-none', action !== 'javascript');
+            }
 
             function syncGroups() {
                 const type = typeSelect.value;
                 optionsGroup.classList.toggle('d-none', type !== 'select');
                 codeGroup.classList.toggle('d-none', type !== 'code');
                 relationGroup.classList.toggle('d-none', type !== 'relation');
+                buttonGroup.classList.toggle('d-none', type !== 'button');
+                tableGroup.classList.toggle('d-none', type !== 'table');
             }
 
             typeSelect.addEventListener('change', syncGroups);
+            buttonActionSelect.addEventListener('change', syncButtonGroups);
             syncGroups();
+            syncButtonGroups();
         });
     </script>
 @endsection

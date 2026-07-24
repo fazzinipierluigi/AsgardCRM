@@ -14,18 +14,23 @@ use App\Http\Requests\Admin\UpdateWorkflowGraphRequest;
 use App\Models\Entity;
 use App\Models\User;
 use App\Models\Workflow;
+use App\Models\WorkflowApiEndpoint;
+use App\Models\WorkflowSqlConnection;
 use App\Services\Workflows\WorkflowGraphPersister;
 use Fazzinipierluigi\JustAGate\Models\Role;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use RuntimeException;
 
 /**
  * The drag-and-drop MaxGraph editor for a single workflow's graph.
  * edit() hands the page every option list the node/edge/action config
- * panels need; update() replaces the whole graph in one shot (see
- * WorkflowGraphPersister) and always answers in JSON, since the page
- * saves via fetch() without navigating away.
+ * panels need; update() writes the whole graph into the current draft
+ * version in one shot (see WorkflowGraphPersister) and always answers
+ * in JSON, since the page saves via fetch() without navigating away.
+ * publish() is the separate action that promotes that draft to live.
  */
 class WorkflowBuilderController extends Controller
 {
@@ -54,7 +59,23 @@ class WorkflowBuilderController extends Controller
             'roles' => Role::orderBy('name')->get(['id', 'name']),
             'users' => User::orderBy('name')->get(['id', 'name']),
             'otherWorkflows' => Workflow::where('id', '!=', $workflow->id)->orderBy('name')->get(['id', 'name']),
+            'sqlConnections' => $this->scopedToWorkflow(WorkflowSqlConnection::query(), $workflow),
+            'apiEndpoints' => $this->scopedToWorkflow(WorkflowApiEndpoint::query(), $workflow),
         ]);
+    }
+
+    /**
+     * Global (workflow_id null) records plus any scoped to this one
+     * workflow — the set of SQL connections/API endpoints its
+     * "Assegna variabile da SQL/API" actions may pick from.
+     *
+     * @return Collection<int, array{id: int, name: string}>
+     */
+    private function scopedToWorkflow(Builder $query, Workflow $workflow): Collection
+    {
+        return $query->where(fn ($q) => $q->whereNull('workflow_id')->orWhere('workflow_id', $workflow->id))
+            ->orderBy('name')
+            ->get(['id', 'name']);
     }
 
     public function update(UpdateWorkflowGraphRequest $request, Workflow $workflow, WorkflowGraphPersister $persister): JsonResponse
@@ -66,5 +87,16 @@ class WorkflowBuilderController extends Controller
         }
 
         return response()->json(['status' => 'ok']);
+    }
+
+    public function publish(Workflow $workflow, WorkflowGraphPersister $persister): JsonResponse
+    {
+        try {
+            $version = $persister->publish($workflow);
+        } catch (RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
+
+        return response()->json(['status' => 'ok', 'version' => $version->version]);
     }
 }

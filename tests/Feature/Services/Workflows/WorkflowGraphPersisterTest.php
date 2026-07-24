@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\WorkflowInstanceStatus;
+use App\Enums\WorkflowVersionStatus;
 use App\Models\Workflow;
 use App\Models\WorkflowInstance;
 use App\Services\Workflows\WorkflowGraphPersister;
@@ -14,9 +15,6 @@ uses(RefreshDatabase::class);
 function wfSampleGraph(): array
 {
     return [
-        'name' => 'Approvazione spese',
-        'description' => 'Approva una spesa oltre soglia',
-        'is_active' => true,
         'variables' => [
             ['name' => 'importo', 'type' => 'float', 'default_value' => '0'],
         ],
@@ -34,25 +32,66 @@ function wfSampleGraph(): array
     ];
 }
 
-test('replace publishes a version 1 and toArray hydrates it back with real keys', function () {
+test('replace writes a draft version 1 that is not yet live, and toArray hydrates it back with real keys', function () {
     $workflow = Workflow::factory()->create();
 
     $version = app(WorkflowGraphPersister::class)->replace($workflow, wfSampleGraph());
 
     $workflow->refresh();
 
-    expect($workflow->name)->toBe('Approvazione spese')
-        ->and($version->version)->toBe(1)
-        ->and($workflow->current_version_id)->toBe($version->id)
+    expect($version->version)->toBe(1)
+        ->and($version->status)->toBe(WorkflowVersionStatus::Draft)
+        ->and($workflow->current_version_id)->toBeNull()
         ->and($version->nodes)->toHaveCount(3)
         ->and($version->edges)->toHaveCount(2)
         ->and($version->variables)->toHaveCount(1);
 
     $array = app(WorkflowGraphPersister::class)->toArray($workflow);
 
-    expect($array['nodes'])->toHaveCount(3)
+    expect($array['version'])->toBe(1)
+        ->and($array['version_status'])->toBe('draft')
+        ->and($array['published_version'])->toBeNull()
+        ->and($array['nodes'])->toHaveCount(3)
         ->and($array['edges'])->toHaveCount(2)
         ->and(collect($array['nodes'])->firstWhere('type', 'end')['actions']['after'][0]['type'])->toBe('set_variable');
+});
+
+test('saving the draft again reuses the same version instead of minting a new one', function () {
+    $workflow = Workflow::factory()->create();
+    $persister = app(WorkflowGraphPersister::class);
+
+    $v1 = $persister->replace($workflow, wfSampleGraph());
+
+    $graph2 = wfSampleGraph();
+    $graph2['nodes'][2]['name'] = 'Fine (modificata)';
+    $v1SavedAgain = $persister->replace($workflow, $graph2);
+
+    expect($v1SavedAgain->id)->not->toBe($v1->id)
+        ->and($v1SavedAgain->version)->toBe(1)
+        ->and($workflow->versions()->count())->toBe(1)
+        ->and($v1SavedAgain->nodes()->where('type', 'end')->first()->name)->toBe('Fine (modificata)');
+});
+
+test('publish promotes the current draft to live and stops it from being overwritten by the next save', function () {
+    $workflow = Workflow::factory()->create();
+    $persister = app(WorkflowGraphPersister::class);
+
+    $draft = $persister->replace($workflow, wfSampleGraph());
+    $published = $persister->publish($workflow);
+
+    expect($published->id)->toBe($draft->id)
+        ->and($published->status)->toBe(WorkflowVersionStatus::Published)
+        ->and($published->published_at)->not->toBeNull()
+        ->and($workflow->fresh()->current_version_id)->toBe($published->id);
+
+    $graph2 = wfSampleGraph();
+    $graph2['nodes'][2]['name'] = 'Fine v2';
+    $v2 = $persister->replace($workflow, $graph2);
+
+    expect($v2->version)->toBe(2)
+        ->and($v2->status)->toBe(WorkflowVersionStatus::Draft)
+        ->and($workflow->fresh()->current_version_id)->toBe($published->id)
+        ->and($published->fresh()->nodes()->where('type', 'end')->first()->name)->toBe('Fine');
 });
 
 test('replace round-trips manually-dragged edge waypoints instead of losing them', function () {
@@ -68,6 +107,12 @@ test('replace round-trips manually-dragged edge waypoints instead of losing them
         ->waypoints->toBe([['x' => 250, 'y' => 80], ['x' => 350, 'y' => 80]]);
 });
 
+test('publishing with no draft throws', function () {
+    $workflow = Workflow::factory()->create();
+
+    app(WorkflowGraphPersister::class)->publish($workflow);
+})->throws(RuntimeException::class, 'nessuna bozza');
+
 test('replace rejects a graph without exactly one start node', function () {
     $workflow = Workflow::factory()->create();
     $graph = wfSampleGraph();
@@ -76,19 +121,22 @@ test('replace rejects a graph without exactly one start node', function () {
     app(WorkflowGraphPersister::class)->replace($workflow, $graph);
 })->throws(RuntimeException::class, 'nodo di avvio');
 
-test('editing a workflow with an instance in flight publishes a new version without disturbing it', function () {
+test('publishing a new draft while an instance is running keeps that instance pinned to its version', function () {
     $persister = app(WorkflowGraphPersister::class);
     $workflow = Workflow::factory()->create();
 
     $v1 = $persister->replace($workflow, wfSampleGraph());
+    $persister->publish($workflow);
 
     $runningInstance = WorkflowInstance::factory()->for($workflow)->for($v1)->create(['status' => WorkflowInstanceStatus::Running]);
 
     $graph2 = wfSampleGraph();
     $graph2['nodes'][2]['name'] = 'Fine (modificata)';
-    $v2 = $persister->replace($workflow, $graph2);
+    $draft2 = $persister->replace($workflow, $graph2);
+    $v2 = $persister->publish($workflow);
 
-    expect($v2->version)->toBe(2)
+    expect($v2->id)->toBe($draft2->id)
+        ->and($v2->version)->toBe(2)
         ->and($workflow->fresh()->current_version_id)->toBe($v2->id)
         ->and($runningInstance->fresh()->workflow_version_id)->toBe($v1->id)
         ->and($v1->fresh()->nodes()->where('type', 'end')->first()->name)->toBe('Fine');

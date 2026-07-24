@@ -25,7 +25,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     @foreach ($card->fields as $field)
-                                        @include('entities._field_input', ['field' => $field, 'record' => $record, 'relationOptions' => $relationOptions])
+                                        @include('entities._field_input', ['field' => $field, 'record' => $record, 'relationOptions' => $relationOptions, 'entity' => $entity])
                                     @endforeach
                                 </div>
                             </div>

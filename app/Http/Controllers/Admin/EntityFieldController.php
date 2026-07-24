@@ -3,11 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EntityFieldType;
+use App\Enums\WorkflowNodeType;
+use App\Enums\WorkflowTriggerType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreEntityFieldRequest;
 use App\Models\Entity;
+use App\Models\Importer;
+use App\Models\Workflow;
 use App\Services\EntityRelationResolver;
 use App\Services\EntitySchemaBuilder;
+use App\Support\ButtonConfigValidator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -46,6 +52,8 @@ class EntityFieldController extends Controller
             'entity' => $entity,
             'fieldTypes' => EntityFieldType::options(),
             'relationTargets' => $this->relationResolver->targetOptions($entity),
+            'manualWorkflows' => $this->manualWorkflows(),
+            'importers' => Importer::where('entity_id', $entity->id)->where('is_active', true)->get(),
         ]);
     }
 
@@ -85,6 +93,14 @@ class EntityFieldController extends Controller
             return $prefix !== '' ? ['prefix' => $prefix] : null;
         }
 
+        if ($type === EntityFieldType::Table->value) {
+            return ['columns' => StoreEntityFieldRequest::parseTableColumns((string) $request->validated('table_columns'))];
+        }
+
+        if ($type === EntityFieldType::Button->value) {
+            return ButtonConfigValidator::parse($request->validated());
+        }
+
         if ($type !== EntityFieldType::Select->value) {
             return null;
         }
@@ -107,6 +123,20 @@ class EntityFieldController extends Controller
         }
 
         return $options ?: null;
+    }
+
+    /**
+     * Active workflows whose start node is configured for manual
+     * launch — the only ones a Button field can offer to run.
+     */
+    private function manualWorkflows(): Collection
+    {
+        return Workflow::where('is_active', true)
+            ->whereHas('currentVersion.nodes', function ($query) {
+                $query->where('type', WorkflowNodeType::Start->value)
+                    ->where('config->trigger_type', WorkflowTriggerType::Manual->value);
+            })
+            ->get();
     }
 
     private function relationTargetType(StoreEntityFieldRequest $request): ?string

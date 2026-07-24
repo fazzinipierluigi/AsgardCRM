@@ -22,18 +22,28 @@ class WorkflowEntityTriggerDispatcher
 
     public function handleCreated(EntityRecord $record): void
     {
-        $this->dispatch($record, [WorkflowTriggerType::EntityCreated, WorkflowTriggerType::EntityCreatedOrUpdated]);
+        $this->dispatch($record, [WorkflowTriggerType::EntityCreated, WorkflowTriggerType::EntityCreatedOrUpdated], []);
     }
 
+    /**
+     * $record->getOriginal() is still the pre-update snapshot here —
+     * Eloquent fires the 'updated' event before syncOriginal() runs.
+     * It's threaded through as the __entity_previous system variable so
+     * the "è cambiato" condition operators (see
+     * WorkflowConditionEvaluator::expandChangeOperators()) can compare
+     * against it later, even from a gateway reached long after this
+     * trigger fired.
+     */
     public function handleUpdated(EntityRecord $record): void
     {
-        $this->dispatch($record, [WorkflowTriggerType::EntityUpdated, WorkflowTriggerType::EntityCreatedOrUpdated]);
+        $this->dispatch($record, [WorkflowTriggerType::EntityUpdated, WorkflowTriggerType::EntityCreatedOrUpdated], $record->getOriginal());
     }
 
     /**
      * @param  list<WorkflowTriggerType>  $triggerTypes
+     * @param  array<string, mixed>  $previousValues
      */
-    private function dispatch(EntityRecord $record, array $triggerTypes): void
+    private function dispatch(EntityRecord $record, array $triggerTypes, array $previousValues): void
     {
         $entity = Entity::where('table_name', $record->getTable())->first();
 
@@ -59,7 +69,7 @@ class WorkflowEntityTriggerDispatcher
                 continue;
             }
 
-            $this->engine->start($workflow, [], $record, entitySlug: $entity->slug);
+            $this->engine->start($workflow, ['__entity_previous' => $previousValues], $record, entitySlug: $entity->slug);
         }
     }
 }

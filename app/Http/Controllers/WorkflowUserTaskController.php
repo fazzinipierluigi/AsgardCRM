@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\WorkflowUserTaskStatus;
 use App\Models\WorkflowUserTask;
+use App\Rules\TableFieldRule;
 use App\Services\Workflows\WorkflowEngine;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
@@ -75,6 +76,16 @@ class WorkflowUserTaskController extends Controller
         $fields = $workflowUserTask->node->config['form_fields'] ?? [];
         $formData = [];
         foreach ($fields as $field) {
+            if (($field['type'] ?? null) === 'table') {
+                $request->validate([
+                    $field['name'] => [new TableFieldRule($field['columns'] ?? [], false)],
+                ]);
+
+                $formData[$field['name']] = json_decode((string) $request->input($field['name'], '[]'), true) ?? [];
+
+                continue;
+            }
+
             $formData[$field['name']] = $request->input($field['name']);
         }
 

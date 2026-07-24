@@ -74,7 +74,10 @@
     @if ($entity->is_installed)
         <div class="alert alert-info d-flex align-items-center justify-content-between" data-testid="entity-builder-installed-notice">
             <span>{{ t('Questa entità è installata: la struttura non è più modificabile da qui.') }}</span>
-            <a href="{{ route('admin.entities.fields.create', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-add-field-link">{{ t('Aggiungi campo') }}</a>
+            <div class="btn-list">
+                <a href="{{ route('admin.entities.widgets.index', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-widgets-link">{{ t('Gestisci widget lista') }}</a>
+                <a href="{{ route('admin.entities.fields.create', $entity) }}" class="btn btn-sm btn-outline-primary" data-testid="entity-builder-add-field-link">{{ t('Aggiungi campo') }}</a>
+            </div>
         </div>
     @endif
 
@@ -180,6 +183,38 @@
                                 </optgroup>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="mb-2 field-modal-button-group d-none">
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Azione al click') }}</label>
+                            <select class="form-select" id="field-modal-button-action">
+                                <option value="workflow">{{ t('Avvia un flusso (workflow manuale)') }}</option>
+                                <option value="importer">{{ t('Lancia uno o più importatori') }}</option>
+                                <option value="javascript">{{ t('Esegui codice JavaScript') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-2 field-modal-button-workflow-group d-none">
+                            <label class="form-label">{{ t('Workflow da avviare') }}</label>
+                            <select class="form-select" id="field-modal-button-workflow">
+                                <option value="">{{ t('Seleziona...') }}</option>
+                                @foreach ($manualWorkflows as $workflow)
+                                    <option value="{{ $workflow->id }}">{{ $workflow->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-2 field-modal-button-importer-group d-none">
+                            <label class="form-label">{{ t('ID importatori (separati da virgola)') }}</label>
+                            <input type="text" class="form-control" id="field-modal-button-importer-ids" placeholder="es. 3,7,12">
+                        </div>
+                        <div class="mb-2 field-modal-button-javascript-group d-none">
+                            <label class="form-label">{{ t('Codice JavaScript') }}</label>
+                            <textarea class="form-control font-monospace" id="field-modal-button-javascript" rows="6"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-2 field-modal-table-group d-none">
+                        <label class="form-label">{{ t('Colonne (una per riga, formato: nome_colonna:Etichetta:tipo:obbligatoria)') }}</label>
+                        <textarea class="form-control font-monospace" id="field-modal-table-columns" rows="4" placeholder="quantita:Quantità:integer:si"></textarea>
+                        <small class="form-hint">{{ t('Tipo: string, integer, decimal, date, checkbox. Obbligatoria: si/no.') }}</small>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">{{ t('Valore predefinito') }}</label>

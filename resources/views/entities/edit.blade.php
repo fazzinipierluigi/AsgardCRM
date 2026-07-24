@@ -37,5 +37,31 @@
         @include('entities._form', ['entity' => $entity, 'record' => $record, 'relationOptions' => $relationOptions])
     </form>
 
+    @if (($changeTransactions ?? collect())->isNotEmpty())
+        <div class="card mt-3" data-testid="entity-change-log">
+            <div class="card-header">
+                <h3 class="card-title">{{ t('Storico modifiche') }}</h3>
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach ($changeTransactions as $changes)
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between text-secondary small mb-1">
+                            <span>{{ $changes->first()->changedByUser?->name ?? $changes->first()->changed_by_label ?? t('Sconosciuto') }}</span>
+                            <span>{{ $changes->first()->created_at->format('d/m/Y H:i') }}</span>
+                        </div>
+                        <ul class="mb-0 ps-3">
+                            @foreach ($changes as $change)
+                                <li>
+                                    <strong>{{ $change->field_label }}</strong>:
+                                    {{ $change->old_value ?? t('(vuoto)') }} → {{ $change->new_value ?? t('(vuoto)') }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
     @vite('resources/js/entity-record-form.js')
 @endsection

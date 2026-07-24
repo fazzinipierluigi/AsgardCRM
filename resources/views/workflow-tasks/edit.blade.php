@@ -50,6 +50,19 @@
                                     @endforeach
                                 </select>
                                 @break
+                            @case('table')
+                                <div data-table-field data-columns="{{ json_encode($field['columns'] ?? []) }}">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered mb-2">
+                                            <thead></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-table-field-add>{{ t('Aggiungi riga') }}</button>
+                                    <input type="hidden" name="{{ $field['name'] }}" id="field-{{ $field['name'] }}" data-table-field-input value="[]">
+                                </div>
+                                @break
+
                             @default
                                 <input type="text" name="{{ $field['name'] }}" id="field-{{ $field['name'] }}" class="form-control">
                         @endswitch

@@ -4,6 +4,13 @@
     $optionsText = $field && $field->options && $type === 'select' ? collect($field->options)->map(fn ($label, $key) => "{$key}:{$label}")->implode("\n") : '';
     $relationValue = $field && $field->relation_target_type ? "{$field->relation_target_type->value}:{$field->relation_target}" : '';
     $codePrefix = $field && $field->options && $type === 'code' ? ($field->options['prefix'] ?? '') : '';
+    $buttonAction = $field && $field->options && $type === 'button' ? ($field->options['button_action'] ?? '') : '';
+    $buttonWorkflowId = $field && $field->options && $type === 'button' ? ($field->options['button_workflow_id'] ?? '') : '';
+    $buttonImporterIds = $field && $field->options && $type === 'button' ? implode(',', $field->options['button_importer_ids'] ?? []) : '';
+    $buttonJavascript = $field && $field->options && $type === 'button' ? ($field->options['button_javascript'] ?? '') : '';
+    $tableColumnsText = $field && $field->options && $type === 'table'
+        ? collect($field->options['columns'] ?? [])->map(fn ($c) => "{$c['name']}:{$c['label']}:{$c['type']}:".($c['required'] ? 'si' : 'no'))->implode("\n")
+        : '';
     $width = $field?->width ?? 12;
 @endphp
 <div class="field-item repeatable-row col-md-{{ $width }}" data-width="{{ $width }}" data-tab-token="{{ $tabToken }}" data-card-token="{{ $cardToken }}" data-field-token="{{ $fieldToken }}">
@@ -14,6 +21,11 @@
     <input type="hidden" name="{{ $namePrefix }}[options]" class="field-options-input" value="{{ $optionsText }}">
     <input type="hidden" name="{{ $namePrefix }}[code_prefix]" class="field-codeprefix-input" value="{{ $codePrefix }}">
     <input type="hidden" name="{{ $namePrefix }}[relation_target]" class="field-relationtarget-input" value="{{ $relationValue }}">
+    <input type="hidden" name="{{ $namePrefix }}[button_action]" class="field-buttonaction-input" value="{{ $buttonAction }}">
+    <input type="hidden" name="{{ $namePrefix }}[button_workflow_id]" class="field-buttonworkflowid-input" value="{{ $buttonWorkflowId }}">
+    <input type="hidden" name="{{ $namePrefix }}[button_importer_ids]" class="field-buttonimporterids-input" value="{{ $buttonImporterIds }}">
+    <input type="hidden" name="{{ $namePrefix }}[button_javascript]" class="field-buttonjavascript-input" value="{{ $buttonJavascript }}">
+    <input type="hidden" name="{{ $namePrefix }}[table_columns]" class="field-tablecolumns-input" value="{{ $tableColumnsText }}">
     <input type="hidden" name="{{ $namePrefix }}[default_value]" class="field-defaultvalue-input" value="{{ $field?->default_value }}">
     <input type="hidden" name="{{ $namePrefix }}[width]" class="field-width-input" value="{{ $width }}">
 

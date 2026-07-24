@@ -106,6 +106,35 @@ test('an exclusive gate with no matching condition fails the instance', function
         ->and($instance->error_message)->toContain('gate esclusivo');
 });
 
+test('an exclusive gate routes on a "changed_to" condition against the entity that started the instance', function () {
+    $entity = Entity::create(['name' => 'Ordine Gate', 'slug' => 'ordine-gate-'.uniqid(), 'table_name' => 'entity_ordine_gate_'.uniqid()]);
+    $tab = $entity->tabs()->create(['name' => 'Generale', 'position' => 0]);
+    $card = $tab->cards()->create(['name' => 'Dati', 'position' => 0]);
+    $card->fields()->create(['name' => 'Stato', 'column_name' => 'stato', 'type' => EntityFieldType::String, 'position' => 0]);
+    app(EntityInstaller::class)->install($entity);
+    $record = EntityRecord::forEntity($entity)->create(['stato' => 'chiuso', 'user_id' => User::factory()->create()->id]);
+
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $gate = WorkflowNode::factory()->for($version)->create(['type' => WorkflowNodeType::ExclusiveGateway]);
+    $endChanged = WorkflowNode::factory()->for($version)->end()->create(['name' => 'Appena chiuso']);
+    $endOther = WorkflowNode::factory()->for($version)->end()->create(['name' => 'Altro']);
+
+    wfConnect($start, $gate);
+    wfConnect($gate, $endChanged, ['changed_to' => [['var' => 'entity.stato'], 'chiuso']], 0);
+    wfConnect($gate, $endOther, null, 1);
+
+    $instance = app(WorkflowEngine::class)->start(
+        $workflow,
+        ['__entity_previous' => ['stato' => 'aperto']],
+        $record,
+        entitySlug: $entity->slug,
+    );
+
+    expect($instance->tokens()->first()->workflow_node_id)->toBe($endChanged->id);
+});
+
 test('a parallel gate splits into branches that join at a semaphore', function () {
     $workflow = wfWorkflowWithVersion();
     $version = $workflow->currentVersion;

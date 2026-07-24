@@ -178,6 +178,16 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('field-modal-options').closest('.field-modal-options-group').classList.toggle('d-none', type !== 'select');
         document.getElementById('field-modal-code-prefix').closest('.field-modal-code-group').classList.toggle('d-none', type !== 'code');
         document.getElementById('field-modal-relation').closest('.field-modal-relation-group').classList.toggle('d-none', type !== 'relation');
+        document.getElementById('field-modal-button-action').closest('.field-modal-button-group').classList.toggle('d-none', type !== 'button');
+        document.getElementById('field-modal-table-columns').closest('.field-modal-table-group').classList.toggle('d-none', type !== 'table');
+        syncFieldModalButtonGroups();
+    }
+
+    function syncFieldModalButtonGroups() {
+        var action = document.getElementById('field-modal-button-action').value;
+        document.getElementById('field-modal-button-workflow').closest('.field-modal-button-workflow-group').classList.toggle('d-none', action !== 'workflow');
+        document.getElementById('field-modal-button-importer-ids').closest('.field-modal-button-importer-group').classList.toggle('d-none', action !== 'importer');
+        document.getElementById('field-modal-button-javascript').closest('.field-modal-button-javascript-group').classList.toggle('d-none', action !== 'javascript');
     }
 
     function openFieldModalFor(fieldEl) {
@@ -193,6 +203,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('field-modal-code-prefix').value = fieldEl.querySelector('.field-codeprefix-input').value;
         window.setSelectValue('#field-modal-relation', fieldEl.querySelector('.field-relationtarget-input').value);
         document.getElementById('field-modal-default').value = fieldEl.querySelector('.field-defaultvalue-input').value;
+        window.setSelectValue('#field-modal-button-action', fieldEl.querySelector('.field-buttonaction-input').value || 'workflow');
+        window.setSelectValue('#field-modal-button-workflow', fieldEl.querySelector('.field-buttonworkflowid-input').value);
+        document.getElementById('field-modal-button-importer-ids').value = fieldEl.querySelector('.field-buttonimporterids-input').value;
+        document.getElementById('field-modal-button-javascript').value = fieldEl.querySelector('.field-buttonjavascript-input').value;
+        document.getElementById('field-modal-table-columns').value = fieldEl.querySelector('.field-tablecolumns-input').value;
 
         syncFieldModalGroups(type);
         fieldModal.show();
@@ -201,6 +216,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('field-modal-type').addEventListener('change', function (event) {
         syncFieldModalGroups(event.target.value);
     });
+
+    document.getElementById('field-modal-button-action').addEventListener('change', syncFieldModalButtonGroups);
 
     document.getElementById('field-modal-save').addEventListener('click', function () {
         if (!currentFieldEl) {
@@ -218,6 +235,11 @@ document.addEventListener('DOMContentLoaded', function () {
         currentFieldEl.querySelector('.field-codeprefix-input').value = document.getElementById('field-modal-code-prefix').value;
         currentFieldEl.querySelector('.field-relationtarget-input').value = document.getElementById('field-modal-relation').value;
         currentFieldEl.querySelector('.field-defaultvalue-input').value = document.getElementById('field-modal-default').value;
+        currentFieldEl.querySelector('.field-buttonaction-input').value = document.getElementById('field-modal-button-action').value;
+        currentFieldEl.querySelector('.field-buttonworkflowid-input').value = document.getElementById('field-modal-button-workflow').value;
+        currentFieldEl.querySelector('.field-buttonimporterids-input').value = document.getElementById('field-modal-button-importer-ids').value;
+        currentFieldEl.querySelector('.field-buttonjavascript-input').value = document.getElementById('field-modal-button-javascript').value;
+        currentFieldEl.querySelector('.field-tablecolumns-input').value = document.getElementById('field-modal-table-columns').value;
 
         currentFieldEl.querySelector('.field-preview-name').textContent = name || 'Nuovo campo';
         currentFieldEl.querySelector('.field-preview-type').textContent = fieldTypeLabels[type] || '';

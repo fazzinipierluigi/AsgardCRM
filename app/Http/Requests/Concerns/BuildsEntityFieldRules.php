@@ -4,6 +4,7 @@ namespace App\Http\Requests\Concerns;
 
 use App\Enums\EntityFieldType;
 use App\Models\EntityField;
+use App\Rules\TableFieldRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
@@ -35,6 +36,7 @@ trait BuildsEntityFieldRules
             EntityFieldType::Date => [$required, 'date'],
             EntityFieldType::Time => [$required, 'date_format:H:i'],
             EntityFieldType::DateTime => [$required, 'date'],
+            EntityFieldType::Table => ['nullable', new TableFieldRule($field->options['columns'] ?? [], $field->required)],
         };
     }
 

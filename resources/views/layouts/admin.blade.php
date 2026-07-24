@@ -83,6 +83,22 @@
                 <span class="nav-link-title">{{ t('Workflows') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.sql-connections.*') ? 'active' : '' }}" href="{{ route('admin.sql-connections.index') }}" data-testid="menu-sql-connections">
+                <span class="nav-link-icon">
+                    {!! icon('database') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Connessioni SQL') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.api-endpoints.*') ? 'active' : '' }}" href="{{ route('admin.api-endpoints.index') }}" data-testid="menu-api-endpoints">
+                <span class="nav-link-icon">
+                    {!! icon('world') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Endpoint API') }}</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">

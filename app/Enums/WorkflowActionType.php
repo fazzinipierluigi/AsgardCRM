@@ -9,6 +9,9 @@ enum WorkflowActionType: string
     case SendEmail = 'send_email';
     case UpdateEntity = 'update_entity';
     case CreateEntity = 'create_entity';
+    case AssignVariableFromSql = 'assign_variable_from_sql';
+    case AssignVariableFromApi = 'assign_variable_from_api';
+    case FetchEntity = 'fetch_entity';
 
     public function label(): string
     {
@@ -18,6 +21,9 @@ enum WorkflowActionType: string
             self::SendEmail => 'Invia email',
             self::UpdateEntity => 'Aggiorna entità',
             self::CreateEntity => 'Crea entità',
+            self::AssignVariableFromSql => 'Assegna valore variabile da SQL',
+            self::AssignVariableFromApi => 'Assegna valore variabile da API',
+            self::FetchEntity => 'Preleva entità',
         };
     }
 

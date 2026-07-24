@@ -23,9 +23,6 @@ class UpdateWorkflowGraphRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-            'is_active' => ['boolean'],
             'variables' => ['array'],
             'nodes' => ['required', 'array', 'min:1'],
             'edges' => ['array'],

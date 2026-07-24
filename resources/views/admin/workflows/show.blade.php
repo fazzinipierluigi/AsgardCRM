@@ -16,7 +16,10 @@
         @csrf
         <button type="submit" class="btn btn-primary" data-testid="workflow-run-now">{{ t('Avvia istanza') }}</button>
     </form>
-    <a href="{{ route('admin.workflows.builder.edit', $workflow) }}" class="btn btn-outline-primary" data-testid="workflow-edit-link">{{ t('Modifica') }}</a>
+    <a href="{{ route('admin.workflows.builder.edit', $workflow) }}" class="btn btn-outline-primary" data-testid="workflow-edit-link">{{ t('Modifica grafo') }}</a>
+    <button type="submit" form="workflow-details-form" class="btn btn-outline-primary" data-testid="workflow-details-submit">
+        {{ t('Salva modifiche') }}
+    </button>
 @endsection
 
 @section('content')
@@ -25,6 +28,9 @@
             @switch(session('status'))
                 @case('workflow-run-started')
                     {{ t('Istanza avviata correttamente.') }}
+                    @break
+                @case('workflow-updated')
+                    {{ t('Modifiche salvate.') }}
                     @break
             @endswitch
         </div>
@@ -35,13 +41,34 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            <dl class="row mb-0">
-                <dt class="col-3">{{ t('Descrizione') }}</dt>
-                <dd class="col-9">{{ $workflow->description ?: '—' }}</dd>
+            <form action="{{ route('admin.workflows.update', $workflow) }}" method="POST" id="workflow-details-form">
+                @csrf
+                @method('PUT')
 
-                <dt class="col-3">{{ t('Attivo') }}</dt>
-                <dd class="col-9">{{ $workflow->is_active ? t('Sì') : t('No') }}</dd>
-            </dl>
+                <div class="mb-3">
+                    <label for="name" class="form-label">{{ t('Nome') }}</label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $workflow->name) }}" class="form-control @error('name') is-invalid @enderror" data-testid="workflow-name" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">{{ t('Descrizione') }}</label>
+                    <textarea id="description" name="description" class="form-control @error('description') is-invalid @enderror" data-testid="workflow-description" rows="3">{{ old('description', $workflow->description) }}</textarea>
+                    @error('description')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-0">
+                    <label class="form-check form-switch">
+                        <input type="hidden" name="is_active" value="0">
+                        <input type="checkbox" name="is_active" value="1" class="form-check-input" data-testid="workflow-is-active" {{ old('is_active', $workflow->is_active) ? 'checked' : '' }}>
+                        <span class="form-check-label">{{ t('Attivo') }}</span>
+                    </label>
+                </div>
+            </form>
         </div>
     </div>
 

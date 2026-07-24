@@ -17,6 +17,8 @@ enum EntityFieldType: string
     case DateTime = 'datetime';
     case ColorPicker = 'color';
     case Code = 'code';
+    case Button = 'button';
+    case Table = 'table';
 
     public function label(): string
     {
@@ -34,6 +36,8 @@ enum EntityFieldType: string
             self::DateTime => 'Data e ora',
             self::ColorPicker => 'Color picker',
             self::Code => 'Codice',
+            self::Button => 'Bottone',
+            self::Table => 'Tabella',
         };
     }
 
@@ -62,6 +66,16 @@ enum EntityFieldType: string
     public function isGenerated(): bool
     {
         return $this === self::Code;
+    }
+
+    /**
+     * Whether this field type never holds a value at all — it triggers
+     * an action on click instead, so it's excluded from validation,
+     * persistence, and the dynamic table's own columns.
+     */
+    public function isAction(): bool
+    {
+        return $this === self::Button;
     }
 
     /**

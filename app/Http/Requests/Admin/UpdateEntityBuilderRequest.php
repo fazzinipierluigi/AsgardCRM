@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin;
 use App\Enums\EntityFieldType;
 use App\Models\Entity;
 use App\Services\EntitySchemaBuilder;
+use App\Support\ButtonConfigValidator;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -45,6 +46,11 @@ class UpdateEntityBuilderRequest extends FormRequest
             'tabs.*.cards.*.fields.*.required' => ['nullable', 'boolean'],
             'tabs.*.cards.*.fields.*.default_value' => ['nullable', 'string', 'max:255'],
             'tabs.*.cards.*.fields.*.width' => ['nullable', 'integer', 'between:1,12'],
+            'tabs.*.cards.*.fields.*.button_action' => ['nullable', Rule::in(['workflow', 'importer', 'javascript'])],
+            'tabs.*.cards.*.fields.*.button_workflow_id' => ['nullable', 'integer'],
+            'tabs.*.cards.*.fields.*.button_importer_ids' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.button_javascript' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.table_columns' => ['nullable', 'string'],
         ];
     }
 
@@ -93,6 +99,16 @@ class UpdateEntityBuilderRequest extends FormRequest
 
                         if ($type === EntityFieldType::Relation->value && empty($field['relation_target'] ?? null)) {
                             $validator->errors()->add("{$path}.relation_target", 'Seleziona il target della relazione.');
+                        }
+
+                        if ($type === EntityFieldType::Button->value) {
+                            foreach (ButtonConfigValidator::errors($field) as $errorField => $message) {
+                                $validator->errors()->add("{$path}.{$errorField}", $message);
+                            }
+                        }
+
+                        if ($type === EntityFieldType::Table->value && StoreEntityFieldRequest::parseTableColumns((string) ($field['table_columns'] ?? '')) === []) {
+                            $validator->errors()->add("{$path}.table_columns", 'Definisci almeno una colonna valida per la tabella.');
                         }
                     }
                 }

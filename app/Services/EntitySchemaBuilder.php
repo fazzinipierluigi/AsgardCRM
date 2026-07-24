@@ -84,6 +84,8 @@ class EntitySchemaBuilder
             EntityFieldType::DateTime => $table->dateTime($field->column_name)->nullable(),
             EntityFieldType::ColorPicker => $table->string($field->column_name, 7)->nullable(),
             EntityFieldType::Code => $table->string($field->column_name)->nullable(),
+            EntityFieldType::Button => null,
+            EntityFieldType::Table => $table->json($field->column_name)->nullable(),
         };
     }
 

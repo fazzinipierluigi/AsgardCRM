@@ -492,6 +492,21 @@ document.addEventListener('DOMContentLoaded', function () {
         activeVariablePickers.push(dropdown);
     }
 
+    // "è cambiato" operators: true only when a field's previous value
+    // (frozen at trigger time in the instance's __entity_previous system
+    // variable, see WorkflowEntityTriggerDispatcher::handleUpdated()) and
+    // its current one differ. Evaluated server-side by
+    // WorkflowConditionEvaluator::expandChangeOperators() — these can't be
+    // plain jwadhams/json-logic-php custom operations, which only ever see
+    // already-resolved argument values, never the field path or $context.
+    function changeOperatorDefs() {
+        return [
+            { name: 'changed_to', label: 'è cambiato in', category: 'comparison', args: [{ type: 'var', label: 'Campo' }, { type: 'value', label: 'Valore' }] },
+            { name: 'changed_from', label: 'è cambiato da', category: 'comparison', args: [{ type: 'var', label: 'Campo' }, { type: 'value', label: 'Valore' }] },
+            { name: 'changed', label: 'è cambiato', category: 'comparison', args: [{ type: 'var', label: 'Campo' }] },
+        ];
+    }
+
     function mountConditionEditor(container, value, variableDefs, onChange) {
         jsonLogicEditorSeq += 1;
         var mountId = 'jle-' + jsonLogicEditorSeq;
@@ -502,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var instance = JSONLogicEditor.init('#' + mountId, {
             value: value || null,
             variables: variableDefs,
+            customOperations: changeOperatorDefs(),
             theme: 'tabler',
             locale: 'it',
             onChange: onChange,
@@ -808,8 +824,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 number: ['integer', 'float'],
                 boolean: ['boolean'],
                 date: ['date', 'datetime'],
+                table: ['array'],
             };
-            var FIELD_TYPE_LABELS = { string: I18N.typeString, text: I18N.typeText, number: I18N.typeNumber, boolean: I18N.typeBoolean, date: I18N.date };
+            var FIELD_TYPE_LABELS = { string: I18N.typeString, text: I18N.typeText, number: I18N.typeNumber, boolean: I18N.typeBoolean, date: I18N.date, table: I18N.typeTable };
+            var TABLE_COLUMN_TYPE_LABELS = { string: I18N.columnTypeString, integer: I18N.columnTypeInteger, decimal: I18N.columnTypeDecimal, date: I18N.columnTypeDate, checkbox: I18N.columnTypeCheckbox };
 
             function compatibleVariableOptions(fieldType) {
                 var allowed = FIELD_TYPE_VARIABLE_TYPES[fieldType] || ['string'];
@@ -825,6 +843,76 @@ document.addEventListener('DOMContentLoaded', function () {
 
             function fieldColumnStep() {
                 return fieldsRow.getBoundingClientRect().width / 12;
+            }
+
+            function renderTableColumnsEditor(f) {
+                f.columns = f.columns || [];
+
+                var wrap = document.createElement('div');
+                wrap.className = 'mt-2';
+
+                var title = document.createElement('div');
+                title.className = 'd-flex justify-content-between align-items-center mb-1';
+                var titleStrong = document.createElement('strong');
+                titleStrong.className = 'small text-uppercase';
+                titleStrong.textContent = I18N.tableColumns;
+                title.appendChild(titleStrong);
+
+                var addColumnBtn = document.createElement('button');
+                addColumnBtn.type = 'button';
+                addColumnBtn.className = 'btn btn-sm btn-outline-primary';
+                addColumnBtn.textContent = I18N.addColumn;
+                addColumnBtn.addEventListener('click', function (evt) {
+                    evt.stopPropagation();
+                    f.columns.push({ name: '', label: '', type: 'string', required: false });
+                    renderFormFields();
+                });
+                title.appendChild(addColumnBtn);
+                wrap.appendChild(title);
+
+                f.columns.forEach(function (column, index) {
+                    var row = document.createElement('div');
+                    row.className = 'row g-1 mb-1 align-items-center';
+
+                    var nameCol = document.createElement('div');
+                    nameCol.className = 'col-3';
+                    nameCol.appendChild(text(column.name, function (v) { column.name = v; }, I18N.columnName));
+                    row.appendChild(nameCol);
+
+                    var labelCol = document.createElement('div');
+                    labelCol.className = 'col-3';
+                    labelCol.appendChild(text(column.label, function (v) { column.label = v; }, I18N.columnLabel));
+                    row.appendChild(labelCol);
+
+                    var typeCol = document.createElement('div');
+                    typeCol.className = 'col-3';
+                    typeCol.appendChild(select(TABLE_COLUMN_TYPE_LABELS, column.type || 'string', function (v) { column.type = v; }));
+                    row.appendChild(typeCol);
+
+                    var requiredCol = document.createElement('div');
+                    requiredCol.className = 'col-2';
+                    requiredCol.appendChild(checkbox(column.required, I18N.columnRequired, function (v) { column.required = v; }));
+                    row.appendChild(requiredCol);
+
+                    var removeCol = document.createElement('div');
+                    removeCol.className = 'col-1 text-end';
+                    var removeColumnBtn = document.createElement('button');
+                    removeColumnBtn.type = 'button';
+                    removeColumnBtn.className = 'btn btn-sm btn-outline-danger';
+                    removeColumnBtn.textContent = '✕';
+                    removeColumnBtn.title = I18N.removeColumn;
+                    removeColumnBtn.addEventListener('click', function (evt) {
+                        evt.stopPropagation();
+                        f.columns.splice(index, 1);
+                        renderFormFields();
+                    });
+                    removeCol.appendChild(removeColumnBtn);
+                    row.appendChild(removeCol);
+
+                    wrap.appendChild(row);
+                });
+
+                return wrap;
             }
 
             function renderFormFields() {
@@ -892,6 +980,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         renderFormFields();
                     }));
                     detailsBody.appendChild(select(compatibleVariableOptions(f.type || 'string'), f.bind_variable || '', function (v) { f.bind_variable = v; }));
+
+                    if (f.type === 'table') {
+                        detailsBody.appendChild(renderTableColumnsEditor(f));
+                    }
+
                     details.appendChild(detailsBody);
                     col.appendChild(details);
 
@@ -1122,6 +1215,97 @@ document.addEventListener('DOMContentLoaded', function () {
             return el;
         }
 
+        function hintText(text) {
+            var el = document.createElement('small');
+            el.className = 'form-hint d-block mb-1';
+            el.textContent = text;
+            return el;
+        }
+
+        function optionsSelect(items, value, onChange) {
+            var el = document.createElement('select');
+            el.className = 'form-select form-select-sm';
+            var blank = document.createElement('option');
+            blank.value = '';
+            blank.textContent = '—';
+            el.appendChild(blank);
+            items.forEach(function (item) {
+                var opt = document.createElement('option');
+                opt.value = String(item.id);
+                opt.textContent = item.name;
+                if (String(item.id) === String(value)) opt.selected = true;
+                el.appendChild(opt);
+            });
+            el.addEventListener('change', function () { onChange(el.value); });
+            return el;
+        }
+
+        function plainSelect(options, value, onChange) {
+            var el = document.createElement('select');
+            el.className = 'form-select form-select-sm';
+            Object.keys(options).forEach(function (key) {
+                var opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = options[key];
+                if (key === value) opt.selected = true;
+                el.appendChild(opt);
+            });
+            el.addEventListener('change', function () { onChange(el.value); });
+            return el;
+        }
+
+        /**
+         * Repeatable key+expression rows shared by the SQL/API actions'
+         * bindings/query-params list and FetchEntity's conditions — same
+         * "input-group + remove button" pattern already used by
+         * update_entity/create_entity's own `fields` list above.
+         */
+        function repeatableExpressionList(items, columns, factory) {
+            var list = document.createElement('div');
+            container.appendChild(list);
+
+            function render() {
+                list.innerHTML = '';
+                items.forEach(function (item, idx) {
+                    var line = document.createElement('div');
+                    line.className = 'input-group input-group-sm mb-1';
+
+                    columns.forEach(function (column) {
+                        var el = column.build(item);
+                        el.style.maxWidth = column.width || '30%';
+                        line.appendChild(el);
+                        if (column.expression) {
+                            mountVariablePicker(el, currentVariableDefs());
+                        }
+                    });
+
+                    var removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn btn-outline-danger';
+                    removeBtn.textContent = '×';
+                    removeBtn.addEventListener('click', function () {
+                        items.splice(idx, 1);
+                        render();
+                    });
+                    line.appendChild(removeBtn);
+
+                    list.appendChild(line);
+                });
+            }
+
+            var addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'btn btn-sm btn-outline-primary';
+            addBtn.textContent = '+ ' + I18N.field;
+            addBtn.addEventListener('click', function () {
+                items.push(factory());
+                render();
+            });
+            container.appendChild(addBtn);
+
+            render();
+        }
+
         if (action.type === 'set_variable') {
             row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
             var expressionInput = textInput(config.expression, function (v) { config.expression = v; }, 'quantita * prezzo');
@@ -1205,6 +1389,63 @@ document.addEventListener('DOMContentLoaded', function () {
             container.appendChild(addFieldBtn);
 
             renderFields();
+        }
+
+        if (action.type === 'assign_variable_from_sql') {
+            row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
+            row(I18N.sqlConnection, optionsSelect(OPTIONS.sqlConnections, config.connection_id, function (v) { config.connection_id = v; }));
+
+            var queryEl = document.createElement('textarea');
+            queryEl.className = 'form-control form-control-sm font-monospace';
+            queryEl.rows = 3;
+            queryEl.value = config.query || '';
+            queryEl.placeholder = 'SELECT totale FROM ordini WHERE cliente_id = :cliente_id';
+            queryEl.addEventListener('input', function () { config.query = queryEl.value; });
+            row(I18N.sqlQuery, queryEl);
+            container.appendChild(hintText(I18N.sqlQueryHint));
+
+            config.bindings = config.bindings || [];
+            repeatableExpressionList(config.bindings, [
+                { build: function (b) { return textInput(b.name, function (v) { b.name = v; }, I18N.bindingName); }, width: '35%' },
+                { build: function (b) { return textInput(b.expression, function (v) { b.expression = v; }, I18N.expressionShort); }, expression: true },
+            ], function () { return { name: '', expression: '' }; });
+        }
+
+        if (action.type === 'assign_variable_from_api') {
+            row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
+            row(I18N.apiEndpoint, optionsSelect(OPTIONS.apiEndpoints, config.endpoint_id, function (v) { config.endpoint_id = v; }));
+            row(I18N.httpMethod, plainSelect({ GET: 'GET', POST: 'POST', PUT: 'PUT', PATCH: 'PATCH', DELETE: 'DELETE' }, config.method || 'GET', function (v) { config.method = v; }));
+
+            var pathInput = textInput(config.path, function (v) { config.path = v; }, '/users/{{ entity.id }}');
+            row(I18N.apiPath, pathInput);
+
+            config.query = config.query || [];
+            container.appendChild(hintText(I18N.apiQueryParams));
+            repeatableExpressionList(config.query, [
+                { build: function (p) { return textInput(p.key, function (v) { p.key = v; }, I18N.bindingName); }, width: '35%' },
+                { build: function (p) { return textInput(p.expression, function (v) { p.expression = v; }, I18N.expressionShort); }, expression: true },
+            ], function () { return { key: '', expression: '' }; });
+
+            var bodyEl = document.createElement('textarea');
+            bodyEl.className = 'form-control form-control-sm font-monospace';
+            bodyEl.rows = 3;
+            bodyEl.value = config.body || '';
+            bodyEl.placeholder = '{"cliente_id": "{{ entity.id }}"}';
+            bodyEl.addEventListener('input', function () { config.body = bodyEl.value; });
+            row(I18N.apiBody, bodyEl);
+        }
+
+        if (action.type === 'fetch_entity') {
+            row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
+            row(I18N.entity, entitySelect(config.entity_slug, function (v) { config.entity_slug = v; }));
+
+            config.conditions = config.conditions || [];
+            container.appendChild(hintText(I18N.fetchEntityConditions));
+            repeatableExpressionList(config.conditions, [
+                { build: function (c) { return textInput(c.column, function (v) { c.column = v; }, I18N.column); }, width: '25%' },
+                { build: function (c) { return plainSelect({ '=': '=', '!=': '!=', '>': '>', '<': '<', '>=': '>=', '<=': '<=' }, c.operator || '=', function (v) { c.operator = v; }); }, width: '15%' },
+                { build: function (c) { return textInput(c.expression, function (v) { c.expression = v; }, I18N.expressionShort); }, expression: true },
+            ], function () { return { column: '', operator: '=', expression: '' }; });
         }
     }
 
@@ -1319,9 +1560,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         return {
-            name: DATA.graph.name,
-            description: DATA.graph.description,
-            is_active: DATA.graph.is_active,
             variables: variables.filter(function (v) { return v.name; }),
             nodes: nodes,
             edges: edges,
@@ -1358,6 +1596,47 @@ document.addEventListener('DOMContentLoaded', function () {
                 statusEl.textContent = '';
                 window.Swal.fire({ text: err.message || LABELS.saveError, icon: 'error', confirmButtonText: LABELS.confirm });
             });
+    });
+
+    document.getElementById('workflow-publish-btn').addEventListener('click', function () {
+        window.Swal.fire({
+            text: LABELS.confirmPublish,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: LABELS.confirm,
+            cancelButtonText: LABELS.cancel,
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            statusEl.textContent = LABELS.publishing;
+
+            fetch(DATA.publishUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.CSRF_TOKEN,
+                    Accept: 'application/json',
+                },
+            })
+                .then(function (response) {
+                    return response.json().then(function (body) {
+                        if (!response.ok) {
+                            throw new Error(body.message || LABELS.publishError);
+                        }
+                        return body;
+                    });
+                })
+                .then(function () {
+                    statusEl.textContent = LABELS.published;
+                    window.location.reload();
+                })
+                .catch(function (err) {
+                    statusEl.textContent = '';
+                    window.Swal.fire({ text: err.message || LABELS.publishError, icon: 'error', confirmButtonText: LABELS.confirm });
+                });
+        });
     });
 
     document.getElementById('workflow-variables-btn').addEventListener('click', function () {

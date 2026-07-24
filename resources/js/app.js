@@ -2,6 +2,9 @@ import '@tabler/core/dist/js/tabler.min.js';
 import { RaccoonGrid } from 'raccoon-tables';
 import { icon } from './icon.js';
 import './tom-select.js';
+import './entity-button-field.js';
+import './table-field.js';
+import './entity-list-widgets.js';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 

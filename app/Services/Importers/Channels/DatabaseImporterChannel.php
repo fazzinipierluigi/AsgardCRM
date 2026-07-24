@@ -3,9 +3,9 @@
 namespace App\Services\Importers\Channels;
 
 use App\Models\Importer;
+use App\Services\DynamicDatabaseConnector;
 use App\Services\Importers\ImporterChannelInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use PDO;
 use Throwable;
 
@@ -16,15 +16,17 @@ use Throwable;
  */
 class DatabaseImporterChannel implements ImporterChannelInterface
 {
+    public function __construct(private readonly DynamicDatabaseConnector $connector = new DynamicDatabaseConnector) {}
+
     public function preview(Importer $importer): array
     {
         $config = $importer->config ?? [];
 
         try {
-            [$name, $pdo] = $this->connect($config);
+            [$name, $connection] = $this->connector->connect($config, 'importer_dynamic');
 
             try {
-                $stmt = $pdo->query($config['query'] ?? '');
+                $stmt = $connection->getPdo()->query($config['query'] ?? '');
 
                 if ($stmt === false) {
                     return ['ok' => true, 'columns' => [], 'sample' => []];
@@ -45,10 +47,10 @@ class DatabaseImporterChannel implements ImporterChannelInterface
     public function fetch(Importer $importer): iterable
     {
         $config = $importer->config ?? [];
-        [$name, $pdo] = $this->connect($config);
+        [$name, $connection] = $this->connector->connect($config, 'importer_dynamic');
 
         try {
-            $stmt = $pdo->query($config['query'] ?? '');
+            $stmt = $connection->getPdo()->query($config['query'] ?? '');
 
             if ($stmt === false) {
                 return;
@@ -80,54 +82,5 @@ class DatabaseImporterChannel implements ImporterChannelInterface
         }
 
         return $columns;
-    }
-
-    /**
-     * Opens a uniquely-named dynamic connection from the stored config
-     * and returns its name (for DB::purge()) plus its raw PDO instance.
-     *
-     * @param  array<string, mixed>  $config
-     * @return array{0: string, 1: PDO}
-     */
-    private function connect(array $config): array
-    {
-        $name = 'importer_dynamic_'.Str::random(12);
-
-        $connection = [
-            'driver' => $this->laravelDriverFor((string) ($config['driver'] ?? '')),
-            'database' => $config['database'] ?? null,
-            'username' => $config['username'] ?? null,
-            'password' => $config['password'] ?? null,
-            'charset' => 'utf8mb4',
-            'options' => [PDO::ATTR_TIMEOUT => 10],
-        ];
-
-        // Only set "host" when one is actually configured: its mere presence
-        // (even as null) makes Laravel's ConnectionFactory take the
-        // host-resolution path, which fails hosts-array-is-empty for
-        // driverless-host connections like sqlite.
-        if (! empty($config['host'])) {
-            $connection['host'] = $config['host'];
-            $connection['port'] = $config['port'] ?? null;
-        }
-
-        config(["database.connections.{$name}" => $connection]);
-
-        return [$name, DB::connection($name)->getPdo()];
-    }
-
-    /**
-     * Maps the driver value chosen in the wizard to the driver name
-     * Laravel's connection factory understands. Falls through unknown
-     * values unchanged so tests can point this channel at sqlite.
-     */
-    private function laravelDriverFor(string $driver): string
-    {
-        return match ($driver) {
-            'mysql', 'mariadb' => 'mysql',
-            'pgsql', 'postgres', 'postgresql' => 'pgsql',
-            'sqlsrv', 'sqlserver' => 'sqlsrv',
-            default => $driver,
-        };
     }
 }

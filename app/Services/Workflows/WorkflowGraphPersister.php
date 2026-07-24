@@ -4,6 +4,7 @@ namespace App\Services\Workflows;
 
 use App\Enums\WorkflowActionPhase;
 use App\Enums\WorkflowNodeType;
+use App\Enums\WorkflowVersionStatus;
 use App\Models\Workflow;
 use App\Models\WorkflowAction;
 use App\Models\WorkflowEdge;
@@ -22,11 +23,14 @@ use RuntimeException;
  * carries a `key` string and edges/actions reference their node by
  * that key instead of a database id.
  *
- * Saving never overwrites a graph in place: it publishes a brand new
- * WorkflowVersion and repoints the workflow's current_version_id at
- * it. Every already-running WorkflowInstance stays pinned to the
- * version it started with (see WorkflowEngine::start()), so editing a
- * workflow — even one with instances in flight — never disturbs them.
+ * Saving never touches the live graph in place: it writes to the
+ * workflow's current *draft* WorkflowVersion (creating one, on its
+ * first save, from the next version number), so repeated saves of the
+ * same in-progress edit — even just dragging a node — don't each mint
+ * a new version. A draft only takes effect for new instances once
+ * publish() promotes it. Every already-running WorkflowInstance stays
+ * pinned to the version it started with (see WorkflowEngine::start()),
+ * untouched either way.
  */
 class WorkflowGraphPersister
 {
@@ -35,7 +39,7 @@ class WorkflowGraphPersister
      */
     public function toArray(Workflow $workflow): array
     {
-        $version = $workflow->currentVersion;
+        $version = $this->currentDraft($workflow) ?? $workflow->currentVersion;
 
         if (! $version) {
             return [
@@ -55,6 +59,8 @@ class WorkflowGraphPersister
             'description' => $workflow->description,
             'is_active' => $workflow->is_active,
             'version' => $version->version,
+            'version_status' => $version->status->value,
+            'published_version' => $workflow->currentVersion?->version,
             'variables' => $version->variables->map(fn ($variable) => [
                 'name' => $variable->name,
                 'type' => $variable->type->value,
@@ -100,6 +106,25 @@ class WorkflowGraphPersister
     }
 
     /**
+     * The workflow's draft version, if one is currently being worked on
+     * (not yet promoted to live by publish()).
+     */
+    private function currentDraft(Workflow $workflow): ?WorkflowVersion
+    {
+        return $workflow->versions()->where('status', WorkflowVersionStatus::Draft->value)->first();
+    }
+
+    /**
+     * Writes the graph into the workflow's current draft version,
+     * replacing it wholesale — creating the draft, at the next version
+     * number, on the first save since the last publish() (or ever).
+     * Repeated saves of the same in-progress edit reuse that same draft
+     * instead of minting a new version each time; nothing references a
+     * draft's id (only a published version can become
+     * workflow.current_version_id or a WorkflowInstance's
+     * workflow_version_id), so discarding and recreating it here is
+     * safe.
+     *
      * @param  array<string, mixed>  $graph
      *
      * @throws RuntimeException if the graph is structurally invalid
@@ -109,14 +134,14 @@ class WorkflowGraphPersister
         $this->assertValidGraph($graph);
 
         return DB::transaction(function () use ($workflow, $graph) {
-            $workflow->update([
-                'name' => $graph['name'],
-                'description' => $graph['description'] ?? null,
-                'is_active' => (bool) ($graph['is_active'] ?? true),
-            ]);
+            $draft = $this->currentDraft($workflow);
+            $versionNumber = $draft?->version ?? ($workflow->versions()->max('version') + 1);
+            $draft?->delete();
 
-            $nextVersionNumber = $workflow->versions()->max('version') + 1;
-            $version = $workflow->versions()->create(['version' => $nextVersionNumber]);
+            $version = $workflow->versions()->create([
+                'version' => $versionNumber,
+                'status' => WorkflowVersionStatus::Draft,
+            ]);
 
             foreach ($graph['variables'] ?? [] as $variableInput) {
                 $version->variables()->create([
@@ -153,9 +178,36 @@ class WorkflowGraphPersister
                 $this->createActions($version, $edge, $edgeInput['actions'] ?? []);
             }
 
-            $workflow->update(['current_version_id' => $version->id]);
-
             return $version;
+        });
+    }
+
+    /**
+     * Promotes the workflow's current draft to published, making it the
+     * version new instances start against. The draft that was live
+     * before (if any) is left exactly as it was — still published,
+     * still what any instance still running against it stays pinned to
+     * — only workflow.current_version_id moves forward.
+     *
+     * @throws RuntimeException if there is no draft to publish
+     */
+    public function publish(Workflow $workflow): WorkflowVersion
+    {
+        $draft = $this->currentDraft($workflow);
+
+        if (! $draft) {
+            throw new RuntimeException('Non c\'è nessuna bozza da pubblicare.');
+        }
+
+        return DB::transaction(function () use ($workflow, $draft) {
+            $draft->update([
+                'status' => WorkflowVersionStatus::Published,
+                'published_at' => now(),
+            ]);
+
+            $workflow->update(['current_version_id' => $draft->id]);
+
+            return $draft;
         });
     }
 
@@ -184,10 +236,6 @@ class WorkflowGraphPersister
      */
     private function assertValidGraph(array $graph): void
     {
-        if (empty($graph['name']) || ! is_string($graph['name'])) {
-            throw new RuntimeException('Il workflow deve avere un nome.');
-        }
-
         if (empty($graph['nodes']) || ! is_array($graph['nodes'])) {
             throw new RuntimeException('Il workflow deve avere almeno un nodo.');
         }

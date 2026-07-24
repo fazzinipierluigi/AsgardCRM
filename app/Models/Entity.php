@@ -30,6 +30,11 @@ class Entity extends Model
         return $this->hasMany(EntityRoleVisibility::class);
     }
 
+    public function listWidgets(): HasMany
+    {
+        return $this->hasMany(EntityListWidget::class)->orderBy('position');
+    }
+
     /**
      * Every field defined across this entity's tabs/cards, ordered by
      * their card's/tab's position then their own.

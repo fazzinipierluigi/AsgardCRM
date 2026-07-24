@@ -8,8 +8,10 @@ use App\Http\Requests\StoreEntityRecordRequest;
 use App\Http\Requests\UpdateEntityRecordRequest;
 use App\Models\Entity;
 use App\Models\EntityField;
+use App\Models\EntityFieldChange;
 use App\Models\EntityRecord;
 use App\Models\WorkflowUserTask;
+use App\Services\EntityChangeLogger;
 use App\Services\EntityCodeGenerator;
 use App\Services\EntityRecordAuthorizer;
 use App\Services\EntityRelationResolver;
@@ -41,6 +43,7 @@ class EntityRecordController extends Controller
         private readonly EntityRecordAuthorizer $authorizer,
         private readonly EntityCodeGenerator $codeGenerator,
         private readonly EntityRelationResolver $relationResolver,
+        private readonly EntityChangeLogger $changeLogger,
     ) {}
 
     /**
@@ -49,12 +52,14 @@ class EntityRecordController extends Controller
     public function index(Entity $entity): View
     {
         $this->authorizeAction($entity, 'index');
-        $entity->load('tabs.cards.fields');
+        $entity->load('tabs.cards.fields', 'listWidgets');
 
         return view('entities.index', [
             'entity' => $entity,
             'canCreate' => request()->user()->can("entity_{$entity->slug}.create"),
             'relationLookups' => $this->relationLookupsForColumns($entity),
+            'buttonWidgets' => $entity->listWidgets->where('type', 'button')->where('is_active', true),
+            'displayWidgets' => $entity->listWidgets->whereIn('type', ['counter', 'chart'])->where('is_active', true),
         ]);
     }
 
@@ -65,7 +70,7 @@ class EntityRecordController extends Controller
     {
         $this->authorizeAction($entity, 'index');
 
-        $fields = $entity->allFields();
+        $fields = $entity->allFields()->reject(fn (EntityField $f) => $f->type->isAction());
         $columns = array_merge(['id', 'user_id', 'created_at'], $fields->map(fn (EntityField $f) => $this->columnFor($f))->all());
 
         $records = EntityRecord::forEntity($entity)->newQuery()->with('owner')->select($columns);
@@ -118,7 +123,8 @@ class EntityRecordController extends Controller
         $attributes = $this->prepareAttributes($entity, $request, generateCodes: true);
         $attributes['user_id'] = $request->user()->id;
 
-        EntityRecord::forEntity($entity)->newQuery()->create($attributes);
+        $record = EntityRecord::forEntity($entity)->newQuery()->create($attributes);
+        $this->changeLogger->logCreated($entity, $record, $attributes, $request->user());
 
         return redirect()->route('entities.index', $entity)->with('status', 'record-created');
     }
@@ -137,7 +143,27 @@ class EntityRecordController extends Controller
             'record' => $recordModel,
             'relationOptions' => $this->relationOptionsForEntity($entity),
             'workflowTasks' => $this->pendingWorkflowTasks($entity, $recordModel),
+            'changeTransactions' => $this->changeTransactions($entity, $recordModel),
         ]);
+    }
+
+    /**
+     * This record's change log, grouped by transaction (one save = one
+     * group) — see App\Services\EntityChangeLogger. Ordering by id
+     * descending keeps both the groups and the rows within each group
+     * in reverse-chronological order, since Collection::groupBy()
+     * preserves first-seen order.
+     *
+     * @return Collection<string, Collection<int, EntityFieldChange>>
+     */
+    private function changeTransactions(Entity $entity, EntityRecord $record): Collection
+    {
+        return EntityFieldChange::where('entity_slug', $entity->slug)
+            ->where('entity_id', $record->getKey())
+            ->with('changedByUser')
+            ->orderByDesc('id')
+            ->get()
+            ->groupBy('transaction_id');
     }
 
     /**
@@ -166,7 +192,11 @@ class EntityRecordController extends Controller
         $recordModel = $this->findRecordOrFail($entity, $record);
         $this->authorizeRow($entity, $recordModel, 'edit');
 
-        $recordModel->update($this->prepareAttributes($entity, $request));
+        $attributes = $this->prepareAttributes($entity, $request);
+        $original = $recordModel->only(array_keys($attributes));
+
+        $recordModel->update($attributes);
+        $this->changeLogger->logUpdated($entity, $recordModel, $original, $attributes, $request->user());
 
         return redirect()->route('entities.index', $entity)->with('status', 'record-updated');
     }
@@ -238,6 +268,10 @@ class EntityRecordController extends Controller
         foreach ($entity->allFields() as $field) {
             $column = $this->columnFor($field);
 
+            if ($field->type->isAction()) {
+                continue;
+            }
+
             if ($field->type->isGenerated()) {
                 if ($generateCodes) {
                     $attributes[$column] = $this->codeGenerator->nextValue($field);
@@ -249,6 +283,7 @@ class EntityRecordController extends Controller
             $attributes[$column] = match ($field->type) {
                 EntityFieldType::Checkbox => $request->boolean($column),
                 EntityFieldType::RichText => $this->sanitizeRichText($validated[$column] ?? null),
+                EntityFieldType::Table => $validated[$column] ?: '[]',
                 default => $validated[$column] ?? null,
             };
         }
@@ -283,6 +318,7 @@ class EntityRecordController extends Controller
             EntityFieldType::Select => $field->options[$value] ?? $value,
             EntityFieldType::Relation => $value === null ? null : ($relationLabels[$field->column_name][$value] ?? "#{$value}"),
             EntityFieldType::RichText => $value === null ? null : strip_tags((string) $value),
+            EntityFieldType::Table => count(json_decode((string) $value, true) ?: []).' righe',
             default => $value,
         };
     }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ConnectorMailboxController;
 use App\Http\Controllers\Admin\EntityBuilderController;
 use App\Http\Controllers\Admin\EntityController;
 use App\Http\Controllers\Admin\EntityFieldController;
+use App\Http\Controllers\Admin\EntityListWidgetController;
 use App\Http\Controllers\Admin\EntityVisibilityController;
 use App\Http\Controllers\Admin\ImporterController;
 use App\Http\Controllers\Admin\LanguageController;
@@ -12,13 +13,17 @@ use App\Http\Controllers\Admin\LoginProviderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\WorkflowApiEndpointController;
 use App\Http\Controllers\Admin\WorkflowBuilderController;
 use App\Http\Controllers\Admin\WorkflowController;
+use App\Http\Controllers\Admin\WorkflowSqlConnectionController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SamlLoginController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CalendarSettingsController;
+use App\Http\Controllers\EntityFieldButtonController;
+use App\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use App\Http\Controllers\EntityRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
@@ -108,6 +113,12 @@ Route::middleware('auth')->group(function () {
         Route::put('entities/{entity}/builder', [EntityBuilderController::class, 'update'])->name('entities.builder.update');
         Route::get('entities/{entity}/fields/create', [EntityFieldController::class, 'create'])->name('entities.fields.create');
         Route::post('entities/{entity}/fields', [EntityFieldController::class, 'store'])->name('entities.fields.store');
+        Route::get('entities/{entity}/widgets', [EntityListWidgetController::class, 'index'])->name('entities.widgets.index');
+        Route::get('entities/{entity}/widgets/create', [EntityListWidgetController::class, 'create'])->name('entities.widgets.create');
+        Route::post('entities/{entity}/widgets', [EntityListWidgetController::class, 'store'])->name('entities.widgets.store');
+        Route::get('entities/{entity}/widgets/{widget}/edit', [EntityListWidgetController::class, 'edit'])->name('entities.widgets.edit');
+        Route::put('entities/{entity}/widgets/{widget}', [EntityListWidgetController::class, 'update'])->name('entities.widgets.update');
+        Route::delete('entities/{entity}/widgets/{widget}', [EntityListWidgetController::class, 'destroy'])->name('entities.widgets.destroy');
         Route::post('entities/{entity}/install', [EntityController::class, 'install'])->name('entities.install');
         Route::post('entities/{entity}/uninstall', [EntityController::class, 'uninstall'])->name('entities.uninstall');
         Route::get('entities/{entity}/visibility', [EntityVisibilityController::class, 'edit'])->name('entities.visibility.edit');
@@ -121,6 +132,13 @@ Route::middleware('auth')->group(function () {
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
         Route::put('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'update'])->name('connectors.mailboxes.update');
         Route::resource('connectors', ConnectorController::class)->except('show');
+
+        Route::resource('sql-connections', WorkflowSqlConnectionController::class)
+            ->except('show')
+            ->parameters(['sql-connections' => 'sqlConnection']);
+        Route::resource('api-endpoints', WorkflowApiEndpointController::class)
+            ->except('show')
+            ->parameters(['api-endpoints' => 'apiEndpoint']);
 
         Route::get('importers/data', [ImporterController::class, 'data'])->name('importers.data');
         Route::post('importers/preview', [ImporterController::class, 'preview'])->name('importers.preview');
@@ -140,6 +158,7 @@ Route::middleware('auth')->group(function () {
         Route::get('workflows/{workflow}/instances/data', [WorkflowController::class, 'instancesData'])->name('workflows.instances.data');
         Route::get('workflows/{workflow}/builder', [WorkflowBuilderController::class, 'edit'])->name('workflows.builder.edit');
         Route::put('workflows/{workflow}/builder', [WorkflowBuilderController::class, 'update'])->name('workflows.builder.update');
+        Route::post('workflows/{workflow}/builder/publish', [WorkflowBuilderController::class, 'publish'])->name('workflows.builder.publish');
         // ->except('show') registered before the catch-all {workflow} show
         // route below, so the resource's literal 'workflows/create' segment
         // isn't swallowed by the {workflow} wildcard first.
@@ -158,6 +177,9 @@ Route::middleware('auth')->group(function () {
     Route::get('entities/{entity:slug}/{record}/edit', [EntityRecordController::class, 'edit'])->name('entities.edit');
     Route::put('entities/{entity:slug}/{record}', [EntityRecordController::class, 'update'])->name('entities.update');
     Route::delete('entities/{entity:slug}/{record}', [EntityRecordController::class, 'destroy'])->name('entities.destroy');
+    Route::post('entities/{entity:slug}/{record}/fields/{field}/trigger', [EntityFieldButtonController::class, 'trigger'])->name('entities.fields.trigger');
+    Route::post('entities/{entity:slug}/widgets/{widget}/trigger', [PublicEntityListWidgetController::class, 'trigger'])->name('entities.widgets.trigger');
+    Route::get('entities/{entity:slug}/widgets/{widget}/data', [PublicEntityListWidgetController::class, 'data'])->name('entities.widgets.data');
 
     // A workflow user task can be assigned to anyone, not just admins —
     // access is checked by hand in WorkflowUserTaskController (the task

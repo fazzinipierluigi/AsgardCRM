@@ -23,6 +23,7 @@
         "@tabler/core": "^1.4.0",
         "@tabler/icons": "^3.44.0",
         "bootstrap": "^5.3.7",
+        "chart.js": "^4.5.1",
         "jsonlogic-editor-core": "^1.0.0",
         "raccoon-tables": "^1.1.2",
         "sortablejs": "^1.15.7",

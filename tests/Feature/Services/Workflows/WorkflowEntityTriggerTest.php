@@ -105,6 +105,32 @@ test('an entity-triggered instance can read the triggering record fields via the
         ->and($instance->getVariable('totale_letto'))->toBe('350');
 });
 
+test('an update trigger freezes the pre-update field values as the __entity_previous system variable', function () {
+    $entity = wfTriggerEntity();
+    $workflow = wfTriggerWorkflow($entity, 'entity_updated');
+    $userId = User::factory()->create()->id;
+
+    $record = EntityRecord::forEntity($entity)->create(['totale' => '100', 'user_id' => $userId]);
+    $record->update(['totale' => '200']);
+
+    $instance = WorkflowInstance::where('workflow_id', $workflow->id)->firstOrFail();
+
+    expect($instance->getVariable('__entity_previous.totale'))->toBe('100')
+        ->and($instance->resolveEntity()->totale)->toBe('200');
+});
+
+test('a create trigger has no previous values, so __entity_previous is empty', function () {
+    $entity = wfTriggerEntity();
+    $workflow = wfTriggerWorkflow($entity, 'entity_created');
+    $userId = User::factory()->create()->id;
+
+    EntityRecord::forEntity($entity)->create(['totale' => '100', 'user_id' => $userId]);
+
+    $instance = WorkflowInstance::where('workflow_id', $workflow->id)->firstOrFail();
+
+    expect($instance->getVariable('__entity_previous'))->toBe([]);
+});
+
 test('occurrence "every_time" (default) starts again on every subsequent update', function () {
     $entity = wfTriggerEntity();
     $workflow = wfTriggerWorkflow($entity, 'entity_updated', 'every_time');

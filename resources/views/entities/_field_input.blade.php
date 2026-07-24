@@ -4,12 +4,14 @@
 @endphp
 
 <div class="col-md-{{ $field->width }} mb-3">
-    <label class="form-label">
-        {{ $field->name }}
-        @if ($field->required)
-            <span class="text-danger">*</span>
-        @endif
-    </label>
+    @unless ($field->type->value === 'button')
+        <label class="form-label">
+            {{ $field->name }}
+            @if ($field->required)
+                <span class="text-danger">*</span>
+            @endif
+        </label>
+    @endunless
 
     @switch($field->type->value)
         @case('checkbox')
@@ -88,6 +90,35 @@
             @else
                 <div class="form-control-plaintext text-muted fst-italic">{{ t('Verrà generato automaticamente al salvataggio.') }}</div>
             @endif
+            @break
+
+        @case('button')
+            @if ($record)
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-entity-button
+                    data-mode="{{ $field->options['button_action'] ?? '' }}"
+                    data-url="{{ route('entities.fields.trigger', [$entity, $record, $field]) }}"
+                    data-js="{{ $field->options['button_javascript'] ?? '' }}"
+                    data-testid="entity-button-field-{{ $field->id }}"
+                >{{ $field->name }}</button>
+            @else
+                <button type="button" class="btn btn-primary" disabled title="{{ t('Disponibile dopo il salvataggio del record.') }}">{{ $field->name }}</button>
+            @endif
+            @break
+
+        @case('table')
+            <div data-table-field data-columns="{{ json_encode($field->options['columns'] ?? []) }}">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-2">
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-primary" data-table-field-add>{{ t('Aggiungi riga') }}</button>
+                <input type="hidden" name="{{ $column }}" data-table-field-input value="{{ $value ?: '[]' }}" class="@error($column) is-invalid @enderror">
+            </div>
             @break
     @endswitch
 

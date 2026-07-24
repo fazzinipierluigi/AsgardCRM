@@ -36,7 +36,8 @@ class StoreEntityRecordRequest extends FormRequest
         foreach ($entity->allFields() as $field) {
             // Generated fields (Code) are never submitted by the user —
             // their value comes from EntityCodeGenerator, not the request.
-            if ($field->type->isGenerated()) {
+            // Action fields (Button) never hold a value at all.
+            if ($field->type->isGenerated() || $field->type->isAction()) {
                 continue;
             }
 

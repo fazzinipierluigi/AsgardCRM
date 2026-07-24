@@ -160,6 +160,7 @@ class WorkflowController extends Controller
 
         try {
             $persister->replace($workflow, $data);
+            $persister->publish($workflow);
         } catch (RuntimeException $e) {
             $workflow->delete();
 

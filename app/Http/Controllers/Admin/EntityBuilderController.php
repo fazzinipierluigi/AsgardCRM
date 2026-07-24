@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\EntityFieldType;
+use App\Enums\WorkflowNodeType;
+use App\Enums\WorkflowTriggerType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreEntityFieldRequest;
 use App\Http\Requests\Admin\UpdateEntityBuilderRequest;
 use App\Models\Entity;
+use App\Models\Workflow;
 use App\Services\EntityRelationResolver;
+use App\Support\ButtonConfigValidator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -26,6 +32,7 @@ class EntityBuilderController extends Controller
             'entity' => $entity,
             'fieldTypes' => EntityFieldType::options(),
             'relationTargets' => $this->relationResolver->targetOptions($entity),
+            'manualWorkflows' => $this->manualWorkflows(),
         ]);
     }
 
@@ -90,6 +97,14 @@ class EntityBuilderController extends Controller
             return $prefix !== '' ? ['prefix' => $prefix] : null;
         }
 
+        if ($type === 'table') {
+            return ['columns' => StoreEntityFieldRequest::parseTableColumns((string) ($fieldInput['table_columns'] ?? ''))];
+        }
+
+        if ($type === 'button') {
+            return ButtonConfigValidator::parse($fieldInput);
+        }
+
         if ($type !== 'select') {
             return null;
         }
@@ -136,5 +151,19 @@ class EntityBuilderController extends Controller
         }
 
         return explode(':', (string) ($fieldInput['relation_target'] ?? ''), 2)[1] ?? null;
+    }
+
+    /**
+     * Active workflows whose start node is configured for manual
+     * launch — the only ones a Button field can offer to run.
+     */
+    private function manualWorkflows(): Collection
+    {
+        return Workflow::where('is_active', true)
+            ->whereHas('currentVersion.nodes', function ($query) {
+                $query->where('type', WorkflowNodeType::Start->value)
+                    ->where('config->trigger_type', WorkflowTriggerType::Manual->value);
+            })
+            ->get();
     }
 }

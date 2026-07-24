@@ -12,11 +12,25 @@
     @raccoonLayoutsDropdown
 @endsection
 
-@if ($canCreate)
+@if ($canCreate || $buttonWidgets->isNotEmpty())
     @section('buttons')
-        <a href="{{ route('entities.create', $entity) }}" class="btn btn-primary" data-testid="entity-record-create-link">
-            {{ t('Nuovo record') }}
-        </a>
+        @foreach ($buttonWidgets as $widget)
+            <button
+                type="button"
+                class="btn btn-outline-primary"
+                data-entity-button
+                data-mode="{{ $widget->config['button_action'] ?? '' }}"
+                data-url="{{ route('entities.widgets.trigger', [$entity, $widget]) }}"
+                data-js="{{ $widget->config['button_javascript'] ?? '' }}"
+                data-testid="entity-list-widget-button-{{ $widget->id }}"
+            >{{ $widget->name }}</button>
+        @endforeach
+
+        @if ($canCreate)
+            <a href="{{ route('entities.create', $entity) }}" class="btn btn-primary" data-testid="entity-record-create-link">
+                {{ t('Nuovo record') }}
+            </a>
+        @endif
     @endsection
 @endif
 
@@ -37,12 +51,36 @@
         </div>
     @endif
 
+    @if ($displayWidgets->isNotEmpty())
+        <div class="row row-cards mb-3">
+            @foreach ($displayWidgets as $widget)
+                <div class="col-md-{{ $widget->type === 'counter' ? 3 : 6 }}">
+                    @if ($widget->type === 'counter')
+                        <div class="card" data-counter-widget data-url="{{ route('entities.widgets.data', [$entity, $widget]) }}" data-testid="entity-list-widget-counter-{{ $widget->id }}">
+                            <div class="card-body">
+                                <div class="subheader">{{ $widget->name }}</div>
+                                <div class="h1 mb-0" data-counter-value>—</div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="card" data-chart-widget data-url="{{ route('entities.widgets.data', [$entity, $widget]) }}" data-testid="entity-list-widget-chart-{{ $widget->id }}">
+                            <div class="card-body">
+                                <div class="subheader mb-2">{{ $widget->name }}</div>
+                                <canvas data-chart-canvas></canvas>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+    @endif
+
     <div class="card">
         <div id="entity-records-grid" data-testid="entity-records-grid"></div>
     </div>
 
     @php
-        $fieldColumnsData = $entity->allFields()->map(function ($f) use ($relationLookups) {
+        $fieldColumnsData = $entity->allFields()->reject(fn ($f) => $f->type->isAction())->map(function ($f) use ($relationLookups) {
             $isRelation = $f->type->value === 'relation';
             $column = $isRelation ? "{$f->column_name}_id" : $f->column_name;
 

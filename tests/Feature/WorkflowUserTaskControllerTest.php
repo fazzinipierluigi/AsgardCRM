@@ -56,6 +56,52 @@ test('the assigned user can complete their task and the workflow resumes', funct
         ->and($instance->getVariable('note'))->toBe('Tutto ok');
 });
 
+test('a table form field binds the submitted rows as an array variable', function () {
+    $user = User::factory()->create();
+    $workflow = wfTaskWorkflow([
+        'assigned_user_id' => null,
+        'form_fields' => [[
+            'name' => 'righe',
+            'label' => 'Righe',
+            'type' => 'table',
+            'bind_variable' => 'righe',
+            'columns' => [['name' => 'qty', 'label' => 'Quantità', 'type' => 'integer', 'required' => true]],
+        ]],
+    ]);
+    $version = $workflow->currentVersion;
+    $version->variables()->create(['name' => 'righe', 'type' => 'array']);
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $task = $instance->userTasks()->first();
+
+    $this->actingAs($user)->put(route('workflow-tasks.update', $task), [
+        'righe' => json_encode([['qty' => 3], ['qty' => 7]]),
+    ])->assertRedirect(route('workflow-tasks.index'));
+
+    expect($instance->fresh()->getVariable('righe'))->toBe([['qty' => 3], ['qty' => 7]]);
+});
+
+test('a table form field submission missing a required column is rejected', function () {
+    $user = User::factory()->create();
+    $workflow = wfTaskWorkflow([
+        'assigned_user_id' => null,
+        'form_fields' => [[
+            'name' => 'righe',
+            'label' => 'Righe',
+            'type' => 'table',
+            'bind_variable' => 'righe',
+            'columns' => [['name' => 'qty', 'label' => 'Quantità', 'type' => 'integer', 'required' => true]],
+        ]],
+    ]);
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $task = $instance->userTasks()->first();
+
+    $this->actingAs($user)->put(route('workflow-tasks.update', $task), [
+        'righe' => json_encode([['qty' => '']]),
+    ])->assertSessionHasErrors('righe');
+
+    expect($instance->fresh()->status)->not->toBe(WorkflowInstanceStatus::Completed);
+});
+
 test('a user holding the assigned role can complete the task', function () {
     $role = Role::create(['name' => 'Approvatori', 'slug' => 'approvatori']);
     $user = User::factory()->create();

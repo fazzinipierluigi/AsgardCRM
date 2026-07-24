@@ -43,6 +43,26 @@ test('the edit route redirects to the builder', function () {
         ->assertRedirect(route('admin.workflows.builder.edit', $workflow));
 });
 
+test('admin can edit a workflow\'s name, description and active status from its detail page', function () {
+    $admin = adminUser();
+    $workflow = Workflow::factory()->create(['name' => 'Vecchio nome', 'is_active' => true]);
+
+    $this->actingAs($admin)->get(route('admin.workflows.show', $workflow))
+        ->assertOk()
+        ->assertSee('workflow-details-form', false);
+
+    $this->actingAs($admin)->put(route('admin.workflows.update', $workflow), [
+        'name' => 'Nuovo nome',
+        'description' => 'Nuova descrizione',
+        'is_active' => '0',
+    ])->assertRedirect(route('admin.workflows.index'));
+
+    $workflow->refresh();
+    expect($workflow->name)->toBe('Nuovo nome')
+        ->and($workflow->description)->toBe('Nuova descrizione')
+        ->and($workflow->is_active)->toBeFalse();
+});
+
 test('admin can delete a workflow with no instances in flight', function () {
     $admin = adminUser();
     $workflow = Workflow::factory()->create();

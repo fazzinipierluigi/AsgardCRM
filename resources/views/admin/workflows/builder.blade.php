@@ -13,14 +13,24 @@
 
 @section('buttons')
     @if ($graph['version'] ?? null)
-        <span class="badge bg-secondary-lt me-2" data-testid="workflow-version-badge">{{ t('Versione :n', ['n' => $graph['version']]) }}</span>
+        @if (($graph['version_status'] ?? null) === 'draft')
+            <span class="badge bg-yellow-lt me-2" data-testid="workflow-version-badge">{{ t('Bozza v:n', ['n' => $graph['version']]) }}</span>
+            @if ($graph['published_version'] ?? null)
+                <span class="text-secondary me-2" data-testid="workflow-published-version">{{ t('Pubblicata: v:n', ['n' => $graph['published_version']]) }}</span>
+            @endif
+        @else
+            <span class="badge bg-green-lt me-2" data-testid="workflow-version-badge">{{ t('Pubblicata v:n', ['n' => $graph['version']]) }}</span>
+        @endif
     @endif
     <span id="workflow-builder-status" class="text-secondary me-2" data-testid="workflow-builder-status"></span>
     <button type="button" class="btn btn-outline-secondary" id="workflow-variables-btn" data-testid="workflow-variables-btn">
         {!! icon('variable') !!} {{ t('Variabili') }}
     </button>
-    <button type="button" class="btn btn-primary" id="workflow-save-btn" data-testid="workflow-save-btn">
-        {{ t('Salva (nuova versione)') }}
+    <button type="button" class="btn btn-outline-primary" id="workflow-save-btn" data-testid="workflow-save-btn">
+        {{ t('Salva bozza') }}
+    </button>
+    <button type="button" class="btn btn-primary" id="workflow-publish-btn" data-testid="workflow-publish-btn">
+        {{ t('Pubblica') }}
     </button>
 @endsection
 
@@ -259,6 +269,7 @@
         window.WORKFLOW_BUILDER = {
             graph: @json($graph),
             saveUrl: @json(route('admin.workflows.builder.update', $workflow)),
+            publishUrl: @json(route('admin.workflows.builder.publish', $workflow)),
             iconBaseUrl: @json(url('/tabler-icons')),
             options: {
                 nodeTypes: @json($nodeTypes),
@@ -272,6 +283,8 @@
                 roles: @json($roles),
                 users: @json($users),
                 otherWorkflows: @json($otherWorkflows),
+                sqlConnections: @json($sqlConnections),
+                apiEndpoints: @json($apiEndpoints),
             },
             labels: {
                 phaseBefore: @json(t('Azioni in ingresso')),
@@ -279,6 +292,10 @@
                 saving: @json(t('Salvataggio...')),
                 saved: @json(t('Salvato.')),
                 saveError: @json(t('Errore nel salvataggio')),
+                publishing: @json(t('Pubblicazione...')),
+                published: @json(t('Pubblicata.')),
+                publishError: @json(t('Errore nella pubblicazione')),
+                confirmPublish: @json(t('Pubblicare questa bozza? Le nuove istanze del workflow useranno subito questa versione.')),
                 confirmDelete: @json(t('Confermi l\'eliminazione?')),
                 nodeWindowTitle: @json(t('Nodo')),
                 edgeWindowTitle: @json(t('Arco')),
@@ -321,7 +338,20 @@
                 typeText: @json(t('Testo lungo')),
                 typeNumber: @json(t('Numero')),
                 typeBoolean: @json(t('Booleano')),
+                typeTable: @json(t('Tabella')),
                 bindVariable: @json(t('Variabile a cui assegnare la risposta')),
+                tableColumns: @json(t('Colonne')),
+                addColumn: @json(t('+ Colonna')),
+                columnName: @json(t('Nome colonna')),
+                columnLabel: @json(t('Etichetta colonna')),
+                columnType: @json(t('Tipo colonna')),
+                columnTypeString: @json(t('Testo')),
+                columnTypeInteger: @json(t('Numero intero')),
+                columnTypeDecimal: @json(t('Numero decimale')),
+                columnTypeDate: @json(t('Data')),
+                columnTypeCheckbox: @json(t('Checkbox')),
+                columnRequired: @json(t('Obbligatoria')),
+                removeColumn: @json(t('Rimuovi colonna')),
                 removeField: @json(t('Rimuovi campo')),
                 subworkflow: @json(t('Sotto-workflow')),
                 waitForCompletion: @json(t('Attendi il completamento')),
@@ -342,6 +372,16 @@
                 newField: @json(t('Nuovo campo')),
                 noVariable: @json(t('— nessuna —')),
                 nodeNamePrompt: @json(t('Nome del nodo')),
+                sqlConnection: @json(t('Connessione SQL')),
+                sqlQuery: @json(t('Query (SELECT o WITH)')),
+                sqlQueryHint: @json(t('I valori vanno passati come binding sotto, mai scritti direttamente nel testo della query.')),
+                bindingName: @json(t('nome')),
+                apiEndpoint: @json(t('Endpoint API')),
+                httpMethod: @json(t('Metodo HTTP')),
+                apiPath: @json(t('Percorso (aggiunto all\'URL base)')),
+                apiQueryParams: @json(t('Parametri query')),
+                apiBody: @json(t('Corpo (JSON, facoltativo)')),
+                fetchEntityConditions: @json(t('Condizioni (tutte in AND)')),
             },
         };
     </script>

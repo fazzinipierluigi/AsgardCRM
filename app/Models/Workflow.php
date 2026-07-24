@@ -43,6 +43,16 @@ class Workflow extends Model
         return $this->hasMany(WorkflowInstance::class);
     }
 
+    public function sqlConnections(): HasMany
+    {
+        return $this->hasMany(WorkflowSqlConnection::class);
+    }
+
+    public function apiEndpoints(): HasMany
+    {
+        return $this->hasMany(WorkflowApiEndpoint::class);
+    }
+
     /**
      * Whether an entity record has already started an instance of this
      * workflow (any version) — backs a start node's "avvia una sola

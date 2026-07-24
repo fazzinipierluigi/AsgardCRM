@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\WorkflowVersionStatus;
 use App\Models\Workflow;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,9 +12,6 @@ uses(RefreshDatabase::class);
 function wfBuilderGraphPayload(): array
 {
     return [
-        'name' => 'Onboarding cliente',
-        'description' => null,
-        'is_active' => true,
         'variables' => [
             ['name' => 'esito', 'type' => 'string', 'default_value' => null],
         ],
@@ -34,7 +32,7 @@ test('admin can view the builder page for a fresh workflow', function () {
     $this->actingAs($admin)->get(route('admin.workflows.builder.edit', $workflow))->assertOk();
 });
 
-test('admin can save a whole graph via the builder update endpoint', function () {
+test('admin can save a whole graph as a draft via the builder update endpoint', function () {
     $admin = adminUser();
     $workflow = Workflow::factory()->create();
 
@@ -43,26 +41,56 @@ test('admin can save a whole graph via the builder update endpoint', function ()
     $response->assertOk()->assertJson(['status' => 'ok']);
 
     $workflow->refresh();
-    $version = $workflow->currentVersion;
-    expect($version->version)->toBe(1)
-        ->and($version->nodes)->toHaveCount(2)
-        ->and($version->edges)->toHaveCount(1)
-        ->and($version->variables)->toHaveCount(1);
+    $draft = $workflow->versions()->where('status', WorkflowVersionStatus::Draft->value)->first();
+    expect($draft->version)->toBe(1)
+        ->and($draft->nodes)->toHaveCount(2)
+        ->and($draft->edges)->toHaveCount(1)
+        ->and($draft->variables)->toHaveCount(1)
+        ->and($workflow->current_version_id)->toBeNull();
 });
 
-test('saving a second time publishes version 2 without touching version 1', function () {
+test('saving a second time reuses the same draft without touching a published version', function () {
     $admin = adminUser();
     $workflow = Workflow::factory()->create();
 
     $this->actingAs($admin)->putJson(route('admin.workflows.builder.update', $workflow), wfBuilderGraphPayload())->assertOk();
+    $this->actingAs($admin)->postJson(route('admin.workflows.builder.publish', $workflow))->assertOk();
     $v1 = $workflow->fresh()->currentVersion;
 
     $this->actingAs($admin)->putJson(route('admin.workflows.builder.update', $workflow), wfBuilderGraphPayload())->assertOk();
-    $v2 = $workflow->fresh()->currentVersion;
 
-    expect($v1->id)->not->toBe($v2->id)
-        ->and($v2->version)->toBe(2)
-        ->and($workflow->fresh()->current_version_id)->toBe($v2->id);
+    $workflow->refresh();
+    $draft = $workflow->versions()->where('status', WorkflowVersionStatus::Draft->value)->first();
+
+    expect($draft->version)->toBe(2)
+        ->and($workflow->current_version_id)->toBe($v1->id)
+        ->and($v1->fresh()->status)->toBe(WorkflowVersionStatus::Published);
+
+    $this->actingAs($admin)->putJson(route('admin.workflows.builder.update', $workflow), wfBuilderGraphPayload())->assertOk();
+    expect($workflow->versions()->count())->toBe(2);
+});
+
+test('publish makes the current draft live', function () {
+    $admin = adminUser();
+    $workflow = Workflow::factory()->create();
+
+    $this->actingAs($admin)->putJson(route('admin.workflows.builder.update', $workflow), wfBuilderGraphPayload())->assertOk();
+
+    $response = $this->actingAs($admin)->postJson(route('admin.workflows.builder.publish', $workflow));
+
+    $response->assertOk()->assertJson(['status' => 'ok', 'version' => 1]);
+
+    $workflow->refresh();
+    expect($workflow->currentVersion->status)->toBe(WorkflowVersionStatus::Published);
+});
+
+test('publishing without a draft returns a 422', function () {
+    $admin = adminUser();
+    $workflow = Workflow::factory()->create();
+
+    $this->actingAs($admin)->postJson(route('admin.workflows.builder.publish', $workflow))
+        ->assertStatus(422)
+        ->assertJsonFragment(['message' => 'Non c\'è nessuna bozza da pubblicare.']);
 });
 
 test('saving a graph without a start node returns a 422 with a clear message', function () {
