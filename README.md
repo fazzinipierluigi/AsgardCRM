@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="public/logo.svg" alt="AsgardCRM" width="120">
+</p>
+
 # AsgardCRM
 
 CRM application built on Laravel 13.

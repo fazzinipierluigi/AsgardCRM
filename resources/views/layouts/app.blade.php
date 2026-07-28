@@ -11,6 +11,13 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', config('app.name', 'AsgardCRM'))</title>
 
+        <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+        <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
@@ -26,7 +33,8 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark">
+                    <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark d-flex align-items-center gap-2">
+                        <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" width="28" height="28">
                         {{ config('app.name', 'Laravel') }}
                     </a>
 
