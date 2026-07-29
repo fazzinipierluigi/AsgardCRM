@@ -37,6 +37,7 @@ use RuntimeException;
  * @phpstan-type AssignVariableFromApiConfig array{endpoint_id: int, method: string, path: ?string, query: list<ApiParam>, body: ?string, variable: string}
  * @phpstan-type FetchEntityCondition array{column: string, operator: string, expression: string}
  * @phpstan-type FetchEntityConfig array{entity_slug: string, conditions: list<FetchEntityCondition>, variable: string}
+ * @phpstan-type RedirectConfig array{entity_slug: string, id_expression: string}
  */
 class WorkflowActionExecutor
 {
@@ -46,6 +47,19 @@ class WorkflowActionExecutor
      * guard against a workflow instance's `variables` JSON blowing up.
      */
     private const FETCH_ENTITY_LIMIT = 500;
+
+    /**
+     * Set by a Redirect action, read right back by whichever HTTP
+     * controller triggered this execution (currently only
+     * WorkflowUserTaskController::update()) to redirect the user there
+     * instead of its own default route — the flow itself keeps
+     * advancing in the background regardless. Null when no Redirect
+     * action ran, or its target record didn't resolve. This class is
+     * bound as a singleton (see AppServiceProvider) so the same
+     * instance is shared between WorkflowEngine's internal use and a
+     * controller's own injected copy within one request.
+     */
+    public ?string $lastRedirectUrl = null;
 
     public function __construct(
         private readonly WorkflowExpressionEvaluator $evaluator,
@@ -65,6 +79,7 @@ class WorkflowActionExecutor
             WorkflowActionType::AssignVariableFromSql => $this->assignVariableFromSql($action, $instance),
             WorkflowActionType::AssignVariableFromApi => $this->assignVariableFromApi($action, $instance),
             WorkflowActionType::FetchEntity => $this->fetchEntity($action, $instance),
+            WorkflowActionType::Redirect => $this->redirect($action, $instance),
         };
     }
 
@@ -334,5 +349,34 @@ class WorkflowActionExecutor
             '__entity_id' => $record->getKey(),
         ])->all());
         $instance->save();
+    }
+
+    /**
+     * Resolves the target record and, if it exists, stores its detail
+     * page URL in $lastRedirectUrl for the calling controller to pick
+     * up — see the property's own docblock. A record that doesn't
+     * resolve (bad expression result, already-deleted record) is a
+     * silent no-op: this action never fails the instance.
+     */
+    private function redirect(WorkflowAction $action, WorkflowInstance $instance): void
+    {
+        /** @var RedirectConfig $config */
+        $config = $action->config;
+        $context = $this->buildContext($instance);
+
+        $entity = Entity::where('slug', $config['entity_slug'])->first();
+
+        if (! $entity) {
+            return;
+        }
+
+        $id = $this->evaluator->evaluate($config['id_expression'] ?? null, $context);
+        $record = EntityRecord::forEntity($entity)->find($id);
+
+        if (! $record) {
+            return;
+        }
+
+        $this->lastRedirectUrl = route('entities.edit', [$entity, $record->getKey()]);
     }
 }

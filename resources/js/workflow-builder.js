@@ -1325,6 +1325,13 @@ document.addEventListener('DOMContentLoaded', function () {
             mountVariablePicker(assignIdExpr, currentVariableDefs());
         }
 
+        if (action.type === 'redirect') {
+            row(I18N.entity, entitySelect(config.entity_slug, function (v) { config.entity_slug = v; }));
+            var redirectIdExpr = textInput(config.id_expression, function (v) { config.id_expression = v; });
+            row(I18N.idExpression, redirectIdExpr);
+            mountVariablePicker(redirectIdExpr, currentVariableDefs());
+        }
+
         if (action.type === 'send_email') {
             var toInput = textInput(config.to, function (v) { config.to = v; }, '{{ entity.email }}');
             row(I18N.to, toInput);

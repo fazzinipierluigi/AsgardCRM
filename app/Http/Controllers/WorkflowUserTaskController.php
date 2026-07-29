@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\WorkflowUserTaskStatus;
 use App\Models\WorkflowUserTask;
 use App\Rules\TableFieldRule;
+use App\Services\Workflows\WorkflowActionExecutor;
 use App\Services\Workflows\WorkflowEngine;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +66,7 @@ class WorkflowUserTaskController extends Controller
         ]);
     }
 
-    public function update(Request $request, WorkflowUserTask $workflowUserTask, WorkflowEngine $engine): RedirectResponse
+    public function update(Request $request, WorkflowUserTask $workflowUserTask, WorkflowEngine $engine, WorkflowActionExecutor $actions): RedirectResponse
     {
         $this->authorizeAccess($workflowUserTask);
 
@@ -89,7 +90,12 @@ class WorkflowUserTaskController extends Controller
             $formData[$field['name']] = $request->input($field['name']);
         }
 
+        $actions->lastRedirectUrl = null;
         $engine->completeUserTask($workflowUserTask, $formData, $request->user());
+
+        if ($actions->lastRedirectUrl) {
+            return redirect($actions->lastRedirectUrl)->with('status', 'workflow-task-completed');
+        }
 
         return redirect()->route('workflow-tasks.index')->with('status', 'workflow-task-completed');
     }

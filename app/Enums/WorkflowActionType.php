@@ -13,6 +13,7 @@ enum WorkflowActionType: string
     case AssignVariableFromSql = 'assign_variable_from_sql';
     case AssignVariableFromApi = 'assign_variable_from_api';
     case FetchEntity = 'fetch_entity';
+    case Redirect = 'redirect';
 
     public function label(): string
     {
@@ -26,6 +27,7 @@ enum WorkflowActionType: string
             self::AssignVariableFromSql => 'Assegna valore variabile da SQL',
             self::AssignVariableFromApi => 'Assegna valore variabile da API',
             self::FetchEntity => 'Preleva entità',
+            self::Redirect => 'Reindirizza a un\'entità',
         };
     }
 

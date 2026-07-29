@@ -1,11 +1,17 @@
 <?php
 
+use App\Enums\EntityFieldType;
+use App\Enums\WorkflowActionPhase;
+use App\Enums\WorkflowActionType;
 use App\Enums\WorkflowInstanceStatus;
 use App\Enums\WorkflowNodeType;
+use App\Models\Entity;
+use App\Models\EntityRecord;
 use App\Models\User;
 use App\Models\Workflow;
 use App\Models\WorkflowEdge;
 use App\Models\WorkflowNode;
+use App\Services\EntityInstaller;
 use App\Services\Workflows\WorkflowEngine;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -54,6 +60,35 @@ test('the assigned user can complete their task and the workflow resumes', funct
     $instance->refresh();
     expect($instance->status)->toBe(WorkflowInstanceStatus::Completed)
         ->and($instance->getVariable('note'))->toBe('Tutto ok');
+});
+
+test('completing a task with a Redirect action sends the user to the target record instead of the task list', function () {
+    $entity = Entity::create(['name' => 'Preventivo Redirect', 'slug' => 'preventivo-redirect-'.uniqid(), 'table_name' => 'entity_preventivo_redirect_'.uniqid()]);
+    $tab = $entity->tabs()->create(['name' => 'Generale', 'position' => 0]);
+    $card = $tab->cards()->create(['name' => 'Dati', 'position' => 0]);
+    $card->fields()->create(['name' => 'Titolo', 'column_name' => 'titolo', 'type' => EntityFieldType::String, 'position' => 0]);
+    app(EntityInstaller::class)->install($entity);
+    $owner = User::factory()->create();
+    $record = EntityRecord::forEntity($entity)->create(['titolo' => 'Bozza', 'user_id' => $owner->id]);
+
+    $user = User::factory()->create();
+    $workflow = wfTaskWorkflow(['assigned_user_id' => null]);
+    $taskNode = $workflow->currentVersion->nodes()->where('type', WorkflowNodeType::UserTask->value)->firstOrFail();
+    $taskNode->actions()->create([
+        'workflow_version_id' => $workflow->currentVersion->id,
+        'phase' => WorkflowActionPhase::After,
+        'sequence' => 0,
+        'type' => WorkflowActionType::Redirect,
+        'config' => ['entity_slug' => $entity->slug, 'id_expression' => (string) $record->id],
+    ]);
+
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $task = $instance->userTasks()->first();
+
+    $this->actingAs($user)->put(route('workflow-tasks.update', $task), ['note' => 'Tutto ok'])
+        ->assertRedirect(route('entities.edit', [$entity, $record]));
+
+    expect($instance->fresh()->status)->toBe(WorkflowInstanceStatus::Completed);
 });
 
 test('a table form field binds the submitted rows as an array variable', function () {
