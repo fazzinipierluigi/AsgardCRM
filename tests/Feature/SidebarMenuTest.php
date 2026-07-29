@@ -33,7 +33,7 @@ test('a hidden entity appears under the collapsed Altre entità group', function
 
     $response->assertSee('data-testid="menu-other-entities"', false);
     $response->assertSee('data-testid="menu-entity-fatture"', false);
-    $response->assertSee('<div class="collapse " id="other-entities-menu">', false);
+    $response->assertSee('<div class="dropdown-menu collapse " id="other-entities-menu">', false);
 });
 
 test('the Altre entità group is expanded while browsing one of its entities', function () {
@@ -42,7 +42,7 @@ test('the Altre entità group is expanded while browsing one of its entities', f
 
     $response = $this->actingAs($admin)->get(route('entities.index', $entity));
 
-    $response->assertSee('<div class="collapse show" id="other-entities-menu">', false);
+    $response->assertSee('<div class="dropdown-menu collapse show" id="other-entities-menu">', false);
     $response->assertSee('data-testid="menu-other-entities"', false);
 });
 

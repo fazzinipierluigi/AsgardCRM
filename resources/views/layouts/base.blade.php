@@ -63,25 +63,27 @@
                         <span class="nav-link-icon">{!! icon('dots') !!}</span>
                         <span class="nav-link-title">{{ t('Altre entità') }}</span>
                     </a>
-                    <div class="collapse {{ $isInOtherEntities ? 'show' : '' }}" id="other-entities-menu">
-                        <ul class="nav-sub">
-                            @foreach ($otherMenuEntities as $otherEntity)
-                                @can("entity_{$otherEntity->slug}.index")
-                                    <li class="nav-sub-item">
-                                        <a
-                                            class="nav-sub-link {{ $entityMenuIsActive($otherEntity) ? 'active' : '' }}"
-                                            href="{{ $entityMenuUrl($otherEntity) }}"
-                                            data-testid="menu-entity-{{ $otherEntity->slug }}"
-                                        >
-                                            @if ($otherEntity->icon)
-                                                <span class="nav-link-icon">{!! icon($otherEntity->icon) !!}</span>
-                                            @endif
-                                            <span class="nav-link-title">{{ $otherEntity->name }}</span>
-                                        </a>
-                                    </li>
-                                @endcan
-                            @endforeach
-                        </ul>
+                    {{-- Tabler's real vertical-nav submenu is a .dropdown-menu of
+                         .dropdown-item links — within .navbar-collapse it's
+                         already styled position:static/transparent/borderless
+                         (see tabler.css), so pairing it with .collapse/.show
+                         here (instead of the .dropdown component's own JS)
+                         still renders it correctly indented in place. --}}
+                    <div class="dropdown-menu collapse {{ $isInOtherEntities ? 'show' : '' }}" id="other-entities-menu">
+                        @foreach ($otherMenuEntities as $otherEntity)
+                            @can("entity_{$otherEntity->slug}.index")
+                                <a
+                                    class="dropdown-item {{ $entityMenuIsActive($otherEntity) ? 'active' : '' }}"
+                                    href="{{ $entityMenuUrl($otherEntity) }}"
+                                    data-testid="menu-entity-{{ $otherEntity->slug }}"
+                                >
+                                    @if ($otherEntity->icon)
+                                        <span class="nav-link-icon">{!! icon($otherEntity->icon) !!}</span>
+                                    @endif
+                                    <span class="nav-link-title">{{ $otherEntity->name }}</span>
+                                </a>
+                            @endcan
+                        @endforeach
                     </div>
                 </li>
             </ul>
