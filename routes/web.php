@@ -29,6 +29,7 @@ use App\Http\Controllers\EntityRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\TrashController;
 use App\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
@@ -183,6 +184,18 @@ Route::middleware('auth')->group(function () {
     Route::post('entities/{entity:slug}/{record}/fields/{field}/trigger', [EntityFieldButtonController::class, 'trigger'])->name('entities.fields.trigger');
     Route::post('entities/{entity:slug}/widgets/{widget}/trigger', [PublicEntityListWidgetController::class, 'trigger'])->name('entities.widgets.trigger');
     Route::get('entities/{entity:slug}/widgets/{widget}/data', [PublicEntityListWidgetController::class, 'data'])->name('entities.widgets.data');
+
+    // Il Cestino: permessi globali (trash.show/restore/empty/delete),
+    // incrociati per riga/entità con entity_{slug}.delete — vedi
+    // TrashController. Stesso motivo dei controller sopra: nessun
+    // middleware `acl` possibile su un controller condiviso da tutte le
+    // entità.
+    Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
+    Route::get('trash/{entity:slug}/data', [TrashController::class, 'data'])->name('trash.data');
+    Route::post('trash/{entity:slug}/{record}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+    Route::delete('trash/{entity:slug}/{record}', [TrashController::class, 'forceDelete'])->name('trash.force-delete');
+    Route::delete('trash/{entity:slug}', [TrashController::class, 'emptyEntity'])->name('trash.empty-entity');
+    Route::delete('trash', [TrashController::class, 'emptyAll'])->name('trash.empty-all');
 
     // A workflow user task can be assigned to anyone, not just admins —
     // access is checked by hand in WorkflowUserTaskController (the task

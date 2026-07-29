@@ -91,6 +91,19 @@
             </ul>
         @endif
 
+        @can('trash.show')
+            <ul class="navbar-nav pb-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('trash.index') }}" data-testid="menu-trash">
+                        <span class="nav-link-icon">
+                            {!! icon('trash') !!}
+                        </span>
+                        <span class="nav-link-title">{{ t('Cestino') }}</span>
+                    </a>
+                </li>
+            </ul>
+        @endcan
+
         @can('admin.access')
             <ul class="navbar-nav pb-lg-3">
                 <li class="nav-item">

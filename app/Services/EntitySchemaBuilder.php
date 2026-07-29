@@ -48,6 +48,7 @@ class EntitySchemaBuilder
             }
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
