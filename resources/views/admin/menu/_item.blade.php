@@ -17,7 +17,7 @@
     </button>
     <button
         type="button"
-        class="btn btn-icon btn-sm menu-toggle-quick-access-btn {{ $entity->show_in_quick_access ? 'text-warning' : '' }}"
+        class="btn btn-icon btn-sm ms-2 menu-toggle-quick-access-btn {{ $entity->show_in_quick_access ? 'text-warning' : '' }}"
         title="{{ t('Accesso rapido') }}"
         data-testid="menu-toggle-quick-access-{{ $entity->slug }}"
     >
