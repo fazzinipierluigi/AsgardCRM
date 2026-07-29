@@ -25,6 +25,7 @@ use RuntimeException;
  * triggering `entity`.
  *
  * @phpstan-type SetVariableConfig array{variable: string, expression: string}
+ * @phpstan-type ClearVariableConfig array{variable: string}
  * @phpstan-type AssignEntityConfig array{variable: string, entity_slug: string, id_expression: string}
  * @phpstan-type SendEmailConfig array{to: string, subject: string, body: string}
  * @phpstan-type EntityFieldAssignment array{column: string, expression: string}
@@ -56,6 +57,7 @@ class WorkflowActionExecutor
     {
         match ($action->type) {
             WorkflowActionType::SetVariable => $this->setVariable($action, $instance),
+            WorkflowActionType::ClearVariable => $this->clearVariable($action, $instance),
             WorkflowActionType::AssignEntityToVariable => $this->assignEntityToVariable($action, $instance),
             WorkflowActionType::SendEmail => $this->sendEmail($action, $instance),
             WorkflowActionType::UpdateEntity => $this->updateEntity($action, $instance),
@@ -93,6 +95,15 @@ class WorkflowActionExecutor
         }
 
         $instance->setVariable($config['variable'], $value);
+        $instance->save();
+    }
+
+    private function clearVariable(WorkflowAction $action, WorkflowInstance $instance): void
+    {
+        /** @var ClearVariableConfig $config */
+        $config = $action->config;
+
+        $instance->setVariable($config['variable'], null);
         $instance->save();
     }
 

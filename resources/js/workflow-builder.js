@@ -1313,6 +1313,10 @@ document.addEventListener('DOMContentLoaded', function () {
             mountVariablePicker(expressionInput, currentVariableDefs());
         }
 
+        if (action.type === 'clear_variable') {
+            row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
+        }
+
         if (action.type === 'assign_entity_to_variable') {
             row(I18N.variableRef, textInput(config.variable, function (v) { config.variable = v; }));
             row(I18N.entity, entitySelect(config.entity_slug, function (v) { config.entity_slug = v; }));

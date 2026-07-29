@@ -5,6 +5,7 @@ namespace App\Enums;
 enum WorkflowActionType: string
 {
     case SetVariable = 'set_variable';
+    case ClearVariable = 'clear_variable';
     case AssignEntityToVariable = 'assign_entity_to_variable';
     case SendEmail = 'send_email';
     case UpdateEntity = 'update_entity';
@@ -17,6 +18,7 @@ enum WorkflowActionType: string
     {
         return match ($this) {
             self::SetVariable => 'Assegna valore a una variabile',
+            self::ClearVariable => 'Svuota variabile',
             self::AssignEntityToVariable => 'Assegna entità a una variabile',
             self::SendEmail => 'Invia email',
             self::UpdateEntity => 'Aggiorna entità',

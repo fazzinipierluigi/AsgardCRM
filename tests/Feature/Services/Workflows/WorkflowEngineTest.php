@@ -72,6 +72,30 @@ test('a linear workflow runs start to end and applies a set_variable action', fu
         ->and($instance->tokens()->first()->status)->toBe(WorkflowTokenStatus::Completed);
 });
 
+test('a clear_variable action resets a previously set variable to null', function () {
+    $workflow = wfWorkflowWithVersion();
+    $version = $workflow->currentVersion;
+    $start = WorkflowNode::factory()->for($version)->start()->create();
+    $task = WorkflowNode::factory()->for($version)->create(['type' => WorkflowNodeType::ServiceTask]);
+    $end = WorkflowNode::factory()->for($version)->end()->create();
+
+    wfConnect($start, $task);
+    wfConnect($task, $end);
+
+    $task->actions()->create([
+        'workflow_version_id' => $version->id,
+        'phase' => WorkflowActionPhase::After,
+        'sequence' => 0,
+        'type' => WorkflowActionType::ClearVariable,
+        'config' => ['variable' => 'saluto'],
+    ]);
+
+    $instance = app(WorkflowEngine::class)->start($workflow, ['saluto' => 'ciao mondo']);
+
+    expect($instance->status)->toBe(WorkflowInstanceStatus::Completed)
+        ->and($instance->getVariable('saluto'))->toBeNull();
+});
+
 test('an exclusive gate follows the first edge whose JsonLogic condition is true', function () {
     $workflow = wfWorkflowWithVersion();
     $version = $workflow->currentVersion;
