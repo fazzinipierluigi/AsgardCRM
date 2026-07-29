@@ -32,6 +32,7 @@ class EntityInstaller
             "entity_{$entity->slug}.create" => "Crea {$entity->name}",
             "entity_{$entity->slug}.edit" => "Modifica {$entity->name}",
             "entity_{$entity->slug}.delete" => "Elimina {$entity->name}",
+            "entity_{$entity->slug}.workflows" => "Vedi flussi {$entity->name}",
         ];
     }
 

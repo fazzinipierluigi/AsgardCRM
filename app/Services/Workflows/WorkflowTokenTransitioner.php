@@ -20,7 +20,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class WorkflowTokenTransitioner
 {
-    public function __construct(private readonly WorkflowActionExecutor $actions) {}
+    public function __construct(
+        private readonly WorkflowActionExecutor $actions,
+        private readonly WorkflowNodeExecutionLogger $executionLog,
+    ) {}
 
     public function runActions(WorkflowInstance $instance, Model $actionable, WorkflowActionPhase $phase): void
     {
@@ -38,6 +41,8 @@ class WorkflowTokenTransitioner
     {
         $this->runActions($instance, $edge, WorkflowActionPhase::Before);
         $this->runActions($instance, $edge, WorkflowActionPhase::After);
+
+        $this->executionLog->exit($instance, $token);
 
         $token->workflow_node_id = $edge->target_node_id;
         $token->via_edge_id = $edge->id;

@@ -48,6 +48,7 @@ class WorkflowEngine
         private readonly WorkflowTokenTransitioner $transitioner,
         private readonly SyncTaskExecutor $syncTaskExecutor,
         private readonly QueuedTaskExecutor $queuedTaskExecutor,
+        private readonly WorkflowNodeExecutionLogger $executionLog,
     ) {}
 
     /**
@@ -134,6 +135,8 @@ class WorkflowEngine
             try {
                 $this->processToken($instance, $token);
             } catch (Throwable $e) {
+                $this->executionLog->fail($instance, $token);
+
                 $instance->status = WorkflowInstanceStatus::Failed;
                 $instance->error_message = $e->getMessage();
                 $instance->ended_at = now();
@@ -195,6 +198,8 @@ class WorkflowEngine
     private function processToken(WorkflowInstance $instance, WorkflowToken $token): void
     {
         $node = $token->node;
+
+        $this->executionLog->enter($instance, $token);
 
         match ($node->type) {
             WorkflowNodeType::Start => $this->handleThroughNode($instance, $token, $node),
@@ -389,7 +394,10 @@ class WorkflowEngine
         }
 
         $survivor = $waiting->first();
-        $waiting->skip(1)->each(fn (WorkflowToken $t) => $t->update(['status' => WorkflowTokenStatus::Cancelled]));
+        $waiting->skip(1)->each(function (WorkflowToken $t) use ($instance) {
+            $t->update(['status' => WorkflowTokenStatus::Cancelled]);
+            $this->executionLog->exit($instance, $t);
+        });
 
         $this->runActions($instance, $node, WorkflowActionPhase::Before);
         $this->runActions($instance, $node, WorkflowActionPhase::After);
@@ -410,6 +418,8 @@ class WorkflowEngine
 
         $token->status = WorkflowTokenStatus::Completed;
         $token->save();
+
+        $this->executionLog->exit($instance, $token);
     }
 
     private function handleSubworkflow(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void

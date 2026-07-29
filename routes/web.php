@@ -179,6 +179,7 @@ Route::middleware('auth')->group(function () {
     Route::post('entities/{entity:slug}', [EntityRecordController::class, 'store'])->name('entities.store');
     Route::get('entities/{entity:slug}', [EntityRecordController::class, 'index'])->name('entities.index');
     Route::get('entities/{entity:slug}/{record}/edit', [EntityRecordController::class, 'edit'])->name('entities.edit');
+    Route::get('entities/{entity:slug}/{record}/workflow-instances/{workflowInstance}', [EntityRecordController::class, 'workflowInstanceGraph'])->name('entities.workflow-instance-graph');
     Route::put('entities/{entity:slug}/{record}', [EntityRecordController::class, 'update'])->name('entities.update');
     Route::delete('entities/{entity:slug}/{record}', [EntityRecordController::class, 'destroy'])->name('entities.destroy');
     Route::post('entities/{entity:slug}/{record}/fields/{field}/trigger', [EntityFieldButtonController::class, 'trigger'])->name('entities.fields.trigger');

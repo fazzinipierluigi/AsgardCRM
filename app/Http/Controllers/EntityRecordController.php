@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\EntityFieldType;
+use App\Enums\WorkflowNodeExecutionStatus;
 use App\Enums\WorkflowUserTaskStatus;
 use App\Http\Requests\StoreEntityRecordRequest;
 use App\Http\Requests\UpdateEntityRecordRequest;
@@ -10,6 +11,10 @@ use App\Models\Entity;
 use App\Models\EntityField;
 use App\Models\EntityFieldChange;
 use App\Models\EntityRecord;
+use App\Models\WorkflowEdge;
+use App\Models\WorkflowInstance;
+use App\Models\WorkflowNode;
+use App\Models\WorkflowNodeExecution;
 use App\Models\WorkflowUserTask;
 use App\Services\EntityChangeLogger;
 use App\Services\EntityCodeGenerator;
@@ -138,12 +143,99 @@ class EntityRecordController extends Controller
         $recordModel = $this->findRecordOrFail($entity, $record);
         $this->authorizeRow($entity, $recordModel, 'edit');
 
+        $canViewWorkflows = request()->user()->can("entity_{$entity->slug}.workflows");
+
         return view('entities.edit', [
             'entity' => $entity->load('tabs.cards.fields'),
             'record' => $recordModel,
             'relationOptions' => $this->relationOptionsForEntity($entity),
             'workflowTasks' => $this->pendingWorkflowTasks($entity, $recordModel),
             'changeTransactions' => $this->changeTransactions($entity, $recordModel),
+            'canViewWorkflows' => $canViewWorkflows,
+            'workflowInstances' => $canViewWorkflows ? $this->workflowInstancesForRecord($entity, $recordModel) : collect(),
+        ]);
+    }
+
+    /**
+     * Every workflow instance ever started against this exact record —
+     * unlike pendingWorkflowTasks(), not limited to pending Task utente
+     * steps flagged show_in_entity_detail: the "Flussi" tab wants every
+     * instance regardless of status or node configuration.
+     *
+     * @return Collection<int, WorkflowInstance>
+     */
+    private function workflowInstancesForRecord(Entity $entity, EntityRecord $record): Collection
+    {
+        return WorkflowInstance::where('entity_slug', $entity->slug)
+            ->where('entity_id', $record->getKey())
+            ->with('workflow')
+            ->orderByDesc('id')
+            ->get();
+    }
+
+    /**
+     * The read-only graph + per-node execution log the "Flussi" tab's
+     * viewer renders for one workflow instance bound to this record —
+     * see WorkflowNodeExecutionLogger for how the log is written.
+     */
+    public function workflowInstanceGraph(Entity $entity, int $record, WorkflowInstance $workflowInstance): JsonResponse
+    {
+        $this->authorizeAction($entity, 'workflows');
+
+        abort_unless($workflowInstance->entity_slug === $entity->slug && (int) $workflowInstance->entity_id === $record, 404);
+
+        $version = $workflowInstance->workflowVersion()->with('nodes', 'edges')->firstOrFail();
+
+        $executions = WorkflowNodeExecution::where('workflow_instance_id', $workflowInstance->id)->orderBy('iteration')->get();
+        $executionsByNode = $executions->groupBy('workflow_node_id');
+        $executedEdgeIds = $executions->pluck('via_edge_id')->filter()->unique();
+        $userTasksByToken = WorkflowUserTask::where('workflow_instance_id', $workflowInstance->id)->get()->keyBy('workflow_token_id');
+
+        return response()->json([
+            'instance' => [
+                'id' => $workflowInstance->id,
+                'status' => $workflowInstance->status->value,
+                'started_at' => $workflowInstance->started_at?->format('d/m/Y H:i'),
+                'ended_at' => $workflowInstance->ended_at?->format('d/m/Y H:i'),
+                'error_message' => $workflowInstance->error_message,
+            ],
+            'nodes' => $version->nodes->map(function (WorkflowNode $node) use ($executionsByNode) {
+                $rows = $executionsByNode->get($node->id, collect());
+                $waiting = $rows->contains(fn (WorkflowNodeExecution $e) => $e->status === WorkflowNodeExecutionStatus::Waiting);
+
+                return [
+                    'id' => $node->id,
+                    'type' => $node->type->value,
+                    'name' => $node->name,
+                    'pos_x' => $node->pos_x,
+                    'pos_y' => $node->pos_y,
+                    'status' => $waiting ? 'waiting' : ($rows->isNotEmpty() ? 'completed' : 'none'),
+                ];
+            })->values(),
+            'edges' => $version->edges->map(fn (WorkflowEdge $edge) => [
+                'id' => $edge->id,
+                'source_id' => $edge->source_node_id,
+                'target_id' => $edge->target_node_id,
+                'label' => $edge->label,
+                'executed' => $executedEdgeIds->contains($edge->id),
+            ])->values(),
+            'logs' => $executionsByNode->map(fn ($rows) => $rows->map(function (WorkflowNodeExecution $execution) use ($userTasksByToken) {
+                $userTask = $userTasksByToken->get($execution->workflow_token_id);
+
+                return [
+                    'iteration' => $execution->iteration,
+                    'status' => $execution->status->value,
+                    'entered_at' => $execution->entered_at->format('d/m/Y H:i:s'),
+                    'exited_at' => $execution->exited_at?->format('d/m/Y H:i:s'),
+                    'variables_snapshot' => $execution->variables_snapshot,
+                    'user_task' => $userTask ? [
+                        'status' => $userTask->status->value,
+                        'form_data' => $userTask->form_data,
+                        'completed_by' => $userTask->completer?->name,
+                        'completed_at' => $userTask->completed_at?->format('d/m/Y H:i:s'),
+                    ] : null,
+                ];
+            })->values()),
         ]);
     }
 
