@@ -1,18 +1,23 @@
 @extends('layouts.app')
 
 @php
-    // The Calendar entity gets its own dedicated FullCalendar UI above
-    // (see CalendarController) instead of the generic per-entity grid
-    // every other installed entity gets here.
+    // System entities (e.g. Calendario) are configurable in the same
+    // menu builder as any custom entity — see MenuController — and
+    // rendered through this same loop; only the link target differs
+    // (entityMenuUrl()/entityMenuIsActive() below), since Calendario
+    // gets its own dedicated FullCalendar UI (CalendarController)
+    // instead of the generic per-entity grid every other entity uses.
     $installedEntities = \App\Models\Entity::where('is_installed', true)
-        ->where('is_calendar', false)
         ->orderBy('menu_position')
         ->orderBy('name')
         ->get();
     $visibleMenuEntities = $installedEntities->where('show_in_menu', true);
     $otherMenuEntities = $installedEntities->where('show_in_menu', false);
-    $isInOtherEntities = request()->routeIs('entities.*')
-        && $otherMenuEntities->contains('slug', request()->route('entity')?->slug);
+    $entityMenuUrl = fn ($entity) => $entity->is_calendar ? route('calendar.index') : route('entities.index', $entity);
+    $entityMenuIsActive = fn ($entity) => $entity->is_calendar
+        ? request()->routeIs('calendar.*')
+        : (request()->routeIs('entities.*') && request()->route('entity')?->slug === $entity->slug);
+    $isInOtherEntities = $otherMenuEntities->contains($entityMenuIsActive);
 @endphp
 
 @section('menu')
@@ -26,21 +31,12 @@
             </a>
         </li>
 
-        @can('entity_calendario.index')
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('calendar.*') ? 'active' : '' }}" href="{{ route('calendar.index') }}" data-testid="menu-calendar">
-                    <span class="nav-link-icon">{!! icon('calendar') !!}</span>
-                    <span class="nav-link-title">{{ t('Calendario') }}</span>
-                </a>
-            </li>
-        @endcan
-
         @foreach ($visibleMenuEntities as $installedEntity)
             @can("entity_{$installedEntity->slug}.index")
                 <li class="nav-item">
                     <a
-                        class="nav-link {{ request()->routeIs('entities.*') && request()->route('entity')?->slug === $installedEntity->slug ? 'active' : '' }}"
-                        href="{{ route('entities.index', $installedEntity) }}"
+                        class="nav-link {{ $entityMenuIsActive($installedEntity) ? 'active' : '' }}"
+                        href="{{ $entityMenuUrl($installedEntity) }}"
                         data-testid="menu-entity-{{ $installedEntity->slug }}"
                     >
                         @if ($installedEntity->icon)
@@ -73,8 +69,8 @@
                                 @can("entity_{$otherEntity->slug}.index")
                                     <li class="nav-sub-item">
                                         <a
-                                            class="nav-sub-link {{ request()->routeIs('entities.*') && request()->route('entity')?->slug === $otherEntity->slug ? 'active' : '' }}"
-                                            href="{{ route('entities.index', $otherEntity) }}"
+                                            class="nav-sub-link {{ $entityMenuIsActive($otherEntity) ? 'active' : '' }}"
+                                            href="{{ $entityMenuUrl($otherEntity) }}"
                                             data-testid="menu-entity-{{ $otherEntity->slug }}"
                                         >
                                             @if ($otherEntity->icon)

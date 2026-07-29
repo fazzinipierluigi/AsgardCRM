@@ -51,6 +51,48 @@ test('a user with calendar permission can view the calendar page', function () {
     $this->actingAs($user)->get(route('calendar.index'))->assertOk();
 });
 
+test('the calendar entity shows up in the sidebar menu, linking to the dedicated calendar page', function () {
+    $entity = calendarEntity();
+    $entity->update(['show_in_menu' => true]);
+    $user = userWithCalendarPermissions(['index']);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertSee('data-testid="menu-entity-calendario"', false)
+        ->assertSee(route('calendar.index'), false);
+});
+
+test('hiding the calendar entity from the main menu moves it into "Altre entità"', function () {
+    $entity = calendarEntity();
+    $entity->update(['show_in_menu' => false]);
+    $user = userWithCalendarPermissions(['index']);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertSee('data-testid="menu-other-entities"', false)
+        ->assertSee(route('calendar.index'), false);
+});
+
+test('the calendar entity in quick access opens the calendar page embedded', function () {
+    $entity = calendarEntity();
+    $entity->update(['show_in_quick_access' => true]);
+    $user = userWithCalendarPermissions(['index']);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertSee('data-testid="quick-access-calendario"', false)
+        ->assertSee(route('calendar.index', ['embed' => 1]), false);
+});
+
+test('embed=1 strips the sidebar chrome from the calendar page, same as any other entity', function () {
+    calendarEntity();
+    $user = userWithCalendarPermissions(['index']);
+
+    $response = $this->actingAs($user)->get(route('calendar.index', ['embed' => 1]));
+
+    $response->assertOk()->assertDontSee('data-testid="sidebar"', false);
+});
+
 test('events feed returns only events overlapping the requested range', function () {
     $entity = calendarEntity();
     $user = userWithCalendarPermissions();

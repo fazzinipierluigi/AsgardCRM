@@ -23,14 +23,7 @@ class UpdateMenuRequest extends FormRequest
      */
     public function rules(): array
     {
-        // Plain scalar ->where(column, false) values get stringified via
-        // Rule::exists()'s "exists:table,col,extra..." DSL, and false
-        // silently becomes an empty string there (not "0"), so the
-        // generated clause never matches — a closure applies real query
-        // builder wheres instead and avoids that entirely.
-        $installedEntity = Rule::exists('entities', 'id')->where(
-            fn ($query) => $query->where('is_installed', true)->where('is_calendar', false)
-        );
+        $installedEntity = Rule::exists('entities', 'id')->where('is_installed', true);
 
         return [
             'visible' => ['array'],

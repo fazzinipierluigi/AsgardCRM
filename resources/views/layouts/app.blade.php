@@ -96,7 +96,7 @@
                         @endunless
 
                         <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
-                            @foreach (\App\Models\Entity::where('is_installed', true)->where('is_calendar', false)->where('show_in_quick_access', true)->orderBy('quick_access_position')->get() as $quickAccessEntity)
+                            @foreach (\App\Models\Entity::where('is_installed', true)->where('show_in_quick_access', true)->orderBy('quick_access_position')->get() as $quickAccessEntity)
                                 @can("entity_{$quickAccessEntity->slug}.index")
                                     <button
                                         type="button"
@@ -105,7 +105,7 @@
                                         data-bs-placement="bottom"
                                         title="{{ $quickAccessEntity->name }}"
                                         data-testid="quick-access-{{ $quickAccessEntity->slug }}"
-                                        data-url="{{ route('entities.index', [$quickAccessEntity, 'embed' => 1]) }}"
+                                        data-url="{{ $quickAccessEntity->is_calendar ? route('calendar.index', ['embed' => 1]) : route('entities.index', [$quickAccessEntity, 'embed' => 1]) }}"
                                         data-name="{{ $quickAccessEntity->name }}"
                                     >
                                         {!! icon($quickAccessEntity->icon ?: 'star') !!}

@@ -12,15 +12,16 @@ use Illuminate\View\View;
 class MenuController extends Controller
 {
     /**
-     * Show the sidebar/quick-access menu builder: every installed,
-     * non-calendar entity, split into "in the main menu" and "in the
-     * 'Altre entità' group" (see layouts/base.blade.php), plus which
-     * ones also show up as quick-access icons in the topbar.
+     * Show the sidebar/quick-access menu builder: every installed
+     * entity — system ones (e.g. Calendario) included, they're just as
+     * configurable as any custom entity — split into "in the main
+     * menu" and "in the 'Altre entità' group" (see
+     * layouts/base.blade.php), plus which ones also show up as
+     * quick-access icons in the topbar.
      */
     public function edit(): View
     {
         $entities = Entity::where('is_installed', true)
-            ->where('is_calendar', false)
             ->orderBy('menu_position')
             ->orderBy('name')
             ->get();
@@ -34,20 +35,18 @@ class MenuController extends Controller
 
     /**
      * Persist the submitted main-menu order/visibility and quick-access
-     * order. Any installed, non-calendar entity missing from `visible`
-     * is implicitly moved to "Altre entità"; any missing from
-     * `quick_access` is implicitly removed from the topbar.
+     * order. Any installed entity missing from `visible` is implicitly
+     * moved to "Altre entità"; any missing from `quick_access` is
+     * implicitly removed from the topbar.
      */
     public function update(UpdateMenuRequest $request): RedirectResponse
     {
         DB::transaction(function () use ($request) {
             Entity::where('is_installed', true)
-                ->where('is_calendar', false)
                 ->update(['show_in_quick_access' => false, 'quick_access_position' => 0]);
 
             $visibleIds = collect($request->input('visible', []));
             $hiddenIds = Entity::where('is_installed', true)
-                ->where('is_calendar', false)
                 ->whereNotIn('id', $visibleIds)
                 ->pluck('id');
 

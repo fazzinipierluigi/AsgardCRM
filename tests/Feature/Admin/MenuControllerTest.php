@@ -33,13 +33,13 @@ test('admin can view the menu builder, split into visible and hidden entities', 
     $response->assertViewHas('hiddenEntities', fn ($entities) => $entities->pluck('id')->contains($hidden->id));
 });
 
-test('the calendar entity never appears in the builder', function () {
+test('the calendar entity is configurable in the builder like any other entity', function () {
     $admin = adminUser();
-    installedEntity('Calendario', 'calendario', ['is_calendar' => true]);
+    installedEntity('Calendario', 'calendario', ['is_calendar' => true, 'is_system' => true, 'show_in_menu' => true]);
 
     $response = $this->actingAs($admin)->get(route('admin.menu.edit'));
 
-    $response->assertDontSee('data-testid="menu-item-calendario"', false);
+    $response->assertSee('data-testid="menu-item-calendario"', false);
 });
 
 test('admin can reorder and hide entities in the main menu', function () {
