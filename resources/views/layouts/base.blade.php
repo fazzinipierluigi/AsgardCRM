@@ -1,5 +1,20 @@
 @extends('layouts.app')
 
+@php
+    // The Calendar entity gets its own dedicated FullCalendar UI above
+    // (see CalendarController) instead of the generic per-entity grid
+    // every other installed entity gets here.
+    $installedEntities = \App\Models\Entity::where('is_installed', true)
+        ->where('is_calendar', false)
+        ->orderBy('menu_position')
+        ->orderBy('name')
+        ->get();
+    $visibleMenuEntities = $installedEntities->where('show_in_menu', true);
+    $otherMenuEntities = $installedEntities->where('show_in_menu', false);
+    $isInOtherEntities = request()->routeIs('entities.*')
+        && $otherMenuEntities->contains('slug', request()->route('entity')?->slug);
+@endphp
+
 @section('menu')
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -20,10 +35,7 @@
             </li>
         @endcan
 
-        {{-- The Calendar entity gets its own dedicated FullCalendar UI above
-             (see CalendarController) instead of the generic per-entity grid
-             every other installed entity gets here. --}}
-        @foreach (\App\Models\Entity::where('is_installed', true)->where('is_calendar', false)->orderBy('name')->get() as $installedEntity)
+        @foreach ($visibleMenuEntities as $installedEntity)
             @can("entity_{$installedEntity->slug}.index")
                 <li class="nav-item">
                     <a
@@ -42,6 +54,43 @@
     </ul>
 
     <div class="mt-auto">
+        @if ($otherMenuEntities->isNotEmpty())
+            <ul class="navbar-nav pb-2">
+                <li class="nav-item">
+                    <a
+                        class="nav-link {{ $isInOtherEntities ? 'active' : '' }}"
+                        href="#other-entities-menu"
+                        data-bs-toggle="collapse"
+                        aria-expanded="{{ $isInOtherEntities ? 'true' : 'false' }}"
+                        data-testid="menu-other-entities"
+                    >
+                        <span class="nav-link-icon">{!! icon('dots') !!}</span>
+                        <span class="nav-link-title">{{ t('Altre entità') }}</span>
+                    </a>
+                    <div class="collapse {{ $isInOtherEntities ? 'show' : '' }}" id="other-entities-menu">
+                        <ul class="nav-sub">
+                            @foreach ($otherMenuEntities as $otherEntity)
+                                @can("entity_{$otherEntity->slug}.index")
+                                    <li class="nav-sub-item">
+                                        <a
+                                            class="nav-sub-link {{ request()->routeIs('entities.*') && request()->route('entity')?->slug === $otherEntity->slug ? 'active' : '' }}"
+                                            href="{{ route('entities.index', $otherEntity) }}"
+                                            data-testid="menu-entity-{{ $otherEntity->slug }}"
+                                        >
+                                            @if ($otherEntity->icon)
+                                                <span class="nav-link-icon">{!! icon($otherEntity->icon) !!}</span>
+                                            @endif
+                                            <span class="nav-link-title">{{ $otherEntity->name }}</span>
+                                        </a>
+                                    </li>
+                                @endcan
+                            @endforeach
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        @endif
+
         @can('admin.access')
             <ul class="navbar-nav pb-lg-3">
                 <li class="nav-item">

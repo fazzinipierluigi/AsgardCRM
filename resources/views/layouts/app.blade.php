@@ -26,104 +26,125 @@
             window.ICONS_BASE_URL = @json(url('/tabler-icons'));
         </script>
 
+        @php $embed = request()->boolean('embed'); @endphp
+
         <div class="page">
-            <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark" data-testid="sidebar">
-                <div class="container-fluid">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
+            @unless ($embed)
+                <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark" data-testid="sidebar">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
 
-                    <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark d-flex align-items-center gap-2">
-                        <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" width="28" height="28">
-                        {{ config('app.name', 'Laravel') }}
-                    </a>
+                        <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark d-flex align-items-center gap-2">
+                            <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" width="28" height="28">
+                            {{ config('app.name', 'Laravel') }}
+                        </a>
 
-                    <div class="px-2 pt-3">
-                        <div class="input-icon">
-                            <span class="input-icon-addon">
-                                {!! icon('search') !!}
-                            </span>
-                            <input
-                                type="text"
-                                id="sidebar-menu-search"
-                                class="form-control form-control-dark"
-                                placeholder="{{ t('Cerca nel menù') }}"
-                                autocomplete="off"
-                                data-testid="sidebar-menu-search"
-                            >
-                        </div>
-                    </div>
-
-                    <div class="navbar-collapse collapse d-flex flex-column" id="sidebar-menu">
-                        @yield('menu')
-                    </div>
-                </div>
-            </aside>
-
-            <header class="navbar navbar-expand-md navbar-light sticky-top d-print-none" data-testid="topnavbar">
-                <div class="container-fluid">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    @unless (request()->routeIs('admin.*'))
-                        <div class="dropdown flex-fill mx-3" style="max-width: 26rem;" data-testid="global-search">
+                        <div class="px-2 pt-3">
                             <div class="input-icon">
                                 <span class="input-icon-addon">
                                     {!! icon('search') !!}
                                 </span>
                                 <input
                                     type="text"
-                                    id="global-search-input"
-                                    class="form-control"
-                                    placeholder="{{ t('Cerca nelle entità...') }}"
+                                    id="sidebar-menu-search"
+                                    class="form-control form-control-dark"
+                                    placeholder="{{ t('Cerca nel menù') }}"
                                     autocomplete="off"
-                                    data-url="{{ route('search') }}"
-                                    data-testid="global-search-input"
+                                    data-testid="sidebar-menu-search"
                                 >
                             </div>
-                            <div
-                                class="dropdown-menu w-100"
-                                id="global-search-results"
-                                style="max-height: 24rem; overflow-y: auto;"
-                                data-no-results="{{ t('Nessun risultato') }}"
-                                data-testid="global-search-results"
-                            ></div>
-                        </div>
-                    @endunless
-
-                    <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
-                        <div class="nav-item dropdown me-2">
-                            <a href="#" class="nav-link px-2" data-bs-toggle="dropdown" aria-label="Notifiche" data-testid="notifications-toggle">
-                                {!! icon('bell') !!}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <div class="dropdown-item text-muted">{{ t('Nessuna notifica') }}</div>
-                            </div>
                         </div>
 
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" data-testid="user-menu-toggle">
-                                <span class="avatar avatar-sm">{{ Str::of(auth()->user()->name)->substr(0, 1)->upper() }}</span>
-                                <div class="d-none d-xl-block ps-2">
-                                    <div data-testid="user-menu-name">{{ auth()->user()->name }}</div>
-                                    <div class="mt-1 small text-muted" data-testid="user-menu-role">
-                                        {{ auth()->user()->getRoles()->pluck('name')->join(', ') ?: t('Nessun ruolo') }}
-                                    </div>
+                        <div class="navbar-collapse collapse d-flex flex-column" id="sidebar-menu">
+                            @yield('menu')
+                        </div>
+                    </div>
+                </aside>
+
+                <header class="navbar navbar-expand-md navbar-light sticky-top d-print-none" data-testid="topnavbar">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        @unless (request()->routeIs('admin.*'))
+                            <div class="dropdown flex-fill mx-3" style="max-width: 26rem;" data-testid="global-search">
+                                <div class="input-icon">
+                                    <span class="input-icon-addon">
+                                        {!! icon('search') !!}
+                                    </span>
+                                    <input
+                                        type="text"
+                                        id="global-search-input"
+                                        class="form-control"
+                                        placeholder="{{ t('Cerca nelle entità...') }}"
+                                        autocomplete="off"
+                                        data-url="{{ route('search') }}"
+                                        data-testid="global-search-input"
+                                    >
                                 </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <a href="{{ route('settings.edit') }}" class="dropdown-item">{{ t('Impostazioni') }}</a>
-                                <div class="dropdown-divider"></div>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="dropdown-item">{{ t('Logout') }}</button>
-                                </form>
+                                <div
+                                    class="dropdown-menu w-100"
+                                    id="global-search-results"
+                                    style="max-height: 24rem; overflow-y: auto;"
+                                    data-no-results="{{ t('Nessun risultato') }}"
+                                    data-testid="global-search-results"
+                                ></div>
+                            </div>
+                        @endunless
+
+                        <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
+                            @foreach (\App\Models\Entity::where('is_installed', true)->where('is_calendar', false)->where('show_in_quick_access', true)->orderBy('quick_access_position')->get() as $quickAccessEntity)
+                                @can("entity_{$quickAccessEntity->slug}.index")
+                                    <button
+                                        type="button"
+                                        class="nav-link px-2 quick-access-link"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        title="{{ $quickAccessEntity->name }}"
+                                        data-testid="quick-access-{{ $quickAccessEntity->slug }}"
+                                        data-url="{{ route('entities.index', [$quickAccessEntity, 'embed' => 1]) }}"
+                                        data-name="{{ $quickAccessEntity->name }}"
+                                    >
+                                        {!! icon($quickAccessEntity->icon ?: 'star') !!}
+                                    </button>
+                                @endcan
+                            @endforeach
+
+                            <div class="nav-item dropdown me-2">
+                                <a href="#" class="nav-link px-2" data-bs-toggle="dropdown" aria-label="Notifiche" data-testid="notifications-toggle">
+                                    {!! icon('bell') !!}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <div class="dropdown-item text-muted">{{ t('Nessuna notifica') }}</div>
+                                </div>
+                            </div>
+
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" data-testid="user-menu-toggle">
+                                    <span class="avatar avatar-sm">{{ Str::of(auth()->user()->name)->substr(0, 1)->upper() }}</span>
+                                    <div class="d-none d-xl-block ps-2">
+                                        <div data-testid="user-menu-name">{{ auth()->user()->name }}</div>
+                                        <div class="mt-1 small text-muted" data-testid="user-menu-role">
+                                            {{ auth()->user()->getRoles()->pluck('name')->join(', ') ?: t('Nessun ruolo') }}
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <a href="{{ route('settings.edit') }}" class="dropdown-item">{{ t('Impostazioni') }}</a>
+                                    <div class="dropdown-divider"></div>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">{{ t('Logout') }}</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </header>
+                </header>
+            @endunless
 
             <div class="page-wrapper">
                 <div class="page-header d-print-none" aria-label="Page header">
@@ -183,6 +204,16 @@
                         @yield('content')
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="quick-access-offcanvas" style="--tblr-offcanvas-width: calc(100vw - 15rem);" data-testid="quick-access-offcanvas">
+            <div class="offcanvas-header border-bottom">
+                <h2 class="offcanvas-title" id="quick-access-offcanvas-title" data-testid="quick-access-offcanvas-title"></h2>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="{{ t('Chiudi') }}"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <iframe id="quick-access-offcanvas-frame" class="w-100 h-100 border-0" data-testid="quick-access-offcanvas-frame" title="{{ t('Accesso rapido') }}"></iframe>
             </div>
         </div>
     </body>

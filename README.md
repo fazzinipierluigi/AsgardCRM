@@ -135,10 +135,20 @@ To gate a Livewire component or method behind a permission, use the `#[RequiresP
 
 Layout applicativo unico (`resources/views/layouts/app.blade.php`): sidebar verticale fissa (dark) + navbar superiore fissa, contenuto in un `container-fluid`. Due varianti di menu, entrambe estendono lo shell:
 
-- **`layouts.base`** — menu utente standard: voce "Dashboard" (personalizzabile con widget in futuro) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
-- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Traduzioni, Lingue, più il link per tornare alla dashboard.
+- **`layouts.base`** — menu utente standard: voce "Dashboard", le entità installate mostrate in menu (ordine e visibilità configurabili, vedi sotto) e, ancorata in basso, la voce "Amministrazione" — visibile solo con il permesso `admin.access` (bypassato automaticamente da qualunque ruolo con `is_admin`).
+- **`layouts.admin`** — menu dell'area di amministrazione: Utenti, Ruoli, Traduzioni, Lingue, Entità, Menù, più il link per tornare alla dashboard.
 
-Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente c'è l'icona notifiche (placeholder, altre icone verranno aggiunte in seguito).
+Il dropdown utente (in alto a destra) mostra nome e ruolo/i, e contiene i link a "Impostazioni" (`/settings`, modifica nome/email/password) e "Logout". A sinistra del dropdown utente compaiono le icone di **accesso rapido** (vedi sotto), poi il dropdown notifiche (placeholder, altre icone verranno aggiunte in seguito).
+
+### Gestione del menù
+
+`/admin/menu` (voce "Menù" nell'area di amministrazione) permette di configurare, per ogni entità installata (esclusa quella calendario, che ha la propria voce fissa):
+
+- se compare direttamente nel menu principale o viene raggruppata sotto la voce collassabile **"Altre entità"**, ancorata in basso sopra ad "Amministrazione" (si espande automaticamente quando si sta navigando una delle entità che contiene);
+- se compare come icona di **accesso rapido** nella topbar (solo icona, con tooltip al passaggio del mouse) — al click apre l'entità in uno sheet che scorre da destra e copre l'area di contenuto (lasciando visibile la sidebar), senza cambiare pagina: chiudendolo si ritrova la pagina sottostante esattamente come prima;
+- l'ordine delle voci nel menu principale e nell'area di accesso rapido, tramite drag and drop.
+
+Le modifiche si salvano con un unico form (`admin.menu.update`); l'ordine tra "Menu principale" e "Altre entità" si scambia con il pulsante di spostamento su ciascuna voce (non via drag, seguendo la stessa convenzione dell'Entity Builder — il drag riordina solo all'interno della stessa lista), mentre l'accesso rapido si attiva/disattiva con l'icona a stella.
 
 ### Area di amministrazione
 

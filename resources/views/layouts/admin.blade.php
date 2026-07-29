@@ -55,6 +55,14 @@
                 <span class="nav-link-title">{{ t('Entità') }}</span>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.menu.*') ? 'active' : '' }}" href="{{ route('admin.menu.edit') }}" data-testid="menu-menu-settings">
+                <span class="nav-link-icon">
+                    {!! icon('list') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Menù') }}</span>
+            </a>
+        </li>
 
         @include('layouts._menu_section_title', ['title' => t('Integrazioni')])
         <li class="nav-item">

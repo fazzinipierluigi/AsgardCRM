@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\EntityVisibilityController;
 use App\Http\Controllers\Admin\ImporterController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
+use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
@@ -126,6 +127,9 @@ Route::middleware('auth')->group(function () {
         Route::post('entities/import', [EntityController::class, 'import'])->name('entities.import');
         Route::get('entities/{entity}/export', [EntityController::class, 'export'])->name('entities.export');
         Route::resource('entities', EntityController::class)->except('show');
+
+        Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
+        Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
 
         Route::get('connectors/data', [ConnectorController::class, 'data'])->name('connectors.data');
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');

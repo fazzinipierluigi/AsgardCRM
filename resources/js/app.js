@@ -1,5 +1,14 @@
 import '@tabler/core/dist/js/tabler.min.js';
 import { RaccoonGrid } from 'raccoon-tables';
+// Import the specific submodules, not the aggregate 'bootstrap' entry
+// point: that index re-exports (and re-runs the data-api side effects
+// of) every component, including Dropdown — which double-registers its
+// document click listener on top of the one already wired by Tabler's
+// own bundled Bootstrap JS, breaking the topbar user-menu dropdown
+// (it opens then immediately closes). Importing single files sidesteps
+// that entirely.
+import Offcanvas from 'bootstrap/js/dist/offcanvas';
+import Tooltip from 'bootstrap/js/dist/tooltip';
 import { icon } from './icon.js';
 import './tom-select.js';
 import './entity-button-field.js';
@@ -11,6 +20,46 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 window.RaccoonGrid = RaccoonGrid;
 window.icon = icon;
 window.Swal = Swal.mixin({ buttonsStyling: false, customClass: { confirmButton: 'btn btn-primary', cancelButton: 'btn btn-link' } });
+
+// Quick-access topbar icons (see layouts/app.blade.php) rely on Bootstrap
+// tooltips to show an entity's name — Tabler's bundled JS doesn't
+// auto-init them.
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+        new Tooltip(el);
+    });
+});
+
+// Quick-access topbar icons open the target entity in a full-page
+// offcanvas sheet (iframe) instead of navigating away, so the page
+// underneath is left exactly as it was once the sheet is closed.
+document.addEventListener('DOMContentLoaded', function () {
+    var offcanvasEl = document.getElementById('quick-access-offcanvas');
+
+    if (!offcanvasEl) {
+        return;
+    }
+
+    var offcanvas = new Offcanvas(offcanvasEl);
+    var frame = document.getElementById('quick-access-offcanvas-frame');
+    var title = document.getElementById('quick-access-offcanvas-title');
+
+    document.querySelectorAll('.quick-access-link').forEach(function (link) {
+        link.addEventListener('click', function () {
+            title.textContent = link.dataset.name;
+            frame.src = link.dataset.url;
+            offcanvas.show();
+        });
+    });
+
+    // Drop the iframe's content once the sheet is closed, so reopening
+    // it (or opening a different entity) always starts from a clean
+    // load rather than showing stale content for a moment.
+    offcanvasEl.addEventListener('hidden.bs.offcanvas', function () {
+        frame.src = 'about:blank';
+        title.textContent = '';
+    });
+});
 
 /**
  * Wire a RaccoonGrid instance up to the laraccoon-layouts dropdown
