@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
         exclusive_gateway: { shape: 'rhombus', fillColor: '#f59f00', strokeColor: '#a66a00', strokeWidth: 2, fontColor: '#ffffff' },
         parallel_gateway: { shape: 'rhombus', fillColor: '#f76707', strokeColor: '#a34600', strokeWidth: 2, fontColor: '#ffffff' },
         timer: { shape: 'ellipse', fillColor: '#ae3ec9', strokeColor: '#6e2680', strokeWidth: 2, fontColor: '#ffffff' },
+        boundary_timer: { shape: 'ellipse', fillColor: '#ae3ec9', strokeColor: '#6e2680', strokeWidth: 2, dashed: true, fontColor: '#ffffff', fontSize: 9 },
         semaphore: { shape: 'ellipse', fillColor: '#f8f9fa', strokeColor: '#2fb344', strokeWidth: 3, fontColor: '#2fb344', verticalLabelPosition: 'bottom', verticalAlign: 'top' },
         subworkflow: { shape: 'rectangle', rounded: true, dashed: true, fillColor: '#495057', strokeColor: '#212529', strokeWidth: 2, fontColor: '#ffffff' },
     };
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var GATEWAY_SIZE = { w: 70, h: 70 };
     var ROUND_SIZE = { w: 70, h: 70 };
     var START_END_SIZE = { w: 35, h: 35 };
+    var BOUNDARY_TIMER_SIZE = { w: 32, h: 32 };
 
     // ---------------------------------------------------------------
     // Graph setup
@@ -108,6 +110,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (type === 'start' || type === 'end') {
             return START_END_SIZE;
+        }
+        if (type === 'boundary_timer') {
+            return BOUNDARY_TIMER_SIZE;
         }
         if (type === 'timer' || type === 'semaphore') {
             return ROUND_SIZE;
@@ -232,6 +237,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         item.addEventListener('click', function () {
+            if (type === 'boundary_timer') {
+                window.Swal.fire({ text: I18N.boundaryTimerDragOnly, icon: 'warning', confirmButtonText: LABELS.confirm });
+                return;
+            }
+
             paletteDropSeq += 1;
             var offset = (paletteDropSeq % 6) * 24;
             createNodeAt(type, 120 + offset, 100 + offset);
@@ -250,6 +260,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         var pt = graph.getPointForEvent(evt, true);
+
+        if (type === 'boundary_timer') {
+            attachBoundaryTimerAt(pt.x, pt.y);
+            return;
+        }
+
         createNodeAt(type, pt.x, pt.y);
     });
 
@@ -258,6 +274,132 @@ document.addEventListener('DOMContentLoaded', function () {
             return cell.vertex && cell.workflowData && cell.workflowData.type === 'start';
         }).length > 0;
     }
+
+    // ---------------------------------------------------------------
+    // Boundary Timer: dropped directly onto a User Task/async Task
+    // processo/script cell instead of anywhere on the canvas — it
+    // anchors to that cell's bottom-right corner and stores the host's
+    // key in its own config (resolved to a real node id server-side by
+    // WorkflowGraphPersister) rather than becoming a normal WorkflowEdge
+    // connection. It keeps following its host if the host is moved, and
+    // snaps back to the corner if dragged on its own — see the
+    // CELLS_MOVED listener below.
+    // ---------------------------------------------------------------
+    function isBoundaryTimerHost(cell) {
+        if (!cell || !cell.vertex || !cell.workflowData) {
+            return false;
+        }
+
+        var t = cell.workflowData.type;
+
+        return t === 'user_task' || (t === 'service_task' && (cell.workflowData.config || {}).execution_mode === 'async');
+    }
+
+    function findHostCellAt(x, y) {
+        var found = null;
+
+        allCells().forEach(function (cell) {
+            if (!isBoundaryTimerHost(cell)) {
+                return;
+            }
+
+            var geo = cell.getGeometry();
+            if (geo && x >= geo.x && x <= geo.x + geo.width && y >= geo.y && y <= geo.y + geo.height) {
+                found = cell;
+            }
+        });
+
+        return found;
+    }
+
+    function boundaryTimerPositionFor(hostCell) {
+        var geo = hostCell.getGeometry();
+        var size = BOUNDARY_TIMER_SIZE;
+
+        return {
+            x: Math.round(geo.x + geo.width - size.w / 2),
+            y: Math.round(geo.y + geo.height - size.h / 2),
+        };
+    }
+
+    function snapBoundaryTimerToHost(timerCell, hostCell) {
+        var pos = boundaryTimerPositionFor(hostCell);
+        var geo = timerCell.getGeometry().clone();
+        geo.x = pos.x;
+        geo.y = pos.y;
+        graph.getDataModel().setGeometry(timerCell, geo);
+    }
+
+    function boundaryTimersAttachedTo(hostKey) {
+        return allCells().filter(function (cell) {
+            return cell.vertex && cell.workflowData && cell.workflowData.type === 'boundary_timer' &&
+                (cell.workflowData.config || {}).attached_to_node_key === hostKey;
+        });
+    }
+
+    function attachBoundaryTimerAt(x, y) {
+        var host = findHostCellAt(x, y);
+
+        if (!host) {
+            window.Swal.fire({ text: I18N.boundaryTimerNeedsHost, icon: 'warning', confirmButtonText: LABELS.confirm });
+            return;
+        }
+
+        var defaultName = OPTIONS.nodeTypes.boundary_timer || 'Boundary Timer';
+
+        window.Swal.fire({
+            title: I18N.nodeNamePrompt,
+            input: 'text',
+            inputValue: defaultName,
+            showCancelButton: true,
+            confirmButtonText: LABELS.create,
+            cancelButtonText: LABELS.cancel,
+        }).then(function (result) {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            var name = (result.value || '').trim() || defaultName;
+            var pos = boundaryTimerPositionFor(host);
+            var cell;
+
+            graph.batchUpdate(function () {
+                cell = addNodeCell({
+                    key: newKey(),
+                    type: 'boundary_timer',
+                    name: name,
+                    pos_x: pos.x,
+                    pos_y: pos.y,
+                    config: { attached_to_node_key: host.workflowData.key },
+                    actions: { before: [], after: [] },
+                });
+            });
+
+            selectCell(cell);
+        });
+    }
+
+    graph.addListener(InternalEvent.CELLS_MOVED, function (sender, evt) {
+        var moved = evt.getProperty('cells') || [];
+
+        moved.forEach(function (cell) {
+            if (!cell.vertex || !cell.workflowData) {
+                return;
+            }
+
+            if (cell.workflowData.type === 'boundary_timer') {
+                var host = cellById[(cell.workflowData.config || {}).attached_to_node_key];
+                if (host) {
+                    snapBoundaryTimerToHost(cell, host);
+                }
+                return;
+            }
+
+            boundaryTimersAttachedTo(cell.workflowData.key).forEach(function (timerCell) {
+                snapBoundaryTimerToHost(timerCell, cell);
+            });
+        });
+    });
 
     // ---------------------------------------------------------------
     // Floating, draggable, non-blocking editor window — opened on
@@ -743,7 +885,15 @@ document.addEventListener('DOMContentLoaded', function () {
             startConditionWrap.appendChild(hint);
         }
 
-        if (data.type === 'timer') {
+        if (data.type === 'timer' || data.type === 'boundary_timer') {
+            if (data.type === 'boundary_timer') {
+                var hostCell = cellById[config.attached_to_node_key];
+                var hint = document.createElement('p');
+                hint.className = 'form-hint';
+                hint.textContent = I18N.boundaryTimerAttachedTo + ': ' + (hostCell ? graph.convertValueToString(hostCell) : '—');
+                container.appendChild(hint);
+            }
+
             var refOptions = { fixed: I18N.fixedDate, variable: I18N.variableRef };
             container.appendChild(field(I18N.reference, select(refOptions, config.reference || 'fixed', function (v) {
                 config.reference = v;

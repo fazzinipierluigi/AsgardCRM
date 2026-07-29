@@ -4,6 +4,7 @@ namespace App\Jobs\Workflows;
 
 use App\Enums\WorkflowActivityExecutionStatus;
 use App\Enums\WorkflowInstanceStatus;
+use App\Enums\WorkflowTokenStatus;
 use App\Models\WorkflowActivityExecution;
 use App\Models\WorkflowInstance;
 use App\Models\WorkflowNode;
@@ -44,6 +45,16 @@ class ExecuteServiceTaskJob implements ShouldQueue
 
     public function handle(SyncTaskExecutor $executor, WorkflowEngine $engine): void
     {
+        // A Boundary Timer attached to this Task processo/script's node
+        // may have already fired and moved the token elsewhere (see
+        // WorkflowEngine::fireBoundaryTimer()) between this job being
+        // dispatched and running — a stale token here would otherwise
+        // run the activity's actions and traverse a token that's no
+        // longer parked waiting on it.
+        if ($this->token->fresh()->status !== WorkflowTokenStatus::WaitingActivity) {
+            return;
+        }
+
         $execution = WorkflowActivityExecution::firstOrCreate(
             ['workflow_token_id' => $this->token->id],
             ['status' => WorkflowActivityExecutionStatus::Pending],

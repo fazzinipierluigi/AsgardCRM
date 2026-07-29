@@ -70,7 +70,7 @@ class WorkflowUserTaskController extends Controller
     {
         $this->authorizeAccess($workflowUserTask);
 
-        if ($workflowUserTask->status === WorkflowUserTaskStatus::Completed) {
+        if (in_array($workflowUserTask->status, [WorkflowUserTaskStatus::Completed, WorkflowUserTaskStatus::Expired], true)) {
             return redirect()->route('workflow-tasks.index');
         }
 

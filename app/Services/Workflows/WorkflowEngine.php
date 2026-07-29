@@ -180,6 +180,12 @@ class WorkflowEngine
 
     public function fireTimer(WorkflowTimer $timer): void
     {
+        if ($timer->node->type === WorkflowNodeType::BoundaryTimer) {
+            $this->fireBoundaryTimer($timer);
+
+            return;
+        }
+
         $timer->status = WorkflowTimerStatus::Fired;
         $timer->save();
 
@@ -190,6 +196,46 @@ class WorkflowEngine
         $this->runActions($instance, $node, WorkflowActionPhase::After);
 
         $edge = $node->outgoingEdges()->first();
+        $this->traverse($instance, $token, $edge);
+
+        $this->advance($instance);
+    }
+
+    /**
+     * The timeout branch of a Boundary Timer attached to a Task
+     * utente/Task processo/script asincrono: fires the node's outgoing
+     * edge instead of the host's, taking over the token that was
+     * parked waiting on the host.
+     */
+    private function fireBoundaryTimer(WorkflowTimer $timer): void
+    {
+        // The host may have completed through its normal path since
+        // FireDueWorkflowTimers queried this row, cancelling it (see
+        // WorkflowTokenTransitioner::traverse()) — a fresh read confirms
+        // there's still something to do before this fires it for good.
+        if ($timer->fresh()->status !== WorkflowTimerStatus::Pending) {
+            return;
+        }
+
+        $timer->status = WorkflowTimerStatus::Fired;
+        $timer->save();
+
+        $instance = $timer->instance;
+        $node = $timer->node;
+        $token = $timer->token;
+
+        WorkflowUserTask::where('workflow_token_id', $token->id)
+            ->where('status', WorkflowUserTaskStatus::Pending->value)
+            ->update(['status' => WorkflowUserTaskStatus::Expired->value]);
+
+        $this->runActions($instance, $node, WorkflowActionPhase::After);
+
+        $edge = $node->outgoingEdges()->first();
+
+        if (! $edge) {
+            throw new RuntimeException("Il Boundary Timer «{$node->name}» non ha un arco in uscita.");
+        }
+
         $this->traverse($instance, $token, $edge);
 
         $this->advance($instance);
@@ -240,11 +286,18 @@ class WorkflowEngine
      */
     private function handleServiceTask(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
     {
-        $executor = ($node->config['execution_mode'] ?? 'sync') === 'async'
-            ? $this->queuedTaskExecutor
-            : $this->syncTaskExecutor;
+        $isAsync = ($node->config['execution_mode'] ?? 'sync') === 'async';
+        $executor = $isAsync ? $this->queuedTaskExecutor : $this->syncTaskExecutor;
 
         $executor->execute($node, $instance, $token);
+
+        // Only an async activity actually parks the token waiting on an
+        // external event (the queued job) long enough for a Boundary
+        // Timer to make sense — a sync one already ran to completion
+        // and traversed away inside execute() above.
+        if ($isAsync) {
+            $this->attachBoundaryTimerIfAny($instance, $token, $node);
+        }
     }
 
     private function handleUserTask(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
@@ -263,6 +316,41 @@ class WorkflowEngine
 
         $token->status = WorkflowTokenStatus::WaitingUserTask;
         $token->save();
+
+        $this->attachBoundaryTimerIfAny($instance, $token, $node);
+    }
+
+    /**
+     * If a Boundary Timer node is anchored to $node (see
+     * WorkflowGraphPersister for how config.attached_to_node_id gets
+     * resolved), park a WorkflowTimer for it on the same token — kept
+     * as its own row rather than changing the token's own status, so
+     * the host's own WaitingUserTask/WaitingActivity status is
+     * untouched: whichever of the two happens first (the host
+     * completing normally, or this timer firing) is a race the token's
+     * single status can't represent by itself.
+     */
+    private function attachBoundaryTimerIfAny(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
+    {
+        $boundary = WorkflowNode::where('workflow_version_id', $node->workflow_version_id)
+            ->where('type', WorkflowNodeType::BoundaryTimer->value)
+            ->where('config->attached_to_node_id', $node->id)
+            ->first();
+
+        if (! $boundary) {
+            return;
+        }
+
+        $context = $this->actions->buildContext($instance);
+        $runAt = $this->resolveTimerRunAt($boundary->config ?? [], $context);
+
+        WorkflowTimer::create([
+            'workflow_instance_id' => $instance->id,
+            'workflow_node_id' => $boundary->id,
+            'workflow_token_id' => $token->id,
+            'run_at' => $runAt,
+            'status' => WorkflowTimerStatus::Pending,
+        ]);
     }
 
     /**
@@ -349,22 +437,8 @@ class WorkflowEngine
 
     private function handleTimer(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void
     {
-        $config = $node->config ?? [];
         $context = $this->actions->buildContext($instance);
-
-        $base = ($config['reference'] ?? 'fixed') === 'variable'
-            ? Carbon::parse($context[$config['variable_name'] ?? ''] ?? 'now')
-            : Carbon::parse($config['date'] ?? 'now');
-
-        $unit = WorkflowTimerUnit::tryFrom($config['unit'] ?? '') ?? WorkflowTimerUnit::Minutes;
-        $amount = (int) ($config['amount'] ?? 0);
-        $direction = $config['direction'] ?? 'after';
-
-        $runAt = match ($unit) {
-            WorkflowTimerUnit::Minutes => $direction === 'before' ? $base->subMinutes($amount) : $base->addMinutes($amount),
-            WorkflowTimerUnit::Hours => $direction === 'before' ? $base->subHours($amount) : $base->addHours($amount),
-            WorkflowTimerUnit::Days => $direction === 'before' ? $base->subDays($amount) : $base->addDays($amount),
-        };
+        $runAt = $this->resolveTimerRunAt($node->config ?? [], $context);
 
         WorkflowTimer::create([
             'workflow_instance_id' => $instance->id,
@@ -376,6 +450,27 @@ class WorkflowEngine
 
         $token->status = WorkflowTokenStatus::WaitingTimer;
         $token->save();
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     * @param  array<string, mixed>  $context
+     */
+    private function resolveTimerRunAt(array $config, array $context): Carbon
+    {
+        $base = ($config['reference'] ?? 'fixed') === 'variable'
+            ? Carbon::parse($context[$config['variable_name'] ?? ''] ?? 'now')
+            : Carbon::parse($config['date'] ?? 'now');
+
+        $unit = WorkflowTimerUnit::tryFrom($config['unit'] ?? '') ?? WorkflowTimerUnit::Minutes;
+        $amount = (int) ($config['amount'] ?? 0);
+        $direction = $config['direction'] ?? 'after';
+
+        return match ($unit) {
+            WorkflowTimerUnit::Minutes => $direction === 'before' ? $base->subMinutes($amount) : $base->addMinutes($amount),
+            WorkflowTimerUnit::Hours => $direction === 'before' ? $base->subHours($amount) : $base->addHours($amount),
+            WorkflowTimerUnit::Days => $direction === 'before' ? $base->subDays($amount) : $base->addDays($amount),
+        };
     }
 
     private function handleSemaphore(WorkflowInstance $instance, WorkflowToken $token, WorkflowNode $node): void

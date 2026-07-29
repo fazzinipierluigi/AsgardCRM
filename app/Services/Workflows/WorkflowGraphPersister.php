@@ -152,6 +152,7 @@ class WorkflowGraphPersister
             }
 
             $keyToId = [];
+            $nodesByKey = [];
             foreach ($graph['nodes'] as $nodeInput) {
                 $node = $version->nodes()->create([
                     'type' => $nodeInput['type'],
@@ -161,6 +162,26 @@ class WorkflowGraphPersister
                     'config' => $nodeInput['config'] ?? [],
                 ]);
                 $keyToId[$nodeInput['key']] = $node->id;
+                $nodesByKey[$nodeInput['key']] = $node;
+            }
+
+            // Second pass: a Boundary Timer's config carries its host's
+            // *key* (a client-invented, unsaved id — see
+            // resources/js/workflow-builder.js) rather than a real node
+            // id, and its host may have been created after it in the
+            // loop above, so this can only resolve once every node
+            // exists. assertValidGraph() already confirmed the host key
+            // resolves to an allowed node type.
+            foreach ($graph['nodes'] as $nodeInput) {
+                $node = $nodesByKey[$nodeInput['key']];
+
+                if ($node->type === WorkflowNodeType::BoundaryTimer) {
+                    $config = $node->config ?? [];
+                    $hostKey = $config['attached_to_node_key'] ?? null;
+                    unset($config['attached_to_node_key']);
+                    $config['attached_to_node_id'] = $keyToId[$hostKey];
+                    $node->update(['config' => $config]);
+                }
 
                 $this->createActions($version, $node, $nodeInput['actions'] ?? []);
             }
@@ -264,6 +285,28 @@ class WorkflowGraphPersister
 
         if ($startCount !== 1) {
             throw new RuntimeException('Il workflow deve avere esattamente un nodo di avvio.');
+        }
+
+        $nodesByKeyInput = collect($graph['nodes'])->keyBy('key');
+
+        foreach ($graph['nodes'] as $nodeInput) {
+            if ($nodeInput['type'] !== WorkflowNodeType::BoundaryTimer->value) {
+                continue;
+            }
+
+            $hostKey = $nodeInput['config']['attached_to_node_key'] ?? null;
+            $host = $hostKey ? $nodesByKeyInput->get($hostKey) : null;
+
+            if (! $host) {
+                throw new RuntimeException("Il Boundary Timer «{$nodeInput['name']}» deve essere agganciato a un nodo esistente.");
+            }
+
+            $hostIsAsyncServiceTask = $host['type'] === WorkflowNodeType::ServiceTask->value
+                && ($host['config']['execution_mode'] ?? 'sync') === 'async';
+
+            if ($host['type'] !== WorkflowNodeType::UserTask->value && ! $hostIsAsyncServiceTask) {
+                throw new RuntimeException("Il Boundary Timer «{$nodeInput['name']}» può essere agganciato solo a un Task utente o a un Task processo/script asincrono.");
+            }
         }
 
         foreach ($graph['edges'] ?? [] as $edgeInput) {

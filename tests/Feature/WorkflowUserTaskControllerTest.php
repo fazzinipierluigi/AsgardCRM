@@ -5,6 +5,7 @@ use App\Enums\WorkflowActionPhase;
 use App\Enums\WorkflowActionType;
 use App\Enums\WorkflowInstanceStatus;
 use App\Enums\WorkflowNodeType;
+use App\Enums\WorkflowUserTaskStatus;
 use App\Models\Entity;
 use App\Models\EntityRecord;
 use App\Models\User;
@@ -89,6 +90,20 @@ test('completing a task with a Redirect action sends the user to the target reco
         ->assertRedirect(route('entities.edit', [$entity, $record]));
 
     expect($instance->fresh()->status)->toBe(WorkflowInstanceStatus::Completed);
+});
+
+test('submitting an expired task (its Boundary Timer already fired) is a no-op redirect, not a second advance', function () {
+    $user = User::factory()->create();
+    $workflow = wfTaskWorkflow(['assigned_user_id' => null]);
+    $instance = app(WorkflowEngine::class)->start($workflow);
+    $task = $instance->userTasks()->first();
+    $task->update(['status' => WorkflowUserTaskStatus::Expired]);
+
+    $this->actingAs($user)->put(route('workflow-tasks.update', $task), ['note' => 'Troppo tardi'])
+        ->assertRedirect(route('workflow-tasks.index'));
+
+    expect($instance->fresh()->status)->not->toBe(WorkflowInstanceStatus::Completed)
+        ->and($instance->fresh()->getVariable('note'))->toBeNull();
 });
 
 test('a table form field binds the submitted rows as an array variable', function () {

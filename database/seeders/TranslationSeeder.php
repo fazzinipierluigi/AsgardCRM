@@ -28,6 +28,7 @@ class TranslationSeeder extends Seeder
             'Accessi' => ['it' => 'Accessi', 'en' => 'Access control'],
             'Accesso rapido' => ['it' => 'Accesso rapido', 'en' => 'Quick access'],
             'Altre entità' => ['it' => 'Altre entità', 'en' => 'Other entities'],
+            'Agganciato a' => ['it' => 'Agganciato a', 'en' => 'Attached to'],
             'Amministrazione' => ['it' => 'Amministrazione', 'en' => 'Administration'],
             'Annulla' => ['it' => 'Annulla', 'en' => 'Cancel'],
             'Annullato' => ['it' => 'Annullato', 'en' => 'Cancelled'],
@@ -336,6 +337,7 @@ class TranslationSeeder extends Seeder
             'Rimuovi colonna' => ['it' => 'Rimuovi colonna', 'en' => 'Remove column'],
             'Rimuovi tab' => ['it' => 'Rimuovi tab', 'en' => 'Remove tab'],
             'Rimuovi da Accesso rapido' => ['it' => 'Rimuovi da Accesso rapido', 'en' => 'Remove from Quick access'],
+            'Rilascia il Boundary Timer sopra un Task utente o un Task processo/script asincrono.' => ['it' => 'Rilascia il Boundary Timer sopra un Task utente o un Task processo/script asincrono.', 'en' => 'Drop the Boundary Timer onto a User Task or an async Task processo/script.'],
             'Ruolo' => ['it' => 'Ruolo', 'en' => 'Role'],
             'Ruoli' => ['it' => 'Ruoli', 'en' => 'Roles'],
             'Ruolo aggiornato correttamente.' => ['it' => 'Ruolo aggiornato correttamente.', 'en' => 'Role updated successfully.'],
@@ -379,6 +381,7 @@ class TranslationSeeder extends Seeder
             'Theme color' => ['it' => 'Colore tema', 'en' => 'Theme color'],
             'Tenant ID' => ['it' => 'Tenant ID', 'en' => 'Tenant ID'],
             'Tipo' => ['it' => 'Tipo', 'en' => 'Type'],
+            'Trascina il Boundary Timer direttamente su un Task utente o un Task processo/script asincrono.' => ['it' => 'Trascina il Boundary Timer direttamente su un Task utente o un Task processo/script asincrono.', 'en' => 'Drag the Boundary Timer directly onto a User Task or an async Task processo/script.'],
             'Trascina per riordinare' => ['it' => 'Trascina per riordinare', 'en' => 'Drag to reorder'],
             'Trascina le voci per riordinarle, usa le frecce per spostarle tra i due elenchi e la stella per aggiungerle all\'accesso rapido.' => [
                 'it' => 'Trascina le voci per riordinarle, usa le frecce per spostarle tra i due elenchi e la stella per aggiungerle all\'accesso rapido.',

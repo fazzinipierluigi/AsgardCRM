@@ -10,6 +10,7 @@ enum WorkflowNodeType: string
     case ExclusiveGateway = 'exclusive_gateway';
     case ParallelGateway = 'parallel_gateway';
     case Timer = 'timer';
+    case BoundaryTimer = 'boundary_timer';
     case Semaphore = 'semaphore';
     case End = 'end';
     case Subworkflow = 'subworkflow';
@@ -23,6 +24,7 @@ enum WorkflowNodeType: string
             self::ExclusiveGateway => 'Gate esclusivo',
             self::ParallelGateway => 'Gate parallelo',
             self::Timer => 'Timer',
+            self::BoundaryTimer => 'Boundary Timer',
             self::Semaphore => 'Semaforo',
             self::End => 'Nodo di fine',
             self::Subworkflow => 'Subworkflow',

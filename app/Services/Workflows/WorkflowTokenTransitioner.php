@@ -3,9 +3,11 @@
 namespace App\Services\Workflows;
 
 use App\Enums\WorkflowActionPhase;
+use App\Enums\WorkflowTimerStatus;
 use App\Enums\WorkflowTokenStatus;
 use App\Models\WorkflowEdge;
 use App\Models\WorkflowInstance;
+use App\Models\WorkflowTimer;
 use App\Models\WorkflowToken;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,10 +45,27 @@ class WorkflowTokenTransitioner
         $this->runActions($instance, $edge, WorkflowActionPhase::After);
 
         $this->executionLog->exit($instance, $token);
+        $this->cancelPendingBoundaryTimers($token);
 
         $token->workflow_node_id = $edge->target_node_id;
         $token->via_edge_id = $edge->id;
         $token->status = WorkflowTokenStatus::Active;
         $token->save();
+    }
+
+    /**
+     * Every path that moves a token forward funnels through here — the
+     * single choke point for "the host of a Boundary Timer got there
+     * first": whatever WorkflowTimer row was parked on this token (see
+     * WorkflowEngine::attachBoundaryTimerIfAny()) is now moot. A no-op
+     * when there isn't one, and equally a no-op for the boundary firing
+     * itself (WorkflowEngine::fireBoundaryTimer() already flips its own
+     * timer to Fired before calling traverse()).
+     */
+    private function cancelPendingBoundaryTimers(WorkflowToken $token): void
+    {
+        WorkflowTimer::where('workflow_token_id', $token->id)
+            ->where('status', WorkflowTimerStatus::Pending->value)
+            ->update(['status' => WorkflowTimerStatus::Cancelled->value]);
     }
 }

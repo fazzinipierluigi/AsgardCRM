@@ -121,6 +121,39 @@ test('replace rejects a graph without exactly one start node', function () {
     app(WorkflowGraphPersister::class)->replace($workflow, $graph);
 })->throws(RuntimeException::class, 'nodo di avvio');
 
+test('replace resolves a Boundary Timer\'s host key to a real node id', function () {
+    $workflow = Workflow::factory()->create();
+    $graph = wfSampleGraph();
+    $graph['nodes'][] = ['key' => 'n4', 'type' => 'boundary_timer', 'name' => 'Timeout', 'pos_x' => 0, 'pos_y' => 0, 'config' => ['attached_to_node_key' => 'n2'], 'actions' => []];
+    // n2 is the exclusive_gateway in wfSampleGraph() — swap it to a
+    // user_task, an allowed Boundary Timer host.
+    $graph['nodes'][1]['type'] = 'user_task';
+
+    $version = app(WorkflowGraphPersister::class)->replace($workflow, $graph);
+
+    $host = $version->nodes()->where('key', '!=', null)->where('name', $graph['nodes'][1]['name'])->firstOrFail();
+    $boundary = $version->nodes()->where('type', 'boundary_timer')->firstOrFail();
+
+    expect($boundary->config)->not->toHaveKey('attached_to_node_key')
+        ->and($boundary->config['attached_to_node_id'])->toBe($host->id);
+});
+
+test('replace rejects a Boundary Timer attached to a node that isn\'t a User Task or an async Task processo/script', function () {
+    $workflow = Workflow::factory()->create();
+    $graph = wfSampleGraph();
+    $graph['nodes'][] = ['key' => 'n4', 'type' => 'boundary_timer', 'name' => 'Timeout', 'pos_x' => 0, 'pos_y' => 0, 'config' => ['attached_to_node_key' => 'n2'], 'actions' => []];
+
+    app(WorkflowGraphPersister::class)->replace($workflow, $graph);
+})->throws(RuntimeException::class, 'Task utente');
+
+test('replace rejects a Boundary Timer with no host key at all', function () {
+    $workflow = Workflow::factory()->create();
+    $graph = wfSampleGraph();
+    $graph['nodes'][] = ['key' => 'n4', 'type' => 'boundary_timer', 'name' => 'Timeout', 'pos_x' => 0, 'pos_y' => 0, 'config' => [], 'actions' => []];
+
+    app(WorkflowGraphPersister::class)->replace($workflow, $graph);
+})->throws(RuntimeException::class, 'nodo esistente');
+
 test('publishing a new draft while an instance is running keeps that instance pinned to its version', function () {
     $persister = app(WorkflowGraphPersister::class);
     $workflow = Workflow::factory()->create();

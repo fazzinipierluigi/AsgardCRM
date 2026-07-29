@@ -92,6 +92,7 @@
                         'exclusive_gateway' => ['shape' => 'diamond', 'bg' => '#f59f00', 'border' => '#a66a00'],
                         'parallel_gateway' => ['shape' => 'diamond', 'bg' => '#f76707', 'border' => '#a34600'],
                         'timer' => ['shape' => 'circle', 'bg' => '#ae3ec9', 'border' => '#6e2680'],
+                        'boundary_timer' => ['shape' => 'circle', 'bg' => '#ae3ec9', 'border' => '#6e2680', 'dashed' => true],
                         'semaphore' => ['shape' => 'circle', 'bg' => '#f8f9fa', 'border' => '#2fb344', 'borderWidth' => 3, 'icon' => 'traffic-lights', 'iconColor' => '#2fb344'],
                         'subworkflow' => ['shape' => 'rect', 'bg' => '#495057', 'border' => '#212529', 'dashed' => true],
                     ];
@@ -307,6 +308,9 @@
             },
             i18n: {
                 onlyOneStart: @json(t('Il workflow può avere un solo nodo di avvio.')),
+                boundaryTimerDragOnly: @json(t('Trascina il Boundary Timer direttamente su un Task utente o un Task processo/script asincrono.')),
+                boundaryTimerNeedsHost: @json(t('Rilascia il Boundary Timer sopra un Task utente o un Task processo/script asincrono.')),
+                boundaryTimerAttachedTo: @json(t('Agganciato a')),
                 trigger: @json(t('Trigger')),
                 cronExpression: @json(t('Espressione cron')),
                 entity: @json(t('Entità')),
