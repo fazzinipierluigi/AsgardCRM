@@ -28,13 +28,31 @@ use App\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetCon
 use App\Http\Controllers\EntityRecordController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
+use App\Http\Controllers\Install\InstallController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TrashController;
+use App\Http\Controllers\Update\UpdateController;
 use App\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
+});
+
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/', [InstallController::class, 'welcome'])->name('welcome');
+    Route::get('database', [InstallController::class, 'database'])->name('database');
+    Route::post('database', [InstallController::class, 'storeDatabase'])->name('database.store');
+    Route::post('database/test-connection', [InstallController::class, 'testConnection'])->name('database.test');
+    Route::get('admin', [InstallController::class, 'admin'])->name('admin');
+    Route::post('admin', [InstallController::class, 'storeAdmin'])->name('admin.store');
+    Route::get('finish', [InstallController::class, 'finish'])->name('finish');
+    Route::post('finish', [InstallController::class, 'run'])->name('run');
+});
+
+Route::prefix('update')->name('update.')->group(function () {
+    Route::get('/', [UpdateController::class, 'welcome'])->name('welcome');
+    Route::post('/', [UpdateController::class, 'run'])->name('run');
 });
 
 Route::middleware('guest')->group(function () {

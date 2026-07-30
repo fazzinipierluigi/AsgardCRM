@@ -2,9 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\LoginProvider;
-use App\Models\User;
-use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,30 +10,13 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed the application's base data (languages, translations, the
+     * default calendar entity). The admin role/user/login provider are
+     * created by the installation wizard (App\Services\ApplicationInstaller)
+     * instead of here.
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        $adminRole = Role::firstOrCreate(
-            ['slug' => 'admin'],
-            ['name' => 'Administrator', 'is_admin' => true, 'is_system' => true]
-        );
-
-        LoginProvider::firstOrCreate(
-            ['slug' => 'local'],
-            ['name' => 'Locale', 'type' => 'local', 'is_active' => true, 'is_system' => true]
-        );
-
-        $user = User::factory()->create([
-            'name' => 'Test User',
-            'username' => 'test',
-            'email' => 'test@example.com',
-        ]);
-
-        $user->assignRole($adminRole);
-
         $this->call(LanguageSeeder::class);
         $this->call(TranslationSeeder::class);
         $this->call(CalendarEntitySeeder::class);

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\ApplyUserPreferences;
+use App\Http\Middleware\EnsureAppIsInstalled;
+use App\Http\Middleware\EnsureAppIsUpToDate;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,6 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Not registered for Pest's `testing` env: most feature tests hit
+        // routes without going through the wizard first, and the app's
+        // real safeguard against being locked out of an existing DB
+        // (the self-heal check in EnsureAppIsInstalled) can't kick in on
+        // an empty per-test RefreshDatabase schema. Dusk (env=local) does
+        // register it — scripts/dusk.sh marks the app installed instead.
+        if (! app()->runningUnitTests()) {
+            $middleware->appendToGroup('web', EnsureAppIsInstalled::class);
+            $middleware->appendToGroup('web', EnsureAppIsUpToDate::class);
+        }
+
         $middleware->appendToGroup('web', ApplyUserPreferences::class);
 
         // The SAML Assertion Consumer Service receives its POST straight

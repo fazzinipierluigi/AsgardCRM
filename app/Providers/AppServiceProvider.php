@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\EntityRecord;
+use App\Services\EnvFileWriter;
 use App\Services\Workflows\WorkflowActionExecutor;
 use App\Services\Workflows\WorkflowEntityTriggerDispatcher;
 use Illuminate\Support\ServiceProvider;
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
         // back to WorkflowUserTaskController::update() (same request,
         // same container) via WorkflowActionExecutor::$lastRedirectUrl.
         $this->app->singleton(WorkflowActionExecutor::class);
+
+        // Bound to the real .env path by default; tests bind a temp-file
+        // instance so the installation wizard never touches the project's
+        // actual .env.
+        $this->app->singleton(EnvFileWriter::class, fn () => new EnvFileWriter(base_path('.env')));
     }
 
     /**

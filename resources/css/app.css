@@ -8,3 +8,65 @@
     opacity: .5;
     pointer-events: none;
 }
+
+/*
+ * Tabler ships two unrelated components both named `.steps`: the
+ * horizontal step-indicator widget (flex row of numbered dots) and a
+ * doc-page "numbered content" list (left border + counter, keyed off
+ * nested h3s). Both have the same selector specificity, so whichever is
+ * later in the compiled stylesheet wins — currently the content-list
+ * one, breaking the step indicator's layout. `.wizard-steps` (used by
+ * the install/update wizards) forces the intended flex-widget styling
+ * back with higher specificity, regardless of import order.
+ */
+.wizard-steps.steps {
+    margin-bottom: 1.5rem;
+    margin-left: 0;
+    padding-left: 0;
+    border-left: 0;
+}
+
+/*
+ * `.navbar-brand`'s font-size comes from --tblr-navbar-brand-font-size,
+ * a custom property only defined inside `.navbar` — outside of one (the
+ * install/update wizards' standalone pages have no navbar) it's unset,
+ * so the brand text falls back to the inherited body font-size instead
+ * of Tabler's intended ~20px.
+ */
+.wizard-brand {
+    --tblr-navbar-brand-font-size: 1.5rem;
+}
+
+/*
+ * The "AsgardCRM" wordmark: "Asgard" in Montserrat ExtraBold, "CRM" in
+ * Montserrat Medium, each with its own light/dark-background color.
+ * `.brand-word` keeps both spans on one baseline and vertically centered
+ * against the logo image next to it (the parent `.navbar-brand` link is
+ * always `d-flex align-items-center`, but the two spans' differing font
+ * weights can otherwise drift the text off the image's center).
+ */
+.brand-word {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.brand-asgard {
+    font-family: var(--font-montserrat), sans-serif;
+    font-weight: 800;
+    color: #1B3B6F;
+}
+
+.brand-crm {
+    font-family: var(--font-montserrat), sans-serif;
+    font-weight: 500;
+    color: #00A3A6;
+}
+
+.brand-word--dark .brand-asgard {
+    color: #E2E8F0;
+}
+
+.brand-word--dark .brand-crm {
+    color: #20E2E6;
+}

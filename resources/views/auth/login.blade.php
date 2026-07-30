@@ -13,14 +13,15 @@
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        {{ Vite::fonts() }}
     </head>
     <body class="border-top-wide border-primary d-flex flex-column">
         <div class="page page-center">
             <div class="container container-tight py-4">
                 <div class="text-center mb-4">
-                    <a href="{{ url('/') }}" class="navbar-brand navbar-brand-autodark d-flex align-items-center justify-content-center gap-2">
-                        <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" width="36" height="36">
-                        {{ config('app.name', 'Laravel') }}
+                    <a href="{{ url('/') }}" class="navbar-brand navbar-brand-autodark wizard-brand d-flex align-items-center justify-content-center gap-2">
+                        <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" class="navbar-brand-image" width="40" height="40">
+                        @include('layouts._brand')
                     </a>
                 </div>
                 <div class="card card-md">

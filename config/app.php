@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Version
+    |--------------------------------------------------------------------------
+    |
+    | Compared against the `app_version` value stored in the database
+    | (App\Services\ApplicationInstaller, EnsureAppIsUpToDate middleware)
+    | to detect an upgrade or downgrade and trigger the update wizard.
+    | Bump this by hand in the same commit that warrants a version change.
+    |
+    */
+
+    'version' => '1.0.0',
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

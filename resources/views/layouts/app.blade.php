@@ -19,6 +19,7 @@
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        {{ Vite::fonts() }}
     </head>
     <body>
         <script>
@@ -37,8 +38,8 @@
                         </button>
 
                         <a href="{{ route('dashboard') }}" class="navbar-brand navbar-brand-autodark d-flex align-items-center gap-2">
-                            <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" width="28" height="28">
-                            {{ config('app.name', 'Laravel') }}
+                            <img src="{{ asset('logo.svg') }}" alt="{{ config('app.name', 'AsgardCRM') }}" class="navbar-brand-image" width="28" height="28">
+                            @include('layouts._brand', ['dark' => true])
                         </a>
 
                         <div class="px-2 pt-3">
