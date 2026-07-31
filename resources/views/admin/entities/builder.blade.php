@@ -15,6 +15,7 @@
     @if ($entity->is_installed)
         <a href="{{ route('admin.entities.widgets.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-widgets-link">{{ t('Gestisci widget lista') }}</a>
         <a href="{{ route('admin.entities.relations.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-relations-link">{{ t('Gestisci relazioni') }}</a>
+        <a href="{{ route('admin.entities.conditions.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-conditions-link">{{ t('Gestisci condizioni') }}</a>
     @endif
     <button type="submit" form="entity-builder-form" class="btn btn-primary" data-testid="entity-builder-submit">{{ t('Salva struttura') }}</button>
 @endsection

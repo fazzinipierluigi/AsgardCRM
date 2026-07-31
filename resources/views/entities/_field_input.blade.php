@@ -3,13 +3,11 @@
     $value = old($column, $record?->{$column});
 @endphp
 
-<div class="col-md-{{ $field->width }} mb-3">
+<div class="col-md-{{ $field->width }} mb-3" data-field-wrapper data-column="{{ $column }}">
     @unless ($field->type->value === 'button')
         <label class="form-label">
             {{ $field->name }}
-            @if ($field->required)
-                <span class="text-danger">*</span>
-            @endif
+            <span class="text-danger @unless ($field->required) d-none @endunless" data-required-marker>*</span>
         </label>
     @endunless
 

@@ -118,6 +118,7 @@ class EntityRecordController extends Controller
             'entity' => $entity->load('tabs.cards.fields'),
             'record' => null,
             'relationOptions' => $this->relationOptionsForEntity($entity),
+            'fieldConditions' => $this->fieldConditionsPayload($entity),
         ]);
     }
 
@@ -157,6 +158,7 @@ class EntityRecordController extends Controller
             'canViewWorkflows' => $canViewWorkflows,
             'workflowInstances' => $canViewWorkflows ? $this->workflowInstancesForRecord($entity, $recordModel) : collect(),
             'entityRelations' => $this->entityRelationsForRecord($entity, $recordModel),
+            'fieldConditions' => $this->fieldConditionsPayload($entity),
         ]);
     }
 
@@ -192,6 +194,33 @@ class EntityRecordController extends Controller
             'targetEntity' => $this->relationLinkResolver->targetEntityFor($relation, $entity),
             'count' => $this->relationLinkResolver->countLinks($relation, $entity, $record->getKey()),
         ]);
+    }
+
+    /**
+     * The entity's conditional-field rules, reshaped for
+     * resources/js/entity-field-conditions.js: each rule as raw
+     * JsonLogic plus the list of fields it manages, keyed by the
+     * field's physical form column name (matching what
+     * _field_input.blade.php names its input) rather than the field
+     * id — the client evaluator only ever deals in column names, both
+     * for the rule's own {"var": ...} references and its targets.
+     *
+     * @return array<int, array{rule: mixed, targets: array<int, array{column: string, visible: bool, readonly: bool, required: bool}>}>
+     */
+    private function fieldConditionsPayload(Entity $entity): array
+    {
+        return $entity->fieldConditions()->with('targets.field')->get()
+            ->map(fn ($condition) => [
+                'rule' => $condition->rule,
+                'targets' => $condition->targets->map(fn ($target) => [
+                    'column' => $this->columnFor($target->field),
+                    'visible' => $target->visible,
+                    'readonly' => $target->readonly,
+                    'required' => $target->required,
+                ])->all(),
+            ])
+            ->values()
+            ->all();
     }
 
     /**

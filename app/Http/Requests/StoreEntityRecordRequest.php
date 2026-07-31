@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\BuildsEntityFieldRules;
 use App\Models\Entity;
+use App\Services\EntityFieldConditionEvaluator;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -42,6 +43,20 @@ class StoreEntityRecordRequest extends FormRequest
             }
 
             $rules[$this->columnFor($field)] = $this->rulesFor($field);
+        }
+
+        // A field can be genuinely required (EntityField.required) yet
+        // currently hidden by an active EntityFieldCondition — it can
+        // never be filled in while hidden, so it can't be allowed to
+        // block saving. See EntityFieldConditionEvaluator's own
+        // docblock for why this is the one piece of condition logic
+        // that *is* enforced server-side.
+        $hiddenColumns = app(EntityFieldConditionEvaluator::class)->hiddenColumns($entity, $this->all());
+
+        foreach ($hiddenColumns as $column) {
+            if (isset($rules[$column][0]) && $rules[$column][0] === 'required') {
+                $rules[$column][0] = 'nullable';
+            }
         }
 
         return $rules;

@@ -563,6 +563,23 @@ class TranslationSeeder extends Seeder
             'Nessuna relazione collegata.' => ['it' => 'Nessuna relazione collegata.', 'en' => 'No linked relation.'],
             'Record' => ['it' => 'Record', 'en' => 'Record'],
             'Aggiungi' => ['it' => 'Aggiungi', 'en' => 'Add'],
+
+            // Entity conditional fields (admin CRUD + record form runtime).
+            'Gestisci condizioni' => ['it' => 'Gestisci condizioni', 'en' => 'Manage conditions'],
+            'Campi condizionali' => ['it' => 'Campi condizionali', 'en' => 'Conditional fields'],
+            'Campi condizionali — :entity' => ['it' => 'Campi condizionali — :entity', 'en' => 'Conditional fields — :entity'],
+            'Nuova condizione' => ['it' => 'Nuova condizione', 'en' => 'New condition'],
+            'Modifica condizione' => ['it' => 'Modifica condizione', 'en' => 'Edit condition'],
+            'Condizione creata correttamente.' => ['it' => 'Condizione creata correttamente.', 'en' => 'Condition created successfully.'],
+            'Condizione aggiornata correttamente.' => ['it' => 'Condizione aggiornata correttamente.', 'en' => 'Condition updated successfully.'],
+            'Condizione eliminata correttamente.' => ['it' => 'Condizione eliminata correttamente.', 'en' => 'Condition deleted successfully.'],
+            'Nessuna condizione configurata per questa entità.' => ['it' => 'Nessuna condizione configurata per questa entità.', 'en' => 'No condition configured for this entity.'],
+            'Campi gestiti' => ['it' => 'Campi gestiti', 'en' => 'Managed fields'],
+            'Nome condizione' => ['it' => 'Nome condizione', 'en' => 'Condition name'],
+            'Regola' => ['it' => 'Regola', 'en' => 'Rule'],
+            'Gestione' => ['it' => 'Gestione', 'en' => 'Managed'],
+            'Visibile' => ['it' => 'Visibile', 'en' => 'Visible'],
+            'Readonly' => ['it' => 'Readonly', 'en' => 'Readonly'],
         ];
 
         $now = Carbon::now();

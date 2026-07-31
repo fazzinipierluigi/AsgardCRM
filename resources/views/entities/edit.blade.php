@@ -155,7 +155,8 @@
             empty: @json(t('Nessuna relazione collegata.')),
             remove: @json(t('Rimuovi')),
         };
+        window.ENTITY_FIELD_CONDITIONS = @json($fieldConditions ?? []);
     </script>
 
-    @vite(['resources/js/entity-record-form.js', 'resources/js/entity-relations.js'])
+    @vite(['resources/js/entity-record-form.js', 'resources/js/entity-relations.js', 'resources/js/entity-field-conditions.js'])
 @endsection

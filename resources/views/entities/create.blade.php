@@ -21,5 +21,9 @@
         @include('entities._form', ['entity' => $entity, 'record' => null, 'relationOptions' => $relationOptions])
     </form>
 
-    @vite('resources/js/entity-record-form.js')
+    <script>
+        window.ENTITY_FIELD_CONDITIONS = @json($fieldConditions ?? []);
+    </script>
+
+    @vite(['resources/js/entity-record-form.js', 'resources/js/entity-field-conditions.js'])
 @endsection
