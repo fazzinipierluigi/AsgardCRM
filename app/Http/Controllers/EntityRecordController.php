@@ -11,6 +11,7 @@ use App\Models\Entity;
 use App\Models\EntityField;
 use App\Models\EntityFieldChange;
 use App\Models\EntityRecord;
+use App\Models\EntityRelation;
 use App\Models\WorkflowEdge;
 use App\Models\WorkflowInstance;
 use App\Models\WorkflowNode;
@@ -19,6 +20,7 @@ use App\Models\WorkflowUserTask;
 use App\Services\EntityChangeLogger;
 use App\Services\EntityCodeGenerator;
 use App\Services\EntityRecordAuthorizer;
+use App\Services\EntityRelationLinkResolver;
 use App\Services\EntityRelationResolver;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
@@ -49,6 +51,7 @@ class EntityRecordController extends Controller
         private readonly EntityCodeGenerator $codeGenerator,
         private readonly EntityRelationResolver $relationResolver,
         private readonly EntityChangeLogger $changeLogger,
+        private readonly EntityRelationLinkResolver $relationLinkResolver,
     ) {}
 
     /**
@@ -153,6 +156,7 @@ class EntityRecordController extends Controller
             'changeTransactions' => $this->changeTransactions($entity, $recordModel),
             'canViewWorkflows' => $canViewWorkflows,
             'workflowInstances' => $canViewWorkflows ? $this->workflowInstancesForRecord($entity, $recordModel) : collect(),
+            'entityRelations' => $this->entityRelationsForRecord($entity, $recordModel),
         ]);
     }
 
@@ -171,6 +175,23 @@ class EntityRecordController extends Controller
             ->with('workflow')
             ->orderByDesc('id')
             ->get();
+    }
+
+    /**
+     * Every EntityRelation this entity is a side of, paired with how
+     * many target records are currently linked to this specific
+     * record — feeds the "Relazioni" sidebar card (see
+     * resources/views/entities/edit.blade.php).
+     *
+     * @return Collection<int, array{relation: EntityRelation, targetEntity: Entity, count: int}>
+     */
+    private function entityRelationsForRecord(Entity $entity, EntityRecord $record): Collection
+    {
+        return $this->relationLinkResolver->relationsForEntity($entity)->map(fn (EntityRelation $relation) => [
+            'relation' => $relation,
+            'targetEntity' => $this->relationLinkResolver->targetEntityFor($relation, $entity),
+            'count' => $this->relationLinkResolver->countLinks($relation, $entity, $record->getKey()),
+        ]);
     }
 
     /**

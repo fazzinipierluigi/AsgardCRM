@@ -546,6 +546,23 @@ class TranslationSeeder extends Seeder
                 'it' => 'Questo task non richiede dati aggiuntivi: completalo per proseguire il workflow.',
                 'en' => 'This task needs no additional data: complete it to move the workflow forward.',
             ],
+
+            // Entity many-to-many relations (admin CRUD + record detail
+            // sidebar/sheet).
+            'Gestisci relazioni' => ['it' => 'Gestisci relazioni', 'en' => 'Manage relations'],
+            'Relazioni N:M' => ['it' => 'Relazioni N:M', 'en' => 'Many-to-many relations'],
+            'Relazioni N:M — :entity' => ['it' => 'Relazioni N:M — :entity', 'en' => 'Many-to-many relations — :entity'],
+            'Nuova relazione' => ['it' => 'Nuova relazione', 'en' => 'New relation'],
+            'Modifica relazione' => ['it' => 'Modifica relazione', 'en' => 'Edit relation'],
+            'Relazione creata correttamente.' => ['it' => 'Relazione creata correttamente.', 'en' => 'Relation created successfully.'],
+            'Relazione aggiornata correttamente.' => ['it' => 'Relazione aggiornata correttamente.', 'en' => 'Relation updated successfully.'],
+            'Relazione eliminata correttamente.' => ['it' => 'Relazione eliminata correttamente.', 'en' => 'Relation deleted successfully.'],
+            'Nessuna relazione configurata per questa entità.' => ['it' => 'Nessuna relazione configurata per questa entità.', 'en' => 'No relation configured for this entity.'],
+            'Nome relazione' => ['it' => 'Nome relazione', 'en' => 'Relation name'],
+            'Relazioni' => ['it' => 'Relazioni', 'en' => 'Relations'],
+            'Nessuna relazione collegata.' => ['it' => 'Nessuna relazione collegata.', 'en' => 'No linked relation.'],
+            'Record' => ['it' => 'Record', 'en' => 'Record'],
+            'Aggiungi' => ['it' => 'Aggiungi', 'en' => 'Add'],
         ];
 
         $now = Carbon::now();

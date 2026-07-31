@@ -1,10 +1,15 @@
 <?php
 
+use App\Enums\EntityFieldType;
+use App\Models\Entity;
+use App\Models\EntityCard;
+use App\Models\EntityTab;
 use App\Models\Language;
 use App\Models\Translation;
 use App\Models\User;
 use App\Models\Workflow;
 use App\Models\WorkflowVersion;
+use App\Services\EntityInstaller;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -89,6 +94,24 @@ function seedLanguages(): void
 {
     Language::firstOrCreate(['code' => 'it'], ['name' => 'Italiano']);
     Language::firstOrCreate(['code' => 'en'], ['name' => 'English']);
+}
+
+/**
+ * A minimal installed entity with a single String field "nome" —
+ * shared by the EntityRelation and EntityFieldCondition tests, which
+ * mostly just need two or three interchangeable installed entities to
+ * relate or configure, not a specific field layout.
+ */
+function relationTestEntity(string $slug, string $name = 'Entità'): Entity
+{
+    $entity = Entity::create(['name' => $name, 'slug' => $slug, 'table_name' => "entity_{$slug}"]);
+    $tab = EntityTab::create(['entity_id' => $entity->id, 'name' => 'Generale', 'position' => 0]);
+    $card = EntityCard::create(['entity_tab_id' => $tab->id, 'name' => 'Dati', 'position' => 0]);
+    $card->fields()->create(['name' => 'Nome', 'column_name' => 'nome', 'type' => EntityFieldType::String, 'position' => 0]);
+
+    app(EntityInstaller::class)->install($entity);
+
+    return $entity->fresh();
 }
 
 /**

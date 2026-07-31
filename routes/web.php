@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\EntityBuilderController;
 use App\Http\Controllers\Admin\EntityController;
 use App\Http\Controllers\Admin\EntityFieldController;
 use App\Http\Controllers\Admin\EntityListWidgetController;
+use App\Http\Controllers\Admin\EntityRelationController;
 use App\Http\Controllers\Admin\EntityVisibilityController;
 use App\Http\Controllers\Admin\ImporterController;
 use App\Http\Controllers\Admin\LanguageController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\CalendarSettingsController;
 use App\Http\Controllers\EntityFieldButtonController;
 use App\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use App\Http\Controllers\EntityRecordController;
+use App\Http\Controllers\EntityRelationLinkController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\Install\InstallController;
@@ -142,6 +144,12 @@ Route::middleware('auth')->group(function () {
         Route::post('entities/{entity}/uninstall', [EntityController::class, 'uninstall'])->name('entities.uninstall');
         Route::get('entities/{entity}/visibility', [EntityVisibilityController::class, 'edit'])->name('entities.visibility.edit');
         Route::put('entities/{entity}/visibility', [EntityVisibilityController::class, 'update'])->name('entities.visibility.update');
+        Route::get('entities/{entity}/relations', [EntityRelationController::class, 'index'])->name('entities.relations.index');
+        Route::get('entities/{entity}/relations/create', [EntityRelationController::class, 'create'])->name('entities.relations.create');
+        Route::post('entities/{entity}/relations', [EntityRelationController::class, 'store'])->name('entities.relations.store');
+        Route::get('entities/{entity}/relations/{relation}/edit', [EntityRelationController::class, 'edit'])->name('entities.relations.edit');
+        Route::put('entities/{entity}/relations/{relation}', [EntityRelationController::class, 'update'])->name('entities.relations.update');
+        Route::delete('entities/{entity}/relations/{relation}', [EntityRelationController::class, 'destroy'])->name('entities.relations.destroy');
         Route::get('entities/import', [EntityController::class, 'importForm'])->name('entities.import.form');
         Route::post('entities/import', [EntityController::class, 'import'])->name('entities.import');
         Route::get('entities/{entity}/export', [EntityController::class, 'export'])->name('entities.export');
@@ -203,6 +211,10 @@ Route::middleware('auth')->group(function () {
     Route::post('entities/{entity:slug}/{record}/fields/{field}/trigger', [EntityFieldButtonController::class, 'trigger'])->name('entities.fields.trigger');
     Route::post('entities/{entity:slug}/widgets/{widget}/trigger', [PublicEntityListWidgetController::class, 'trigger'])->name('entities.widgets.trigger');
     Route::get('entities/{entity:slug}/widgets/{widget}/data', [PublicEntityListWidgetController::class, 'data'])->name('entities.widgets.data');
+    Route::get('entities/{entity:slug}/{record}/relations/{relation}/data', [EntityRelationLinkController::class, 'data'])->name('entities.relations.data');
+    Route::get('entities/{entity:slug}/{record}/relations/{relation}/options', [EntityRelationLinkController::class, 'options'])->name('entities.relations.options');
+    Route::post('entities/{entity:slug}/{record}/relations/{relation}/attach', [EntityRelationLinkController::class, 'attach'])->name('entities.relations.attach');
+    Route::delete('entities/{entity:slug}/{record}/relations/{relation}/{link}', [EntityRelationLinkController::class, 'detach'])->name('entities.relations.detach');
 
     // Il Cestino: permessi globali (trash.show/restore/empty/delete),
     // incrociati per riga/entità con entity_{slug}.delete — vedi
