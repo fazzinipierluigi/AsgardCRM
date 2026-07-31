@@ -13,10 +13,16 @@
         ->get();
     $visibleMenuEntities = $installedEntities->where('show_in_menu', true);
     $otherMenuEntities = $installedEntities->where('show_in_menu', false);
-    $entityMenuUrl = fn ($entity) => $entity->is_calendar ? route('calendar.index') : route('entities.index', $entity);
-    $entityMenuIsActive = fn ($entity) => $entity->is_calendar
-        ? request()->routeIs('calendar.*')
-        : (request()->routeIs('entities.*') && request()->route('entity')?->slug === $entity->slug);
+    $entityMenuUrl = fn ($entity) => match (true) {
+        $entity->is_calendar => route('calendar.index'),
+        $entity->is_documents => route('documents.index'),
+        default => route('entities.index', $entity),
+    };
+    $entityMenuIsActive = fn ($entity) => match (true) {
+        $entity->is_calendar => request()->routeIs('calendar.*'),
+        $entity->is_documents => request()->routeIs('documents.*'),
+        default => request()->routeIs('entities.*') && request()->route('entity')?->slug === $entity->slug,
+    };
     $isInOtherEntities = $otherMenuEntities->contains($entityMenuIsActive);
 @endphp
 

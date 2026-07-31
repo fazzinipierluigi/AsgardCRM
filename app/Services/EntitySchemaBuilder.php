@@ -21,7 +21,10 @@ class EntitySchemaBuilder
      * Reserved column names every dynamic entity table already uses for
      * its own bookkeeping.
      */
-    public const RESERVED_COLUMN_NAMES = ['id', 'user_id', 'created_at', 'updated_at', 'deleted_at', 'relatable_type', 'relatable_id'];
+    public const RESERVED_COLUMN_NAMES = [
+        'id', 'user_id', 'created_at', 'updated_at', 'deleted_at', 'relatable_type', 'relatable_id',
+        'folder_id', 'original_filename', 'stored_path', 'mime_type', 'file_size',
+    ];
 
     /**
      * Create the entity's table with its base ownership columns plus
@@ -30,6 +33,11 @@ class EntitySchemaBuilder
      * with an entity" hardcoded on every calendar event, resolved via
      * EntityRelationTargetType the same way a Relation field's target is
      * — but not exposed as an editable EntityField, since it isn't one).
+     * Documents entities similarly get a fixed set of upload-bookkeeping
+     * columns (see DocumentController) plus a `folder_id` pointing into
+     * the entity's own document_folders tree (App\Models\DocumentFolder)
+     * — no real FK constraint despite document_folders being a real,
+     * static table, see the comment at its column definition below.
      */
     public function create(Entity $entity): void
     {
@@ -45,6 +53,23 @@ class EntitySchemaBuilder
                 $table->string('relatable_type')->nullable();
                 $table->unsignedBigInteger('relatable_id')->nullable();
                 $table->index(['relatable_type', 'relatable_id']);
+            }
+
+            if ($entity->is_documents) {
+                // Deliberately not a real FK to document_folders (unlike
+                // a Relation field's FK to another entity's table): this
+                // dynamically-created table isn't tracked by Laravel's
+                // migration system, and a real FK from it back to a
+                // static migration-tracked table confused SQLite's
+                // (the test suite's driver) drop/recreate ordering
+                // between tests ("no such table: main.document_folders"
+                // while dropping an unrelated table). Referential
+                // validity is enforced in StoreDocumentRequest instead.
+                $table->unsignedBigInteger('folder_id')->nullable();
+                $table->string('original_filename');
+                $table->string('stored_path');
+                $table->string('mime_type')->nullable();
+                $table->unsignedBigInteger('file_size')->default(0);
             }
 
             $table->timestamps();

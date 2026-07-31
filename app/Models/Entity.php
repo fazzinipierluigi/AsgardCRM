@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'slug', 'table_name', 'icon', 'is_system', 'is_calendar', 'is_installed', 'show_in_menu', 'menu_position', 'show_in_quick_access', 'quick_access_position'])]
+#[Fillable(['name', 'slug', 'table_name', 'icon', 'is_system', 'is_calendar', 'is_documents', 'is_installed', 'show_in_menu', 'menu_position', 'show_in_quick_access', 'quick_access_position'])]
 class Entity extends Model
 {
     protected function casts(): array
@@ -16,6 +16,7 @@ class Entity extends Model
         return [
             'is_system' => 'boolean',
             'is_calendar' => 'boolean',
+            'is_documents' => 'boolean',
             'is_installed' => 'boolean',
             'show_in_menu' => 'boolean',
             'show_in_quick_access' => 'boolean',
@@ -25,6 +26,11 @@ class Entity extends Model
     public function tabs(): HasMany
     {
         return $this->hasMany(EntityTab::class)->orderBy('position');
+    }
+
+    public function folders(): HasMany
+    {
+        return $this->hasMany(DocumentFolder::class);
     }
 
     public function roleVisibilities(): HasMany

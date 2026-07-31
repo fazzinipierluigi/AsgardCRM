@@ -12,6 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 /**
@@ -95,6 +96,7 @@ class TrashController extends Controller
         $recordModel = EntityRecord::forEntity($entity)->newQuery()->onlyTrashed()->findOrFail($record);
         $this->authorizeRow($entity, $recordModel);
 
+        $this->deletePhysicalFile($entity, $recordModel);
         $recordModel->forceDelete();
 
         return redirect()->route('trash.index', ['entity' => $entity->slug])->with('status', 'record-force-deleted');
@@ -107,7 +109,10 @@ class TrashController extends Controller
 
         $trashed = EntityRecord::forEntity($entity)->newQuery()->onlyTrashed();
         $this->authorizer->scopeQuery($trashed, $request->user(), $entity);
-        $trashed->get()->each(fn (EntityRecord $record) => $record->forceDelete());
+        $trashed->get()->each(function (EntityRecord $record) use ($entity) {
+            $this->deletePhysicalFile($entity, $record);
+            $record->forceDelete();
+        });
 
         return redirect()->route('trash.index', ['entity' => $entity->slug])->with('status', 'trash-emptied');
     }
@@ -119,10 +124,27 @@ class TrashController extends Controller
         foreach ($this->deletableEntities() as $entity) {
             $trashed = EntityRecord::forEntity($entity)->newQuery()->onlyTrashed();
             $this->authorizer->scopeQuery($trashed, $request->user(), $entity);
-            $trashed->get()->each(fn (EntityRecord $record) => $record->forceDelete());
+            $trashed->get()->each(function (EntityRecord $record) use ($entity) {
+                $this->deletePhysicalFile($entity, $record);
+                $record->forceDelete();
+            });
         }
 
         return redirect()->route('trash.index')->with('status', 'trash-emptied');
+    }
+
+    /**
+     * A "Documenti" record's row is metadata only — the actual file
+     * bytes live on the `local` disk (see DocumentController) and are
+     * never touched by a soft delete (still recoverable from the
+     * Cestino until this point), only removed here, right before the
+     * DB row itself is gone for good.
+     */
+    private function deletePhysicalFile(Entity $entity, EntityRecord $record): void
+    {
+        if ($entity->is_documents && $record->stored_path) {
+            Storage::disk('local')->delete($record->stored_path);
+        }
     }
 
     /**

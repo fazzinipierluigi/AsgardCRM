@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's base data (languages, translations, the
-     * default calendar entity). The admin role/user/login provider are
+     * default calendar and documents entities). The admin role/user/login provider are
      * created by the installation wizard (App\Services\ApplicationInstaller)
      * instead of here.
      */
@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
         $this->call(LanguageSeeder::class);
         $this->call(TranslationSeeder::class);
         $this->call(CalendarEntitySeeder::class);
+        $this->call(DocumentsEntitySeeder::class);
     }
 }

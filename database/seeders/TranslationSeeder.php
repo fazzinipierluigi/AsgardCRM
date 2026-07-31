@@ -580,6 +580,32 @@ class TranslationSeeder extends Seeder
             'Gestione' => ['it' => 'Gestione', 'en' => 'Managed'],
             'Visibile' => ['it' => 'Visibile', 'en' => 'Visible'],
             'Readonly' => ['it' => 'Readonly', 'en' => 'Readonly'],
+
+            // Documenti system entity (folder browser + upload).
+            'Documenti' => ['it' => 'Documenti', 'en' => 'Documents'],
+            'Filtri' => ['it' => 'Filtri', 'en' => 'Filters'],
+            'Cerca documento...' => ['it' => 'Cerca documento...', 'en' => 'Search document...'],
+            'Tutte le cartelle' => ['it' => 'Tutte le cartelle', 'en' => 'All folders'],
+            'Nuova cartella' => ['it' => 'Nuova cartella', 'en' => 'New folder'],
+            'Nome cartella' => ['it' => 'Nome cartella', 'en' => 'Folder name'],
+            'Carica documento' => ['it' => 'Carica documento', 'en' => 'Upload document'],
+            'Modifica documento' => ['it' => 'Modifica documento', 'en' => 'Edit document'],
+            'Cartella' => ['it' => 'Cartella', 'en' => 'Folder'],
+            'Dimensione' => ['it' => 'Dimensione', 'en' => 'Size'],
+            'Caricato da' => ['it' => 'Caricato da', 'en' => 'Uploaded by'],
+            'Scarica' => ['it' => 'Scarica', 'en' => 'Download'],
+            'Radice' => ['it' => 'Radice', 'en' => 'Root'],
+            'File' => ['it' => 'File', 'en' => 'File'],
+            'Nessun documento in questa cartella.' => ['it' => 'Nessun documento in questa cartella.', 'en' => 'No documents in this folder.'],
+            'Cartella creata correttamente.' => ['it' => 'Cartella creata correttamente.', 'en' => 'Folder created successfully.'],
+            'Cartella eliminata correttamente.' => ['it' => 'Cartella eliminata correttamente.', 'en' => 'Folder deleted successfully.'],
+            'Documento caricato correttamente.' => ['it' => 'Documento caricato correttamente.', 'en' => 'Document uploaded successfully.'],
+            'Documento aggiornato correttamente.' => ['it' => 'Documento aggiornato correttamente.', 'en' => 'Document updated successfully.'],
+            'Documento eliminato correttamente.' => ['it' => 'Documento eliminato correttamente.', 'en' => 'Document deleted successfully.'],
+            'Lascia vuoto per mantenere il file attuale (:name).' => [
+                'it' => 'Lascia vuoto per mantenere il file attuale (:name).',
+                'en' => 'Leave empty to keep the current file (:name).',
+            ],
         ];
 
         $now = Carbon::now();
