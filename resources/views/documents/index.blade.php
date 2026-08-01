@@ -61,13 +61,20 @@
         </div>
     @endif
 
+    @php
+        // Every folder along the path down to the currently open one (itself
+        // included) — expanded by default so the tree always reveals where
+        // you currently are, instead of collapsing back to the root on every navigation.
+        $expandedIds = collect($breadcrumb)->pluck('id')->all();
+    @endphp
+
     <div class="row">
         <div class="col-md-3">
-            <div class="card mb-3" style="position: sticky; top: 1rem;" data-testid="documents-filters">
+            <div class="card mb-3" style="position: sticky; top: 1rem;" data-testid="documents-sidebar">
                 <div class="card-header">
-                    <h3 class="card-title">{{ t('Filtri') }}</h3>
+                    <h3 class="card-title">{{ t('Cartelle') }}</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body pb-2">
                     <form method="GET" action="{{ route('documents.index', $folder ? ['folder' => $folder->id] : []) }}">
                         <div class="input-icon mb-2">
                             <input type="text" name="q" value="{{ $search }}" class="form-control" placeholder="{{ t('Cerca documento...') }}" data-testid="documents-search-input">
@@ -77,91 +84,81 @@
                         </div>
                     </form>
                 </div>
-                <div class="list-group list-group-flush" data-testid="documents-folder-tree">
-                    <a href="{{ route('documents.index') }}" class="list-group-item list-group-item-action d-flex align-items-center {{ $folder === null && $search === '' ? 'active' : '' }}">
-                        <span class="me-2" style="width: 1.25rem;">{!! icon('folder') !!}</span>
-                        {{ t('Tutte le cartelle') }}
-                    </a>
+                <div class="document-tree card-body pt-0" data-testid="documents-folder-tree">
+                    <div class="document-tree-node">
+                        <div class="d-flex align-items-center document-tree-row {{ $folder === null && $search === '' ? 'active' : '' }}">
+                            <span class="document-tree-spacer"></span>
+                            <a href="{{ route('documents.index') }}" class="document-tree-link flex-fill d-flex align-items-center text-reset text-decoration-none">
+                                <span class="me-2" style="width: 1.25rem;">{!! icon('folder') !!}</span>
+                                {{ t('Tutte le cartelle') }}
+                            </a>
+                        </div>
+                    </div>
                     @foreach ($folderTree as $node)
-                        @include('documents._folder_tree', ['node' => $node, 'currentFolder' => $folder, 'depth' => 0])
+                        @include('documents._folder_tree', ['node' => $node, 'currentFolder' => $folder, 'expandedIds' => $expandedIds])
                     @endforeach
                 </div>
             </div>
         </div>
 
         <div class="col-md-9">
-            <div class="card">
-                <div class="table-responsive">
-                    <table class="table table-vcenter card-table" data-testid="documents-table">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>{{ t('Nome') }}</th>
-                                <th>{{ t('Dimensione') }}</th>
-                                <th>{{ t('Caricato da') }}</th>
-                                <th>{{ t('Data') }}</th>
-                                <th class="w-1"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($subfolders as $subfolder)
-                                <tr data-testid="document-folder-row-{{ $subfolder->id }}">
-                                    <td>{!! icon('folder') !!}</td>
-                                    <td>
-                                        <a href="{{ route('documents.index', ['folder' => $subfolder->id]) }}">{{ $subfolder->name }}</a>
-                                    </td>
-                                    <td colspan="3" class="text-secondary">{{ t('Cartella') }}</td>
-                                    <td class="text-end">
-                                        @if ($canDelete)
-                                            <form method="POST" action="{{ route('documents.folders.destroy', $subfolder) }}" onsubmit="return confirm({{ Js::from(t('Confermi l\'eliminazione?')) }});">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" data-testid="document-folder-delete-btn-{{ $subfolder->id }}">{{ t('Elimina') }}</button>
-                                            </form>
-                                        @endif
-                                    </td>
-                                </tr>
-                            @empty
-                            @endforelse
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-6 g-3" data-testid="documents-grid">
+                @forelse ($subfolders as $subfolder)
+                    <div class="col">
+                        <div class="card card-sm h-100" data-testid="document-folder-row-{{ $subfolder->id }}">
+                            <a href="{{ route('documents.index', ['folder' => $subfolder->id]) }}" class="card-body d-block text-center py-4 text-reset text-decoration-none" title="{{ $subfolder->name }}">
+                                <span class="d-inline-block icon-lg text-yellow mb-2">{!! icon('folder') !!}</span>
+                                <div class="text-truncate small fw-medium">{{ $subfolder->name }}</div>
+                            </a>
+                            @if ($canDelete)
+                                <div class="card-footer p-1 text-center">
+                                    <form method="POST" action="{{ route('documents.folders.destroy', $subfolder) }}" onsubmit="return confirm({{ Js::from(t('Confermi l\'eliminazione?')) }});">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-ghost-danger w-100" data-testid="document-folder-delete-btn-{{ $subfolder->id }}">{{ t('Elimina') }}</button>
+                                    </form>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                @endforelse
 
-                            @forelse ($documents as $document)
-                                <tr data-testid="document-row-{{ $document->id }}">
-                                    <td>{!! icon(\App\Support\DocumentIconResolver::forFilename($document->original_filename)) !!}</td>
-                                    <td>
-                                        <a href="{{ route('documents.download', $document) }}">{{ $document->nome }}</a>
-                                        @if ($document->descrizione)
-                                            <div class="text-secondary small">{{ $document->descrizione }}</div>
-                                        @endif
-                                    </td>
-                                    <td>{{ number_format($document->file_size / 1024, 0) }} KB</td>
-                                    <td>{{ $document->owner?->name }}</td>
-                                    <td>{{ $document->created_at->format('d/m/Y H:i') }}</td>
-                                    <td class="text-end">
-                                        <div class="btn-list flex-nowrap">
-                                            <a href="{{ route('documents.download', $document) }}" class="btn btn-sm btn-outline-secondary">{{ t('Scarica') }}</a>
-                                            @if ($canCreate)
-                                                <a href="{{ route('documents.edit', $document) }}" class="btn btn-sm btn-outline-primary">{{ t('Modifica') }}</a>
-                                            @endif
-                                            @if ($canDelete)
-                                                <form method="POST" action="{{ route('documents.destroy', $document) }}" onsubmit="return confirm({{ Js::from(t('Confermi l\'eliminazione?')) }});">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" data-testid="document-delete-btn-{{ $document->id }}">{{ t('Elimina') }}</button>
-                                                </form>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                @if ($subfolders->isEmpty())
-                                    <tr>
-                                        <td colspan="6" class="text-secondary" data-testid="documents-empty">{{ t('Nessun documento in questa cartella.') }}</td>
-                                    </tr>
-                                @endif
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                @forelse ($documents as $document)
+                    <div class="col">
+                        <div class="card card-sm h-100" data-testid="document-row-{{ $document->id }}">
+                            <a href="{{ route('documents.download', $document) }}" class="card-body d-block text-center py-4 text-reset text-decoration-none" title="{{ $document->nome }}{{ $document->descrizione ? ' — '.$document->descrizione : '' }}">
+                                <span class="d-inline-block icon-lg mb-2">{!! icon(\App\Support\DocumentIconResolver::forFilename($document->original_filename)) !!}</span>
+                                <div class="text-truncate small fw-medium">{{ $document->nome }}</div>
+                                <div class="text-secondary small">{{ number_format($document->file_size / 1024, 0) }} KB</div>
+                            </a>
+                            @if ($canCreate || $canDelete)
+                                <div class="card-footer p-1 d-flex justify-content-center gap-1">
+                                    @if ($canCreate)
+                                        <a href="{{ route('documents.edit', $document) }}" class="btn btn-sm btn-icon btn-ghost-secondary" title="{{ t('Modifica') }}">
+                                            {!! icon('pencil') !!}
+                                        </a>
+                                    @endif
+                                    @if ($canDelete)
+                                        <form method="POST" action="{{ route('documents.destroy', $document) }}" onsubmit="return confirm({{ Js::from(t('Confermi l\'eliminazione?')) }});">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-icon btn-ghost-danger" data-testid="document-delete-btn-{{ $document->id }}" title="{{ t('Elimina') }}">
+                                                {!! icon('trash') !!}
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    @if ($subfolders->isEmpty())
+                        <div class="col-12">
+                            <div class="text-secondary" data-testid="documents-empty">{{ t('Nessun documento in questa cartella.') }}</div>
+                        </div>
+                    @endif
+                @endforelse
             </div>
         </div>
     </div>
@@ -192,6 +189,18 @@
             </div>
         </div>
     @endif
+
+    <style>
+        .document-tree-row { border-radius: var(--tblr-border-radius); padding: .125rem .25rem; }
+        .document-tree-row:hover { background: var(--tblr-bg-surface-secondary); }
+        .document-tree-row.active { background: var(--tblr-primary-lt); }
+        .document-tree-link { padding: .25rem 0; color: inherit; }
+        .document-tree-toggle,
+        .document-tree-spacer { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; flex-shrink: 0; }
+        .document-tree-toggle { background: none; border: 0; padding: 0; color: var(--tblr-secondary); cursor: pointer; }
+        .document-tree-toggle .icon { transition: transform .15s ease; transform: rotate(90deg); }
+        .document-tree-toggle.collapsed .icon { transform: rotate(0deg); }
+    </style>
 
     @vite('resources/js/documents.js')
 @endsection

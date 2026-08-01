@@ -18,6 +18,9 @@
         "laravel/framework": "^13.8",
         "laravel/socialite": "^5.28",
         "laravel/tinker": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.35",
+        "league/flysystem-ftp": "^3.31",
+        "league/flysystem-sftp-v3": "^3.33",
         "onelogin/php-saml": "^4.3",
         "symfony/expression-language": "^7.0"
     },

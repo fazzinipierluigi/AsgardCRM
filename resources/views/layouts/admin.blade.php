@@ -64,6 +64,16 @@
             </a>
         </li>
 
+        @include('layouts._menu_section_title', ['title' => t('Documenti')])
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.document-storage.*') ? 'active' : '' }}" href="{{ route('admin.document-storage.edit') }}" data-testid="menu-document-storage">
+                <span class="nav-link-icon">
+                    {!! icon('cloud') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Storage documenti') }}</span>
+            </a>
+        </li>
+
         @include('layouts._menu_section_title', ['title' => t('Integrazioni')])
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.connectors.*') ? 'active' : '' }}" href="{{ route('admin.connectors.index') }}" data-testid="menu-connectors">

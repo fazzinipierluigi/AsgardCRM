@@ -10,6 +10,7 @@ use App\Models\DocumentFolder;
 use App\Models\Entity;
 use App\Models\EntityField;
 use App\Models\EntityRecord;
+use App\Services\DocumentStorageDiskResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -34,9 +35,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class DocumentController extends Controller
 {
-    private const DISK = 'local';
-
     private const STORAGE_PREFIX = 'documents';
+
+    private ?string $diskName = null;
+
+    public function __construct(private DocumentStorageDiskResolver $diskResolver) {}
+
+    private function disk(): string
+    {
+        return $this->diskName ??= $this->diskResolver->diskName();
+    }
 
     public function index(Request $request, ?DocumentFolder $folder = null): View
     {
@@ -94,7 +102,7 @@ class DocumentController extends Controller
         $attributes['user_id'] = $request->user()->id;
         $attributes['folder_id'] = $request->validated('folder_id');
         $attributes['original_filename'] = $file->getClientOriginalName();
-        $attributes['stored_path'] = $file->store(self::STORAGE_PREFIX.'/'.$entity->id, self::DISK);
+        $attributes['stored_path'] = $file->store(self::STORAGE_PREFIX.'/'.$entity->id, $this->disk());
         $attributes['mime_type'] = $file->getClientMimeType();
         $attributes['file_size'] = $file->getSize();
 
@@ -128,9 +136,9 @@ class DocumentController extends Controller
 
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            Storage::disk(self::DISK)->delete($recordModel->stored_path);
+            Storage::disk($this->disk())->delete($recordModel->stored_path);
             $attributes['original_filename'] = $file->getClientOriginalName();
-            $attributes['stored_path'] = $file->store(self::STORAGE_PREFIX.'/'.$entity->id, self::DISK);
+            $attributes['stored_path'] = $file->store(self::STORAGE_PREFIX.'/'.$entity->id, $this->disk());
             $attributes['mime_type'] = $file->getClientMimeType();
             $attributes['file_size'] = $file->getSize();
         }
@@ -158,7 +166,7 @@ class DocumentController extends Controller
         $this->authorizeAction($entity, 'index');
         $recordModel = $this->findRecordOrFail($entity, $record);
 
-        return Storage::disk(self::DISK)->download($recordModel->stored_path, $recordModel->original_filename);
+        return Storage::disk($this->disk())->download($recordModel->stored_path, $recordModel->original_filename);
     }
 
     public function storeFolder(StoreDocumentFolderRequest $request): RedirectResponse

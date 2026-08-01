@@ -19,8 +19,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['entity_relation_id', 'entity_a_record_id', 'entity_b_record_id'], 'entity_relation_links_unique');
-            $table->index(['entity_relation_id', 'entity_a_record_id']);
-            $table->index(['entity_relation_id', 'entity_b_record_id']);
+            $table->index(['entity_relation_id', 'entity_a_record_id'], 'entity_relation_links_relation_a_index');
+            $table->index(['entity_relation_id', 'entity_b_record_id'], 'entity_relation_links_relation_b_index');
         });
     }
 

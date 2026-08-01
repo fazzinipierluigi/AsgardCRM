@@ -584,6 +584,7 @@ class TranslationSeeder extends Seeder
             // Documenti system entity (folder browser + upload).
             'Documenti' => ['it' => 'Documenti', 'en' => 'Documents'],
             'Filtri' => ['it' => 'Filtri', 'en' => 'Filters'],
+            'Cartelle' => ['it' => 'Cartelle', 'en' => 'Folders'],
             'Cerca documento...' => ['it' => 'Cerca documento...', 'en' => 'Search document...'],
             'Tutte le cartelle' => ['it' => 'Tutte le cartelle', 'en' => 'All folders'],
             'Nuova cartella' => ['it' => 'Nuova cartella', 'en' => 'New folder'],
@@ -606,6 +607,33 @@ class TranslationSeeder extends Seeder
                 'it' => 'Lascia vuoto per mantenere il file attuale (:name).',
                 'en' => 'Leave empty to keep the current file (:name).',
             ],
+
+            // Document storage admin settings (local disk / S3 / FTP / SFTP).
+            'Storage documenti' => ['it' => 'Storage documenti', 'en' => 'Document storage'],
+            'Salva impostazioni' => ['it' => 'Salva impostazioni', 'en' => 'Save settings'],
+            'Impostazioni storage aggiornate.' => ['it' => 'Impostazioni storage aggiornate.', 'en' => 'Storage settings updated.'],
+            'Tipo di storage' => ['it' => 'Tipo di storage', 'en' => 'Storage type'],
+            'Dove vengono salvati i file caricati nella sezione Documenti.' => [
+                'it' => 'Dove vengono salvati i file caricati nella sezione Documenti.',
+                'en' => 'Where files uploaded in the Documents section are stored.',
+            ],
+            'Locale (disco del server)' => ['it' => 'Locale (disco del server)', 'en' => 'Local (server disk)'],
+            'Bucket S3-compatibile' => ['it' => 'Bucket S3-compatibile', 'en' => 'S3-compatible bucket'],
+            'Server FTP' => ['it' => 'Server FTP', 'en' => 'FTP server'],
+            'Server SFTP' => ['it' => 'Server SFTP', 'en' => 'SFTP server'],
+            'Access key' => ['it' => 'Access key', 'en' => 'Access key'],
+            'Secret key' => ['it' => 'Secret key', 'en' => 'Secret key'],
+            'Lascia vuoto per non modificarla' => ['it' => 'Lascia vuoto per non modificarla', 'en' => 'Leave empty to keep it unchanged'],
+            'Regione' => ['it' => 'Regione', 'en' => 'Region'],
+            'Bucket' => ['it' => 'Bucket', 'en' => 'Bucket'],
+            'Endpoint personalizzato' => ['it' => 'Endpoint personalizzato', 'en' => 'Custom endpoint'],
+            'Solo per provider compatibili S3 diversi da AWS (es. MinIO, Wasabi, R2).' => [
+                'it' => 'Solo per provider compatibili S3 diversi da AWS (es. MinIO, Wasabi, R2).',
+                'en' => 'Only for S3-compatible providers other than AWS (e.g. MinIO, Wasabi, R2).',
+            ],
+            'Usa path-style endpoint' => ['it' => 'Usa path-style endpoint', 'en' => 'Use path-style endpoint'],
+            'Cartella radice' => ['it' => 'Cartella radice', 'en' => 'Root folder'],
+            'Usa SSL/TLS' => ['it' => 'Usa SSL/TLS', 'en' => 'Use SSL/TLS'],
         ];
 
         $now = Carbon::now();

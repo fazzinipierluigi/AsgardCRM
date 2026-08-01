@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\ConnectorController;
 use App\Http\Controllers\Admin\ConnectorMailboxController;
+use App\Http\Controllers\Admin\DocumentStorageController;
 use App\Http\Controllers\Admin\EntityBuilderController;
 use App\Http\Controllers\Admin\EntityController;
 use App\Http\Controllers\Admin\EntityFieldConditionController;
@@ -181,6 +182,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
         Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
+
+        Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
+        Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
 
         Route::get('connectors/data', [ConnectorController::class, 'data'])->name('connectors.data');
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
