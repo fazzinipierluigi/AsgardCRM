@@ -18,7 +18,13 @@
     @endif
 
     @php
-        $config = old(null, $setting->config ?? []);
+        // old('config', ...): 'config' is never an actual submitted field
+        // name (form submits ftp_host/sftp_host/... individually), so this
+        // always falls through to the given default — the real saved
+        // config. Do NOT use old(null, ...): a null key makes Laravel's
+        // old() ignore the default entirely and return the (empty, on a
+        // fresh GET) flashed old-input bucket — every field silently unset.
+        $config = old('config', $setting->config ?? []);
         // Form field names for FTP/SFTP are prefixed (ftp_host, sftp_host, ...)
         // to avoid id/name collisions between the two fieldsets on this same
         // page; the stored config itself uses the plain, unprefixed keys.

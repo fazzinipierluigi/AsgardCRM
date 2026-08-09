@@ -4,8 +4,8 @@
     // System entities (e.g. Calendario) are configurable in the same
     // menu builder as any custom entity — see MenuController — and
     // rendered through this same loop; only the link target differs
-    // (entityMenuUrl()/entityMenuIsActive() below), since Calendario
-    // gets its own dedicated FullCalendar UI (CalendarController)
+    // (Entity::indexUrl()/indexRouteIsActive()), since Calendario/
+    // Documenti/E-mail each get their own dedicated UI/controller
     // instead of the generic per-entity grid every other entity uses.
     $installedEntities = \App\Models\Entity::where('is_installed', true)
         ->orderBy('menu_position')
@@ -13,16 +13,8 @@
         ->get();
     $visibleMenuEntities = $installedEntities->where('show_in_menu', true);
     $otherMenuEntities = $installedEntities->where('show_in_menu', false);
-    $entityMenuUrl = fn ($entity) => match (true) {
-        $entity->is_calendar => route('calendar.index'),
-        $entity->is_documents => route('documents.index'),
-        default => route('entities.index', $entity),
-    };
-    $entityMenuIsActive = fn ($entity) => match (true) {
-        $entity->is_calendar => request()->routeIs('calendar.*'),
-        $entity->is_documents => request()->routeIs('documents.*'),
-        default => request()->routeIs('entities.*') && request()->route('entity')?->slug === $entity->slug,
-    };
+    $entityMenuUrl = fn ($entity) => $entity->indexUrl();
+    $entityMenuIsActive = fn ($entity) => $entity->indexRouteIsActive();
     $isInOtherEntities = $otherMenuEntities->contains($entityMenuIsActive);
 @endphp
 

@@ -1,16 +1,22 @@
-<ul class="nav nav-tabs" role="tablist">
-    @foreach ($entity->tabs as $tab)
-        <li class="nav-item" role="presentation">
-            <button
-                class="nav-link {{ $loop->first ? 'active' : '' }}"
-                type="button"
-                data-bs-toggle="tab"
-                data-bs-target="#entity-tab-{{ $tab->id }}"
-                role="tab"
-            >{{ $tab->name }}</button>
-        </li>
-    @endforeach
-</ul>
+@php
+    $readonly = $readonly ?? false;
+@endphp
+
+@if ($entity->tabs->count() > 1)
+    <ul class="nav nav-tabs" role="tablist">
+        @foreach ($entity->tabs as $tab)
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link {{ $loop->first ? 'active' : '' }}"
+                    type="button"
+                    data-bs-toggle="tab"
+                    data-bs-target="#entity-tab-{{ $tab->id }}"
+                    role="tab"
+                >{{ $tab->name }}</button>
+            </li>
+        @endforeach
+    </ul>
+@endif
 
 <div class="tab-content pt-3">
     @foreach ($entity->tabs as $tab)
@@ -25,7 +31,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     @foreach ($card->fields as $field)
-                                        @include('entities._field_input', ['field' => $field, 'record' => $record, 'relationOptions' => $relationOptions, 'entity' => $entity])
+                                        @include('entities._field_input', ['field' => $field, 'record' => $record, 'relationOptions' => $relationOptions, 'productsBlockOptions' => $productsBlockOptions ?? [], 'entity' => $entity, 'readonly' => $readonly])
                                     @endforeach
                                 </div>
                             </div>

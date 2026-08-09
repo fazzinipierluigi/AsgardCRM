@@ -3,7 +3,9 @@
 namespace App\Http\Requests\Concerns;
 
 use App\Enums\EntityFieldType;
+use App\Models\Entity;
 use App\Models\EntityField;
+use App\Rules\ProductsBlockRule;
 use App\Rules\TableFieldRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
@@ -37,6 +39,11 @@ trait BuildsEntityFieldRules
             EntityFieldType::Time => [$required, 'date_format:H:i'],
             EntityFieldType::DateTime => [$required, 'date'],
             EntityFieldType::Table => ['nullable', new TableFieldRule($field->options['columns'] ?? [], $field->required)],
+            EntityFieldType::ProductsBlock => ['nullable', new ProductsBlockRule(
+                $field->options['extra_columns'] ?? [],
+                $field->required,
+                Entity::where('slug', $field->options['catalog_entity_slug'] ?? null)->value('table_name'),
+            )],
         };
     }
 

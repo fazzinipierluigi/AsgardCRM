@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <m:GetItemResponse xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+      <m:ResponseMessages>
+        <m:GetItemResponseMessage ResponseClass="Success">
+          <m:ResponseCode>NoError</m:ResponseCode>
+          <m:Items>
+            <t:Message>
+              <t:ItemId Id="AAMk-msg-1" ChangeKey="CK-M1" />
+              <t:Subject>Richiesta preventivo</t:Subject>
+              <t:Body BodyType="HTML">&lt;p&gt;Buongiorno, vorrei un preventivo.&lt;/p&gt;</t:Body>
+              <t:HasAttachments>true</t:HasAttachments>
+              <t:Attachments>
+                <t:FileAttachment>
+                  <t:AttachmentId Id="attach-1" />
+                  <t:Name>capitolato.pdf</t:Name>
+                  <t:ContentType>application/pdf</t:ContentType>
+                  <t:Size>2048</t:Size>
+                </t:FileAttachment>
+              </t:Attachments>
+              <t:DateTimeSent>2026-08-10T09:00:00Z</t:DateTimeSent>
+              <t:From>
+                <t:Mailbox>
+                  <t:Name>Cliente</t:Name>
+                  <t:EmailAddress>cliente@example.com</t:EmailAddress>
+                </t:Mailbox>
+              </t:From>
+              <t:ToRecipients>
+                <t:Mailbox>
+                  <t:EmailAddress>me@example.com</t:EmailAddress>
+                </t:Mailbox>
+              </t:ToRecipients>
+              <t:IsRead>true</t:IsRead>
+              <t:InternetMessageId>&lt;abc@example.com&gt;</t:InternetMessageId>
+            </t:Message>
+          </m:Items>
+        </m:GetItemResponseMessage>
+      </m:ResponseMessages>
+    </m:GetItemResponse>
+  </s:Body>
+</s:Envelope>

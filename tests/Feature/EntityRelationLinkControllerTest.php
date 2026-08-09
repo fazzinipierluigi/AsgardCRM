@@ -24,7 +24,7 @@ function relationLinkSetup(): array
 }
 
 test('attaching a record creates a link, and data lists it', function () {
-    ['clienti' => $clienti, 'relation' => $relation, 'admin' => $admin, 'clienteRecord' => $clienteRecord, 'prodottoRecord' => $prodottoRecord] = relationLinkSetup();
+    ['clienti' => $clienti, 'prodotti' => $prodotti, 'relation' => $relation, 'admin' => $admin, 'clienteRecord' => $clienteRecord, 'prodottoRecord' => $prodottoRecord] = relationLinkSetup();
 
     $this->actingAs($admin)->postJson(route('entities.relations.attach', [$clienti, $clienteRecord, $relation]), [
         'target_record_id' => $prodottoRecord->id,
@@ -38,6 +38,7 @@ test('attaching a record creates a link, and data lists it', function () {
     expect($response->json())->toHaveCount(1);
     expect($response->json('0.label'))->toBe('Sedia');
     expect($response->json('0.record_id'))->toBe($prodottoRecord->id);
+    expect($response->json('0.url'))->toBe(route('entities.show', [$prodotti, $prodottoRecord]));
 });
 
 test('attaching the same pair twice does not create a duplicate link', function () {

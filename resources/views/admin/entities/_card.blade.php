@@ -1,6 +1,6 @@
 @php
     $fields = $card?->fields ?? collect();
-    $cardLocked = ($entity?->is_installed ?? false) && $card !== null;
+    $cardLocked = (($entity?->is_installed ?? false) || ($mandatory ?? false)) && $card !== null;
 @endphp
 <div class="col-12 card-item repeatable-row" data-tab-token="{{ $tabToken }}" data-card-token="{{ $cardToken }}">
     <div class="card mb-3">

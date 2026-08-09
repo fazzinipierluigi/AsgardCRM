@@ -84,6 +84,10 @@ class UpdateEntityBuilderRequest extends FormRequest
                 'tabs.*.cards.*.fields.*.button_importer_ids' => ['nullable', 'string'],
                 'tabs.*.cards.*.fields.*.button_javascript' => ['nullable', 'string'],
                 'tabs.*.cards.*.fields.*.table_columns' => ['nullable', 'string'],
+                'tabs.*.cards.*.fields.*.products_catalog' => ['nullable', 'string'],
+                'tabs.*.cards.*.fields.*.products_price_column' => ['nullable', 'string'],
+                'tabs.*.cards.*.fields.*.products_extra_columns' => ['nullable', 'string'],
+                'tabs.*.cards.*.fields.*.products_total_target' => ['nullable', 'string'],
             ];
         }
 
@@ -110,6 +114,10 @@ class UpdateEntityBuilderRequest extends FormRequest
             'tabs.*.cards.*.fields.*.button_importer_ids' => ['nullable', 'string'],
             'tabs.*.cards.*.fields.*.button_javascript' => ['nullable', 'string'],
             'tabs.*.cards.*.fields.*.table_columns' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.products_catalog' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.products_price_column' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.products_extra_columns' => ['nullable', 'string'],
+            'tabs.*.cards.*.fields.*.products_total_target' => ['nullable', 'string'],
         ];
     }
 
@@ -169,10 +177,38 @@ class UpdateEntityBuilderRequest extends FormRequest
                         if ($type === EntityFieldType::Table->value && StoreEntityFieldRequest::parseTableColumns((string) ($field['table_columns'] ?? '')) === []) {
                             $validator->errors()->add("{$path}.table_columns", 'Definisci almeno una colonna valida per la tabella.');
                         }
+
+                        if ($type === EntityFieldType::ProductsBlock->value) {
+                            $this->validateProductsBlockField($validator, $path, $field);
+                        }
                     }
                 }
             }
         });
+    }
+
+    /**
+     * A "Blocco Prodotti" field must name an installed catalog entity and
+     * one of its Decimal fields as the unit price source. The optional
+     * "total_target" (a Decimal field on this same entity that receives
+     * the block's computed total) isn't cross-checked against the rest of
+     * the submitted tree here — same shallow-validation posture as Table's
+     * own column definitions — a typo there just means the JS total sync
+     * silently finds nothing to update, not a broken save.
+     *
+     * @param  array<string, mixed>  $field
+     */
+    private function validateProductsBlockField(Validator $validator, string $path, array $field): void
+    {
+        $catalog = trim((string) ($field['products_catalog'] ?? ''));
+
+        if ($catalog === '' || ! Entity::where('slug', $catalog)->where('is_installed', true)->exists()) {
+            $validator->errors()->add("{$path}.products_catalog", 'Seleziona un\'entità catalogo installata.');
+        }
+
+        if (trim((string) ($field['products_price_column'] ?? '')) === '') {
+            $validator->errors()->add("{$path}.products_price_column", 'Seleziona il campo prezzo dell\'entità catalogo.');
+        }
     }
 
     /**
@@ -294,6 +330,10 @@ class UpdateEntityBuilderRequest extends FormRequest
 
         if ($type === EntityFieldType::Table->value && StoreEntityFieldRequest::parseTableColumns((string) ($field['table_columns'] ?? '')) === []) {
             $validator->errors()->add("{$path}.table_columns", 'Definisci almeno una colonna valida per la tabella.');
+        }
+
+        if ($type === EntityFieldType::ProductsBlock->value) {
+            $this->validateProductsBlockField($validator, $path, $field);
         }
     }
 }

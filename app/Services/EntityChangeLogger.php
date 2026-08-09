@@ -159,6 +159,7 @@ class EntityChangeLogger
             EntityFieldType::Relation => $this->relationResolver->labelsForField($field)[$value] ?? "#{$value}",
             EntityFieldType::RichText => strip_tags((string) $value),
             EntityFieldType::Table => count(json_decode((string) $value, true) ?: []).' righe',
+            EntityFieldType::ProductsBlock => count(json_decode((string) $value, true) ?: []).' prodotti',
             default => (string) $value,
         };
     }

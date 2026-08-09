@@ -19,6 +19,7 @@ enum EntityFieldType: string
     case Code = 'code';
     case Button = 'button';
     case Table = 'table';
+    case ProductsBlock = 'products_block';
 
     public function label(): string
     {
@@ -38,6 +39,7 @@ enum EntityFieldType: string
             self::Code => 'Codice',
             self::Button => 'Bottone',
             self::Table => 'Tabella',
+            self::ProductsBlock => 'Blocco Prodotti',
         };
     }
 

@@ -56,3 +56,25 @@ test('quick access icons appear in the topbar', function () {
     $response->assertSee('data-testid="quick-access-contatti"', false);
     $response->assertDontSee('data-testid="quick-access-fatture"', false);
 });
+
+/**
+ * Regression test: the quick-access topbar icon used to only
+ * special-case is_calendar, silently falling back to the generic
+ * entities.index (Raccoon-grid) URL for is_documents/is_email —
+ * meaning Documenti/E-mail opened as a plain data table instead of
+ * their own dedicated UI when launched from quick access, even though
+ * the main sidebar link (which already went through Entity::indexUrl())
+ * opened the right page.
+ */
+test('quick access opens a system entity\'s own dedicated page, not the generic grid', function () {
+    $admin = adminUser();
+    installedMenuEntity('Documenti', 'documenti', ['show_in_quick_access' => true, 'is_documents' => true]);
+    installedMenuEntity('E-mail', 'email', ['show_in_quick_access' => true, 'is_email' => true]);
+
+    $response = $this->actingAs($admin)->get(route('dashboard'));
+
+    $response->assertSee('data-url="'.route('documents.index', ['embed' => 1]).'"', false);
+    $response->assertSee('data-url="'.route('mail.index', ['embed' => 1]).'"', false);
+    $response->assertDontSee('data-url="'.route('entities.index', ['documenti', 'embed' => 1]).'"', false);
+    $response->assertDontSee('data-url="'.route('entities.index', ['email', 'embed' => 1]).'"', false);
+});

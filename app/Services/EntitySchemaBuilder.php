@@ -24,6 +24,7 @@ class EntitySchemaBuilder
     public const RESERVED_COLUMN_NAMES = [
         'id', 'user_id', 'created_at', 'updated_at', 'deleted_at', 'relatable_type', 'relatable_id',
         'folder_id', 'original_filename', 'stored_path', 'mime_type', 'file_size',
+        'mail_account_id', 'folder', 'message_uid', 'uid_validity', 'message_id',
     ];
 
     /**
@@ -38,6 +39,11 @@ class EntitySchemaBuilder
      * the entity's own document_folders tree (App\Models\DocumentFolder)
      * — no real FK constraint despite document_folders being a real,
      * static table, see the comment at its column definition below.
+     * Email entities get a fixed set of message-bookmark columns (see
+     * MailController) instead of a real body/attachments column — the
+     * whole point of the mail module is never bulk-storing a mailbox
+     * locally, only remembering enough (account + folder + server-side
+     * message id) to re-fetch a specific message live on demand.
      */
     public function create(Entity $entity): void
     {
@@ -70,6 +76,25 @@ class EntitySchemaBuilder
                 $table->string('stored_path');
                 $table->string('mime_type')->nullable();
                 $table->unsignedBigInteger('file_size')->default(0);
+            }
+
+            if ($entity->is_email) {
+                // mail_account_id: same "no real FK" reasoning as
+                // folder_id above — mail_accounts is a real, static,
+                // migration-tracked table, but this dynamic one isn't,
+                // so a DB-level FK reproduces the same SQLite
+                // drop/recreate ordering failure. Validity is enforced
+                // in MailController::attach() instead. The row is a
+                // bookmark (account + folder + server-side message id),
+                // never the message body — see EntityFieldType-less
+                // reserved columns above, mirroring is_calendar's
+                // relatable_type/relatable_id pattern.
+                $table->unsignedBigInteger('mail_account_id')->nullable();
+                $table->string('folder', 500)->nullable();
+                $table->string('message_uid', 500)->nullable();
+                $table->unsignedBigInteger('uid_validity')->nullable();
+                $table->string('message_id', 500)->nullable();
+                $table->index(['mail_account_id', 'folder']);
             }
 
             $table->timestamps();
@@ -142,6 +167,7 @@ class EntitySchemaBuilder
             EntityFieldType::Code => $table->string($field->column_name)->nullable(),
             EntityFieldType::Button => null,
             EntityFieldType::Table => $table->json($field->column_name)->nullable(),
+            EntityFieldType::ProductsBlock => $table->json($field->column_name)->nullable(),
         };
     }
 

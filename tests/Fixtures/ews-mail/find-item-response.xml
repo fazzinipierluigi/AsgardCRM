@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <m:FindItemResponse xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+      <m:ResponseMessages>
+        <m:FindItemResponseMessage ResponseClass="Success">
+          <m:ResponseCode>NoError</m:ResponseCode>
+          <m:RootFolder TotalItemsInView="1" IncludesLastItemInRange="true">
+            <t:Items>
+              <t:Message>
+                <t:ItemId Id="AAMk-msg-1" ChangeKey="CK-M1" />
+                <t:Subject>Richiesta preventivo</t:Subject>
+                <t:HasAttachments>true</t:HasAttachments>
+                <t:DateTimeSent>2026-08-10T09:00:00Z</t:DateTimeSent>
+                <t:From>
+                  <t:Mailbox>
+                    <t:Name>Cliente</t:Name>
+                    <t:EmailAddress>cliente@example.com</t:EmailAddress>
+                  </t:Mailbox>
+                </t:From>
+                <t:IsRead>false</t:IsRead>
+              </t:Message>
+            </t:Items>
+          </m:RootFolder>
+        </m:FindItemResponseMessage>
+      </m:ResponseMessages>
+    </m:FindItemResponse>
+  </s:Body>
+</s:Envelope>

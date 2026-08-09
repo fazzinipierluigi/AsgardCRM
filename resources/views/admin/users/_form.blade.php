@@ -43,6 +43,34 @@
         @enderror
     </div>
 
+    <div class="col-4 mb-3">
+        <label for="phone" class="form-label">{{ t('Telefono') }}</label>
+        <input
+            type="text"
+            id="phone"
+            name="phone"
+            value="{{ old('phone', $user?->phone) }}"
+            class="form-control @error('phone') is-invalid @enderror"
+        >
+        @error('phone')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
+    <div class="col-4 mb-3">
+        <label for="job_title" class="form-label">{{ t('Ruolo/carica') }}</label>
+        <input
+            type="text"
+            id="job_title"
+            name="job_title"
+            value="{{ old('job_title', $user?->job_title) }}"
+            class="form-control @error('job_title') is-invalid @enderror"
+        >
+        @error('job_title')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+
     <div class="col-12 mb-3">
         <label for="roles" class="form-label">{{ t('Ruoli') }}</label>
         <select

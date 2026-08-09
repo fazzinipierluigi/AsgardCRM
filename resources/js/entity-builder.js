@@ -52,6 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var tableColumnsAddBtn = document.getElementById('field-modal-table-columns-add');
     var tableColumnAllowedTypes = ['string', 'integer', 'decimal', 'date', 'checkbox'];
 
+    var productsExtraColumnsRowsEl = document.getElementById('field-modal-products-extra-columns-rows');
+    var productsExtraColumnsAddBtn = document.getElementById('field-modal-products-extra-columns-add');
+    var decimalFieldsByEntity = JSON.parse(fieldModalEl.dataset.decimalFieldsByEntity || '{}');
+
     var counter = 0;
 
     function nextToken(prefix) {
@@ -195,8 +199,123 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('field-modal-relation').closest('.field-modal-relation-group').classList.toggle('d-none', type !== 'relation');
         document.getElementById('field-modal-button-action').closest('.field-modal-button-group').classList.toggle('d-none', type !== 'button');
         document.getElementById('field-modal-table-columns').closest('.field-modal-table-group').classList.toggle('d-none', type !== 'table');
+        document.getElementById('field-modal-products-catalog').closest('.field-modal-products-group').classList.toggle('d-none', type !== 'products_block');
         syncFieldModalButtonGroups();
     }
+
+    // ── Blocco Prodotti field configurator ──────────────────────────────
+
+    function populateProductsPriceColumnOptions(catalogSlug, selected) {
+        var select = document.getElementById('field-modal-products-price-column');
+        var fields = decimalFieldsByEntity[catalogSlug] || {};
+
+        select.innerHTML = '';
+
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = catalogSlug ? 'Seleziona...' : "Seleziona prima l'entità catalogo...";
+        select.appendChild(placeholder);
+
+        Object.keys(fields).forEach(function (columnName) {
+            var option = document.createElement('option');
+            option.value = columnName;
+            option.textContent = fields[columnName];
+            select.appendChild(option);
+        });
+
+        select.value = selected || '';
+    }
+
+    document.getElementById('field-modal-products-catalog').addEventListener('change', function (event) {
+        populateProductsPriceColumnOptions(event.target.value, '');
+    });
+
+    // Every Numero decimale field currently present anywhere in the form
+    // (including ones added earlier in this same edit session, not yet
+    // saved) — the candidate list for "which field receives the computed
+    // total", scanned live rather than off the DB since a Decimal field
+    // and its Blocco Prodotti sibling are often added in the same save.
+    function populateProductsTotalTargetOptions(selected) {
+        var select = document.getElementById('field-modal-products-total-target');
+        select.innerHTML = '';
+
+        var placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Nessuno';
+        select.appendChild(placeholder);
+
+        form.querySelectorAll('.field-item').forEach(function (fieldEl) {
+            if (fieldEl.querySelector('.field-type-input').value !== 'decimal') {
+                return;
+            }
+
+            var option = document.createElement('option');
+            option.value = fieldEl.querySelector('.field-column-input').value;
+            option.textContent = fieldEl.querySelector('.field-name-input').value || option.value;
+            select.appendChild(option);
+        });
+
+        select.value = selected || '';
+    }
+
+    function parseExtraColumnsText(raw) {
+        return parseTableColumnsText(raw);
+    }
+
+    function serializeProductsExtraColumns() {
+        return Array.prototype.slice.call(productsExtraColumnsRowsEl.querySelectorAll('.table-column-row'))
+            .map(function (row) {
+                return {
+                    name: row.querySelector('.table-column-name').value.trim(),
+                    label: row.querySelector('.table-column-label').value.trim(),
+                    type: row.querySelector('.table-column-type').value,
+                    required: row.querySelector('.table-column-required').checked,
+                };
+            })
+            .filter(function (column) {
+                return column.name !== '';
+            })
+            .map(function (column) {
+                return [column.name, column.label || column.name, column.type, column.required ? 'si' : 'no'].join(':');
+            })
+            .join('\n');
+    }
+
+    function addProductsExtraColumnRow(column) {
+        column = column || { name: '', label: '', type: 'string', required: false };
+
+        var row = renderTemplate(tableColumnRowTemplate, {});
+        row.querySelector('.table-column-name').value = column.name;
+        row.querySelector('.table-column-label').value = column.label;
+        row.querySelector('.table-column-required').checked = column.required;
+
+        productsExtraColumnsRowsEl.appendChild(row);
+
+        var typeSelect = row.querySelector('.table-column-type');
+        window.tomSelect(typeSelect);
+        window.setSelectValue(typeSelect, column.type);
+
+        row.querySelector('.table-column-remove-btn').addEventListener('click', function () {
+            if (typeSelect.tomselect) {
+                typeSelect.tomselect.destroy();
+            }
+            row.remove();
+        });
+    }
+
+    function resetProductsExtraColumnRows(raw) {
+        productsExtraColumnsRowsEl.querySelectorAll('.table-column-type').forEach(function (select) {
+            if (select.tomselect) {
+                select.tomselect.destroy();
+            }
+        });
+        productsExtraColumnsRowsEl.innerHTML = '';
+        parseExtraColumnsText(raw).forEach(addProductsExtraColumnRow);
+    }
+
+    productsExtraColumnsAddBtn?.addEventListener('click', function () {
+        addProductsExtraColumnRow();
+    });
 
     function syncFieldModalButtonGroups() {
         var action = document.getElementById('field-modal-button-action').value;
@@ -319,6 +438,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('field-modal-button-javascript').value = fieldEl.querySelector('.field-buttonjavascript-input').value;
         resetTableColumnRows(fieldEl.querySelector('.field-tablecolumns-input').value);
 
+        var savedCatalog = fieldEl.querySelector('.field-productscatalog-input').value;
+        window.setSelectValue('#field-modal-products-catalog', savedCatalog);
+        populateProductsPriceColumnOptions(savedCatalog, fieldEl.querySelector('.field-productspricecolumn-input').value);
+        resetProductsExtraColumnRows(fieldEl.querySelector('.field-productsextracolumns-input').value);
+        populateProductsTotalTargetOptions(fieldEl.querySelector('.field-productstotaltarget-input').value);
+
         syncFieldModalGroups(type);
         fieldModal.show();
     }
@@ -351,6 +476,11 @@ document.addEventListener('DOMContentLoaded', function () {
         currentFieldEl.querySelector('.field-buttonjavascript-input').value = document.getElementById('field-modal-button-javascript').value;
         document.getElementById('field-modal-table-columns').value = serializeTableColumns();
         currentFieldEl.querySelector('.field-tablecolumns-input').value = document.getElementById('field-modal-table-columns').value;
+        currentFieldEl.querySelector('.field-productscatalog-input').value = document.getElementById('field-modal-products-catalog').value;
+        currentFieldEl.querySelector('.field-productspricecolumn-input').value = document.getElementById('field-modal-products-price-column').value;
+        document.getElementById('field-modal-products-extra-columns').value = serializeProductsExtraColumns();
+        currentFieldEl.querySelector('.field-productsextracolumns-input').value = document.getElementById('field-modal-products-extra-columns').value;
+        currentFieldEl.querySelector('.field-productstotaltarget-input').value = document.getElementById('field-modal-products-total-target').value;
 
         currentFieldEl.querySelector('.field-preview-name').textContent = name || 'Nuovo campo';
         currentFieldEl.querySelector('.field-preview-type').textContent = fieldTypeLabels[type] || '';

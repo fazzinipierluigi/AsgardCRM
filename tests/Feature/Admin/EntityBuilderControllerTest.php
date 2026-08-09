@@ -11,6 +11,7 @@ use App\Models\WorkflowNode;
 use App\Services\EntityInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 uses(RefreshDatabase::class);
 
@@ -78,6 +79,26 @@ test('admin can view the builder page', function () {
     $entity = entityWithTree();
 
     $this->actingAs(adminUser())->get(route('admin.entities.builder.edit', $entity))->assertOk();
+});
+
+test('the first tab and its first card are never removable, even before install, while a second one still is', function () {
+    $entity = entityWithTree();
+    $secondTab = $entity->tabs()->create(['name' => 'Extra', 'position' => 1]);
+    $secondTab->cards()->create(['name' => 'Altra card', 'position' => 0]);
+    $entity->load('tabs.cards');
+
+    $response = $this->actingAs(adminUser())->get(route('admin.entities.builder.edit', $entity));
+
+    $response->assertOk();
+    $html = $response->getContent();
+
+    $firstTabPane = Str::before(Str::after($html, 'id="tab-pane-'.$entity->tabs[0]->id.'"'), 'id="tab-pane-'.$secondTab->id.'"');
+    expect($firstTabPane)->not->toContain('Rimuovi tab');
+    expect($firstTabPane)->not->toContain('card-remove-btn');
+
+    $secondTabPane = Str::after($html, 'id="tab-pane-'.$secondTab->id.'"');
+    expect($secondTabPane)->toContain('Rimuovi tab');
+    expect($secondTabPane)->toContain('card-remove-btn');
 });
 
 test('admin can save a tab/card/field tree', function () {

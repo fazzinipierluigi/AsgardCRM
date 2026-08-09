@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'position',
     'width',
     'is_locked',
+    'is_hidden',
 ])]
 class EntityField extends Model
 {
@@ -32,6 +33,7 @@ class EntityField extends Model
             'relation_target_type' => EntityRelationTargetType::class,
             'required' => 'boolean',
             'is_locked' => 'boolean',
+            'is_hidden' => 'boolean',
         ];
     }
 

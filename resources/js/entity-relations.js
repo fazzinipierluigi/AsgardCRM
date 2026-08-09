@@ -59,10 +59,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         links.forEach(function (link) {
             var row = document.createElement('tr');
-            row.dataset.linkId = link.link_id;
 
             var labelCell = document.createElement('td');
-            labelCell.textContent = link.label;
+            var labelLink = document.createElement('a');
+            labelLink.href = link.url;
+            labelLink.textContent = link.label;
+            labelCell.appendChild(labelLink);
             row.appendChild(labelCell);
 
             var actionCell = document.createElement('td');

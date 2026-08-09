@@ -3,6 +3,7 @@
 @import '@tabler/core/dist/libs/tom-select/dist/css/tom-select.bootstrap5.min.css';
 @import '@tabler/core/dist/css/tabler-vendors.min.css';
 @import 'raccoon-tables/styles/raccoon-tables.css';
+@import 'flatpickr/dist/flatpickr.min.css';
 
 .raccoon-layouts__menu-item[aria-disabled='true'] {
     opacity: .5;
@@ -69,4 +70,61 @@
 
 .brand-word--dark .brand-crm {
     color: #20E2E6;
+}
+
+/*
+ * Flatpickr ships a single light-only theme (see resources/js/flatpickr-fields.js
+ * for where it's initialized) — repaint it against Tabler's own dark-mode
+ * variables instead of shipping a second, unrelated theme stylesheet.
+ */
+html[data-bs-theme='dark'] .flatpickr-calendar {
+    background: var(--tblr-bg-surface);
+    border-color: var(--tblr-border-color);
+    box-shadow: none;
+    color: var(--tblr-body-color);
+}
+
+html[data-bs-theme='dark'] .flatpickr-calendar.arrowTop::before,
+html[data-bs-theme='dark'] .flatpickr-calendar.arrowTop::after {
+    border-bottom-color: var(--tblr-bg-surface);
+}
+
+html[data-bs-theme='dark'] .flatpickr-months .flatpickr-month,
+html[data-bs-theme='dark'] .flatpickr-weekdays,
+html[data-bs-theme='dark'] span.flatpickr-weekday {
+    background: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
+    fill: var(--tblr-body-color);
+}
+
+html[data-bs-theme='dark'] .flatpickr-day {
+    color: var(--tblr-body-color);
+}
+
+html[data-bs-theme='dark'] .flatpickr-day.flatpickr-disabled,
+html[data-bs-theme='dark'] .flatpickr-day.prevMonthDay,
+html[data-bs-theme='dark'] .flatpickr-day.nextMonthDay {
+    color: var(--tblr-secondary);
+}
+
+html[data-bs-theme='dark'] .flatpickr-day:hover {
+    background: var(--tblr-bg-surface-secondary);
+}
+
+html[data-bs-theme='dark'] .flatpickr-day.selected {
+    background: var(--tblr-primary);
+    border-color: var(--tblr-primary);
+}
+
+html[data-bs-theme='dark'] .flatpickr-time input,
+html[data-bs-theme='dark'] .flatpickr-time .flatpickr-am-pm {
+    color: var(--tblr-body-color);
+}
+
+html[data-bs-theme='dark'] .numInputWrapper span.arrowUp:after {
+    border-bottom-color: var(--tblr-body-color);
+}
+
+html[data-bs-theme='dark'] .numInputWrapper span.arrowDown:after {
+    border-top-color: var(--tblr-body-color);
 }

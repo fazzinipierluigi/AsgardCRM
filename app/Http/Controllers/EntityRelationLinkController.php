@@ -47,6 +47,7 @@ class EntityRelationLinkController extends Controller
             'link_id' => $link->id,
             'record_id' => $link->{$otherColumn},
             'label' => $labels[$link->{$otherColumn}] ?? "#{$link->{$otherColumn}}",
+            'url' => route('entities.show', [$targetEntity, $link->{$otherColumn}]),
         ])->values());
     }
 

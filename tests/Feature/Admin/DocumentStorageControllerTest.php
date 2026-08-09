@@ -92,6 +92,27 @@ test('blank secret on update keeps the previously stored one', function () {
     expect($fresh->config['bucket'])->toBe('documenti-crm-rinominato');
 });
 
+test('the edit form prefills the real saved config, not just hardcoded defaults', function () {
+    // Regression test: the form used to build its field defaults via
+    // old(null, $setting->config ?? []) — Laravel's old() ignores the
+    // given default entirely when the key is null, always returning the
+    // (empty, absent a validation-error redirect) flashed old-input
+    // bucket instead. Every field silently read as unset. See
+    // edit.blade.php's $config assignment.
+    $admin = adminUser();
+    DocumentStorageSetting::create([
+        'type' => 'sftp',
+        'config' => ['host' => 'sftp.example.com', 'port' => 2222, 'username' => 'crm', 'password' => 'secret', 'root' => '/documenti'],
+    ]);
+
+    $response = $this->actingAs($admin)->get(route('admin.document-storage.edit'));
+
+    $response->assertOk()
+        ->assertSee('value="sftp.example.com"', false)
+        ->assertSee('value="crm"', false)
+        ->assertSee('value="/documenti"', false);
+});
+
 test('admin can switch back to local storage', function () {
     DocumentStorageSetting::create(['type' => 's3', 'config' => ['key' => 'x', 'secret' => 'y', 'region' => 'z', 'bucket' => 'w']]);
 

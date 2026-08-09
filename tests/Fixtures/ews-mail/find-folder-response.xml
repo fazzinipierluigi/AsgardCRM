@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+  <s:Body>
+    <m:FindFolderResponse xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages" xmlns:t="http://schemas.microsoft.com/exchange/services/2006/types">
+      <m:ResponseMessages>
+        <m:FindFolderResponseMessage ResponseClass="Success">
+          <m:ResponseCode>NoError</m:ResponseCode>
+          <m:RootFolder TotalItemsInView="2" IncludesLastItemInRange="true">
+            <t:Folders>
+              <t:Folder>
+                <t:FolderId Id="folder-inbox" ChangeKey="CK-F1" />
+                <t:ParentFolderId Id="msgfolderroot-guid" ChangeKey="CK-R1" />
+                <t:DisplayName>Posta in arrivo</t:DisplayName>
+                <t:ChildFolderCount>0</t:ChildFolderCount>
+              </t:Folder>
+              <t:Folder>
+                <t:FolderId Id="folder-sent" ChangeKey="CK-F2" />
+                <t:ParentFolderId Id="msgfolderroot-guid" ChangeKey="CK-R1" />
+                <t:DisplayName>Posta inviata</t:DisplayName>
+                <t:ChildFolderCount>1</t:ChildFolderCount>
+              </t:Folder>
+              <t:Folder>
+                <t:FolderId Id="folder-sent-2026" ChangeKey="CK-F3" />
+                <t:ParentFolderId Id="folder-sent" ChangeKey="CK-F2" />
+                <t:DisplayName>2026</t:DisplayName>
+                <t:ChildFolderCount>0</t:ChildFolderCount>
+              </t:Folder>
+            </t:Folders>
+          </m:RootFolder>
+        </m:FindFolderResponseMessage>
+      </m:ResponseMessages>
+    </m:FindFolderResponse>
+  </s:Body>
+</s:Envelope>

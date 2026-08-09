@@ -126,9 +126,11 @@
                 filterable: false,
                 render: function (params) {
                     var id = params.value;
+                    var viewUrl = @json(route('entities.index', $entity)) + '/' + id;
                     var editUrl = @json(route('entities.index', $entity)) + '/' + id + '/edit';
                     var deleteUrl = @json(route('entities.index', $entity)) + '/' + id;
                     var html = '';
+                    html += '<a href="' + viewUrl + '" class="btn btn-sm btn-outline-secondary me-1">' + @json(t('Visualizza')) + '</a>';
                     if (params.item.can_edit) {
                         html += '<a href="' + editUrl + '" class="btn btn-sm btn-outline-primary me-1">' + @json(t('Modifica')) + '</a>';
                     }

@@ -55,6 +55,10 @@ class StoreEntityFieldRequest extends FormRequest
             'button_importer_ids.*' => ['integer', Rule::exists('importers', 'id')],
             'button_javascript' => ['nullable', 'string'],
             'table_columns' => ['required_if:type,table', 'string'],
+            'products_catalog' => ['required_if:type,products_block', 'nullable', 'string'],
+            'products_price_column' => ['required_if:type,products_block', 'nullable', 'string'],
+            'products_extra_columns' => ['nullable', 'string'],
+            'products_total_target' => ['nullable', 'string'],
         ];
     }
 
@@ -105,7 +109,50 @@ class StoreEntityFieldRequest extends FormRequest
             if ($type === EntityFieldType::Table->value && self::parseTableColumns((string) $this->input('table_columns', '')) === []) {
                 $validator->errors()->add('table_columns', 'Definisci almeno una colonna valida per la tabella.');
             }
+
+            if ($type === EntityFieldType::ProductsBlock->value) {
+                $this->validateProductsBlock($validator, $entity);
+            }
         });
+    }
+
+    /**
+     * A "Blocco Prodotti" field must point at an installed entity to use
+     * as its catalog, and that entity needs a Decimal field to read the
+     * unit price from. The optional "total_target" is a Decimal field on
+     * THIS entity (not the catalog) that receives the block's computed
+     * total — see resources/js/products-block-field.js.
+     */
+    private function validateProductsBlock(Validator $validator, Entity $entity): void
+    {
+        $catalogSlug = $this->input('products_catalog');
+        $catalogEntity = $catalogSlug ? Entity::where('slug', $catalogSlug)->where('is_installed', true)->first() : null;
+
+        if ($catalogSlug && $catalogEntity === null) {
+            $validator->errors()->add('products_catalog', 'L\'entità catalogo selezionata non esiste o non è installata.');
+        }
+
+        $priceColumn = $this->input('products_price_column');
+
+        if ($catalogEntity !== null && $priceColumn) {
+            $priceFieldExists = $catalogEntity->allFields()
+                ->contains(fn ($f) => $f->type === EntityFieldType::DecimalNumber && $f->column_name === $priceColumn);
+
+            if (! $priceFieldExists) {
+                $validator->errors()->add('products_price_column', 'Seleziona un campo Numero decimale valido dell\'entità catalogo.');
+            }
+        }
+
+        $totalTarget = $this->input('products_total_target');
+
+        if ($totalTarget) {
+            $totalFieldExists = $entity->allFields()
+                ->contains(fn ($f) => $f->type === EntityFieldType::DecimalNumber && $f->column_name === $totalTarget);
+
+            if (! $totalFieldExists) {
+                $validator->errors()->add('products_total_target', 'Seleziona un campo Numero decimale già esistente su questa entità.');
+            }
+        }
     }
 
     /**

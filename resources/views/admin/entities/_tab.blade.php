@@ -1,11 +1,12 @@
 @php
     $cards = $tab?->cards ?? collect();
-    $tabLocked = ($entity?->is_installed ?? false) && $tab !== null;
+    $mandatory = $mandatory ?? false;
+    $tabLocked = (($entity?->is_installed ?? false) || $mandatory) && $tab !== null;
 @endphp
 <div class="tab-pane repeatable-row {{ $active ? 'show active' : '' }}" id="tab-pane-{{ $tabToken }}" role="tabpanel" data-tab-token="{{ $tabToken }}">
     <div class="cards-container row row-cards">
         @foreach ($cards as $card)
-            @include('admin.entities._card', ['tabToken' => $tabToken, 'cardToken' => $card->id, 'card' => $card, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+            @include('admin.entities._card', ['tabToken' => $tabToken, 'cardToken' => $card->id, 'card' => $card, 'mandatory' => $mandatory && $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
         @endforeach
     </div>
 

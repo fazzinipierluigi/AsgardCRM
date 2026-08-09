@@ -106,7 +106,7 @@
                                         data-bs-placement="bottom"
                                         title="{{ $quickAccessEntity->name }}"
                                         data-testid="quick-access-{{ $quickAccessEntity->slug }}"
-                                        data-url="{{ $quickAccessEntity->is_calendar ? route('calendar.index', ['embed' => 1]) : route('entities.index', [$quickAccessEntity, 'embed' => 1]) }}"
+                                        data-url="{{ $quickAccessEntity->indexUrl(['embed' => 1]) }}"
                                         data-name="{{ $quickAccessEntity->name }}"
                                     >
                                         {!! icon($quickAccessEntity->icon ?: 'star') !!}

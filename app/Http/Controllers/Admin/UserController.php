@@ -67,6 +67,8 @@ class UserController extends Controller
             'name' => $request->string('name'),
             'username' => $request->string('username'),
             'email' => $request->string('email'),
+            'phone' => $request->string('phone')->value() ?: null,
+            'job_title' => $request->string('job_title')->value() ?: null,
             'password' => Hash::make($request->string('password')),
             'login_provider_id' => $request->integer('login_provider_id') ?: null,
             'provider_identifier' => $request->string('provider_identifier')->value() ?: null,
@@ -95,7 +97,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->fill($request->only('name', 'username', 'email'));
+        $user->fill($request->only('name', 'username', 'email', 'phone', 'job_title'));
         $user->login_provider_id = $request->integer('login_provider_id') ?: null;
         $user->provider_identifier = $request->string('provider_identifier')->value() ?: null;
 

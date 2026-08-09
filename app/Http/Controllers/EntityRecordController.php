@@ -17,6 +17,7 @@ use App\Models\WorkflowInstance;
 use App\Models\WorkflowNode;
 use App\Models\WorkflowNodeExecution;
 use App\Models\WorkflowUserTask;
+use App\Services\CalendarAuthorizer;
 use App\Services\EntityChangeLogger;
 use App\Services\EntityCodeGenerator;
 use App\Services\EntityRecordAuthorizer;
@@ -52,6 +53,7 @@ class EntityRecordController extends Controller
         private readonly EntityRelationResolver $relationResolver,
         private readonly EntityChangeLogger $changeLogger,
         private readonly EntityRelationLinkResolver $relationLinkResolver,
+        private readonly CalendarAuthorizer $calendarAuthorizer,
     ) {}
 
     /**
@@ -118,6 +120,7 @@ class EntityRecordController extends Controller
             'entity' => $entity->load('tabs.cards.fields'),
             'record' => null,
             'relationOptions' => $this->relationOptionsForEntity($entity),
+            'productsBlockOptions' => $this->productsBlockOptionsForEntity($entity),
             'fieldConditions' => $this->fieldConditionsPayload($entity),
         ]);
     }
@@ -139,6 +142,40 @@ class EntityRecordController extends Controller
     }
 
     /**
+     * Read-only detail page for a record — every entity gets one,
+     * regardless of whether the user can edit it. Shares the same
+     * "Dati"/"Flussi"/"Storico modifiche" tab structure as edit(), just
+     * rendered through _field_input.blade.php's $readonly branch (see
+     * resources/views/entities/_record.blade.php, included by both
+     * entities.edit and entities.show).
+     */
+    public function show(Entity $entity, int $record): View
+    {
+        $this->authorizeAction($entity, 'index');
+        $recordModel = $this->findRecordOrFail($entity, $record);
+        $this->authorizeRow($entity, $recordModel, 'view');
+
+        $canViewWorkflows = request()->user()->can("entity_{$entity->slug}.workflows");
+        $canViewCalendarActivities = $this->canViewCalendarActivities($entity);
+
+        return view('entities.show', [
+            'entity' => $entity->load('tabs.cards.fields'),
+            'record' => $recordModel,
+            'relationOptions' => $this->relationOptionsForEntity($entity),
+            'productsBlockOptions' => $this->productsBlockOptionsForEntity($entity),
+            'workflowTasks' => $this->pendingWorkflowTasks($entity, $recordModel),
+            'changeTransactions' => $this->changeTransactions($entity, $recordModel),
+            'canViewWorkflows' => $canViewWorkflows,
+            'workflowInstances' => $canViewWorkflows ? $this->workflowInstancesForRecord($entity, $recordModel) : collect(),
+            'canViewCalendarActivities' => $canViewCalendarActivities,
+            'calendarActivities' => $canViewCalendarActivities ? $this->relatedCalendarActivities($entity, $recordModel) : collect(),
+            'entityRelations' => $this->entityRelationsForRecord($entity, $recordModel),
+            'fieldConditions' => $this->fieldConditionsPayload($entity),
+            'canEdit' => request()->user()->can("entity_{$entity->slug}.edit") && $this->authorizer->canEdit(request()->user(), $entity, $recordModel->user_id),
+        ]);
+    }
+
+    /**
      * Show the form to edit an existing record.
      */
     public function edit(Entity $entity, int $record): View
@@ -148,15 +185,19 @@ class EntityRecordController extends Controller
         $this->authorizeRow($entity, $recordModel, 'edit');
 
         $canViewWorkflows = request()->user()->can("entity_{$entity->slug}.workflows");
+        $canViewCalendarActivities = $this->canViewCalendarActivities($entity);
 
         return view('entities.edit', [
             'entity' => $entity->load('tabs.cards.fields'),
             'record' => $recordModel,
             'relationOptions' => $this->relationOptionsForEntity($entity),
+            'productsBlockOptions' => $this->productsBlockOptionsForEntity($entity),
             'workflowTasks' => $this->pendingWorkflowTasks($entity, $recordModel),
             'changeTransactions' => $this->changeTransactions($entity, $recordModel),
             'canViewWorkflows' => $canViewWorkflows,
             'workflowInstances' => $canViewWorkflows ? $this->workflowInstancesForRecord($entity, $recordModel) : collect(),
+            'canViewCalendarActivities' => $canViewCalendarActivities,
+            'calendarActivities' => $canViewCalendarActivities ? $this->relatedCalendarActivities($entity, $recordModel) : collect(),
             'entityRelations' => $this->entityRelationsForRecord($entity, $recordModel),
             'fieldConditions' => $this->fieldConditionsPayload($entity),
         ]);
@@ -309,6 +350,48 @@ class EntityRecordController extends Controller
     }
 
     /**
+     * Whether this record's "Attività" tab should render at all — the
+     * user needs to see the calendar (entity_calendario.index) and the
+     * record itself obviously isn't a calendar event (a calendar event
+     * relating to another calendar event would be nonsensical, and
+     * EntityRelationResolver::targetOptions() already excludes it from
+     * the relatable-type picker for that reason, see CalendarController).
+     */
+    private function canViewCalendarActivities(Entity $entity): bool
+    {
+        return $entity->slug !== 'calendario' && request()->user()->can('entity_calendario.index');
+    }
+
+    /**
+     * Calendar events linked to this record via the generic
+     * relatable_type/relatable_id pair (see CalendarController's
+     * "Relazione verso" picker) — the reverse direction of that link,
+     * surfaced here so e.g. a Cliente record shows the activities
+     * booked against it. Scoped through CalendarAuthorizer the same way
+     * the calendar's own event feed is, so a user with OwnOnly
+     * visibility doesn't see another user's events here either.
+     *
+     * @return Collection<int, EntityRecord>
+     */
+    private function relatedCalendarActivities(Entity $entity, EntityRecord $record): Collection
+    {
+        $calendarEntity = Entity::where('slug', 'calendario')->where('is_installed', true)->first();
+
+        if ($calendarEntity === null) {
+            return collect();
+        }
+
+        $query = EntityRecord::forEntity($calendarEntity)->newQuery()
+            ->where('relatable_type', "entity:{$entity->slug}")
+            ->where('relatable_id', $record->getKey())
+            ->orderByDesc('start_datetime');
+
+        $this->calendarAuthorizer->scopeQuery($query, request()->user(), $calendarEntity);
+
+        return $query->get();
+    }
+
+    /**
      * Pending "Task utente" workflow steps bound to this exact record,
      * limited to ones whose node was configured to surface here (see
      * WorkflowNode.config.show_in_entity_detail).
@@ -384,6 +467,7 @@ class EntityRecordController extends Controller
     private function authorizeRow(Entity $entity, EntityRecord $record, string $action): void
     {
         $allowed = match ($action) {
+            'view' => $this->authorizer->canView(request()->user(), $entity, $record->user_id),
             'edit' => $this->authorizer->canEdit(request()->user(), $entity, $record->user_id),
             'delete' => $this->authorizer->canDelete(request()->user(), $entity, $record->user_id),
         };
@@ -410,7 +494,7 @@ class EntityRecordController extends Controller
         foreach ($entity->allFields() as $field) {
             $column = $this->columnFor($field);
 
-            if ($field->type->isAction()) {
+            if ($field->type->isAction() || $field->is_hidden) {
                 continue;
             }
 
@@ -425,7 +509,7 @@ class EntityRecordController extends Controller
             $attributes[$column] = match ($field->type) {
                 EntityFieldType::Checkbox => $request->boolean($column),
                 EntityFieldType::RichText => $this->sanitizeRichText($validated[$column] ?? null),
-                EntityFieldType::Table => $validated[$column] ?: '[]',
+                EntityFieldType::Table, EntityFieldType::ProductsBlock => $validated[$column] ?: '[]',
                 default => $validated[$column] ?? null,
             };
         }
@@ -461,6 +545,7 @@ class EntityRecordController extends Controller
             EntityFieldType::Relation => $value === null ? null : ($relationLabels[$field->column_name][$value] ?? "#{$value}"),
             EntityFieldType::RichText => $value === null ? null : strip_tags((string) $value),
             EntityFieldType::Table => count(json_decode((string) $value, true) ?: []).' righe',
+            EntityFieldType::ProductsBlock => count(json_decode((string) $value, true) ?: []).' prodotti',
             default => $value,
         };
     }
@@ -477,6 +562,63 @@ class EntityRecordController extends Controller
         return $entity->allFields()
             ->filter(fn (EntityField $f) => $f->type === EntityFieldType::Relation)
             ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->relationResolver->labelsForField($f)])
+            ->all();
+    }
+
+    /**
+     * The catalog records (id/label/price) each ProductsBlock field on
+     * this entity can pick from, keyed by the field's column name — the
+     * "Prodotto" picker inside resources/js/products-block-field.js
+     * builds its <select> from this rather than an AJAX round trip,
+     * same reasoning as relationOptionsForEntity()'s server-rendered
+     * Relation options.
+     *
+     * @return array<string, list<array{id: int, label: string, price: float}>>
+     */
+    private function productsBlockOptionsForEntity(Entity $entity): array
+    {
+        return $entity->allFields()
+            ->filter(fn (EntityField $f) => $f->type === EntityFieldType::ProductsBlock)
+            ->mapWithKeys(fn (EntityField $f) => [$f->column_name => $this->productsBlockCatalogOptions($f)])
+            ->all();
+    }
+
+    /**
+     * @return list<array{id: int, label: string, price: float, description: string}>
+     */
+    private function productsBlockCatalogOptions(EntityField $field): array
+    {
+        $catalogSlug = $field->options['catalog_entity_slug'] ?? null;
+        $priceColumn = $field->options['price_column'] ?? null;
+
+        if ($catalogSlug === null) {
+            return [];
+        }
+
+        $catalogEntity = Entity::where('slug', $catalogSlug)->where('is_installed', true)->first();
+
+        if ($catalogEntity === null) {
+            return [];
+        }
+
+        $catalogFields = $catalogEntity->allFields();
+        $labelField = $catalogFields->first(fn (EntityField $f) => $f->type === EntityFieldType::String);
+        $labelColumn = $labelField?->column_name;
+
+        $descriptionField = $catalogFields->first(fn (EntityField $f) => $f->type === EntityFieldType::RichText)
+            ?? $catalogFields->first(fn (EntityField $f) => $f->type === EntityFieldType::Textarea);
+        $descriptionColumn = $descriptionField?->column_name;
+
+        $columns = array_values(array_filter(['id', $labelColumn, $priceColumn, $descriptionColumn]));
+
+        return EntityRecord::forEntity($catalogEntity)->newQuery()->get($columns)
+            ->map(fn (EntityRecord $r) => [
+                'id' => $r->id,
+                'label' => ($labelColumn !== null ? $r->{$labelColumn} : null) ?: "#{$r->id}",
+                'price' => $priceColumn !== null ? (float) ($r->{$priceColumn} ?? 0) : 0.0,
+                'description' => $descriptionColumn !== null ? strip_tags((string) ($r->{$descriptionColumn} ?? '')) : '',
+            ])
+            ->values()
             ->all();
     }
 

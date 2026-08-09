@@ -21,5 +21,22 @@ class DatabaseSeeder extends Seeder
         $this->call(TranslationSeeder::class);
         $this->call(CalendarEntitySeeder::class);
         $this->call(DocumentsEntitySeeder::class);
+        $this->call(EmailEntitySeeder::class);
+
+        // CRM system entities — order matters: each Relation/ProductsBlock
+        // field only gets a real FK / working catalog picker when its
+        // target entity is already installed (see EntitySchemaBuilder),
+        // so every entity here is seeded after everything it points to.
+        $this->call(ProdottiEntitySeeder::class);
+        $this->call(ClientiEntitySeeder::class);
+        $this->call(FornitoriEntitySeeder::class);
+        $this->call(ContattiEntitySeeder::class);
+        $this->call(LeadEntitySeeder::class);
+        $this->call(OpportunitaEntitySeeder::class);
+        $this->call(PreventiviEntitySeeder::class);
+        $this->call(OrdiniVenditaEntitySeeder::class);
+        $this->call(OrdiniAcquistoEntitySeeder::class);
+        $this->call(FattureEntitySeeder::class);
+        $this->call(TicketEntitySeeder::class);
     }
 }

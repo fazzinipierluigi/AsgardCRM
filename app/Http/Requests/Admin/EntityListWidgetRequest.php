@@ -139,7 +139,7 @@ class EntityListWidgetRequest extends FormRequest
     public static function filterableColumns(Entity $entity): array
     {
         return $entity->allFields()
-            ->reject(fn ($field) => in_array($field->type, [EntityFieldType::Button, EntityFieldType::Table], true))
+            ->reject(fn ($field) => in_array($field->type, [EntityFieldType::Button, EntityFieldType::Table, EntityFieldType::ProductsBlock], true))
             ->mapWithKeys(fn ($field) => [self::columnFor($field) => $field->name])
             ->all();
     }

@@ -19,6 +19,23 @@ class TranslationSeeder extends Seeder
     public function run(): void
     {
         $strings = [
+            // Blocco Prodotti field type (record form + admin builder).
+            'Prodotto/Servizio' => ['it' => 'Prodotto/Servizio', 'en' => 'Product/Service'],
+            'Prezzo unitario' => ['it' => 'Prezzo unitario', 'en' => 'Unit price'],
+            'Subtotale' => ['it' => 'Subtotale', 'en' => 'Subtotal'],
+            'Totale' => ['it' => 'Totale', 'en' => 'Total'],
+            'Aggiungi prodotto' => ['it' => 'Aggiungi prodotto', 'en' => 'Add product'],
+            'Entità catalogo' => ['it' => 'Entità catalogo', 'en' => 'Catalog entity'],
+            'Campo prezzo del catalogo' => ['it' => 'Campo prezzo del catalogo', 'en' => 'Catalog price field'],
+            'Seleziona prima l\'entità catalogo...' => ['it' => 'Seleziona prima l\'entità catalogo...', 'en' => 'Select the catalog entity first...'],
+            'Colonne aggiuntive' => ['it' => 'Colonne aggiuntive', 'en' => 'Extra columns'],
+            'Campo Totale collegato (opzionale)' => ['it' => 'Campo Totale collegato (opzionale)', 'en' => 'Linked Total field (optional)'],
+            'Nessuno' => ['it' => 'Nessuno', 'en' => 'None'],
+            'La casella "Obbligatorio" sopra indica che il blocco richiede almeno un prodotto per poter salvare.' => [
+                'it' => 'La casella "Obbligatorio" sopra indica che il blocco richiede almeno un prodotto per poter salvare.',
+                'en' => 'The "Required" checkbox above means the block needs at least one product to save.',
+            ],
+
             'Aggiungi campo' => ['it' => 'Aggiungi campo', 'en' => 'Add field'],
             'Aggiungi campo a :entity' => ['it' => 'Aggiungi campo a :entity', 'en' => 'Add field to :entity'],
             'Aggiungi card' => ['it' => 'Aggiungi card', 'en' => 'Add card'],
@@ -174,6 +191,8 @@ class TranslationSeeder extends Seeder
             'File schema (JSON)' => ['it' => 'File schema (JSON)', 'en' => 'Schema file (JSON)'],
             'Flusso' => ['it' => 'Flusso', 'en' => 'Flow'],
             'Flussi' => ['it' => 'Flussi', 'en' => 'Flows'],
+            'Record creato' => ['it' => 'Record creato', 'en' => 'Record created'],
+            'Attività' => ['it' => 'Attività', 'en' => 'Activities'],
             'Filtro utente' => ['it' => 'Filtro utente', 'en' => 'User filter'],
             'Fuori sede' => ['it' => 'Fuori sede', 'en' => 'Out of office'],
             'Elenco' => ['it' => 'Elenco', 'en' => 'List'],
@@ -263,12 +282,14 @@ class TranslationSeeder extends Seeder
             'Nessuna icona' => ['it' => 'Nessuna icona', 'en' => 'No icon'],
             'Nessun permesso disponibile.' => ['it' => 'Nessun permesso disponibile.', 'en' => 'No permissions available.'],
             'Nessun flusso avviato su questo record.' => ['it' => 'Nessun flusso avviato su questo record.', 'en' => 'No flow started on this record.'],
+            'Nessuna attività di calendario collegata a questo record.' => ['it' => 'Nessuna attività di calendario collegata a questo record.', 'en' => 'No calendar activity linked to this record.'],
             'Nessuna esecuzione registrata.' => ['it' => 'Nessuna esecuzione registrata.', 'en' => 'No execution recorded.'],
             'Nessun ruolo' => ['it' => 'Nessun ruolo', 'en' => 'No role'],
             'Nessun ruolo configurabile.' => ['it' => 'Nessun ruolo configurabile.', 'en' => 'No configurable role.'],
             'Nessuna' => ['it' => 'Nessuna', 'en' => 'None'],
             'No' => ['it' => 'No', 'en' => 'No'],
             'Nome' => ['it' => 'Nome', 'en' => 'Name'],
+            'Nome prodotto' => ['it' => 'Nome prodotto', 'en' => 'Product name'],
             'Nome campo' => ['it' => 'Nome campo', 'en' => 'Field name'],
             'Nome card' => ['it' => 'Nome card', 'en' => 'Card name'],
             'Nome colonna' => ['it' => 'Nome colonna', 'en' => 'Column name'],
@@ -594,6 +615,7 @@ class TranslationSeeder extends Seeder
             'Cartella' => ['it' => 'Cartella', 'en' => 'Folder'],
             'Dimensione' => ['it' => 'Dimensione', 'en' => 'Size'],
             'Caricato da' => ['it' => 'Caricato da', 'en' => 'Uploaded by'],
+            'Caricamento…' => ['it' => 'Caricamento…', 'en' => 'Loading…'],
             'Scarica' => ['it' => 'Scarica', 'en' => 'Download'],
             'Radice' => ['it' => 'Radice', 'en' => 'Root'],
             'File' => ['it' => 'File', 'en' => 'File'],
@@ -634,6 +656,101 @@ class TranslationSeeder extends Seeder
             'Usa path-style endpoint' => ['it' => 'Usa path-style endpoint', 'en' => 'Use path-style endpoint'],
             'Cartella radice' => ['it' => 'Cartella radice', 'en' => 'Root folder'],
             'Usa SSL/TLS' => ['it' => 'Usa SSL/TLS', 'en' => 'Use SSL/TLS'],
+
+            // Webmail OAuth (Google/Microsoft 365) — MailAuthMethod,
+            // MailOAuthService, mail/accounts/_form.blade.php,
+            // admin/mail-settings/edit.blade.php.
+            'Tipo di autenticazione' => ['it' => 'Tipo di autenticazione', 'en' => 'Authentication type'],
+            'Connesso.' => ['it' => 'Connesso.', 'en' => 'Connected.'],
+            'Non ancora connesso: salva le modifiche, poi completa la connessione qui sotto.' => [
+                'it' => 'Non ancora connesso: salva le modifiche, poi completa la connessione qui sotto.',
+                'en' => 'Not connected yet: save your changes, then finish connecting below.',
+            ],
+            'Connetti con Google' => ['it' => 'Connetti con Google', 'en' => 'Connect with Google'],
+            'Connetti con Microsoft 365' => ['it' => 'Connetti con Microsoft 365', 'en' => 'Connect with Microsoft 365'],
+            'Salva la casella per poter completare la connessione OAuth.' => [
+                'it' => 'Salva la casella per poter completare la connessione OAuth.',
+                'en' => 'Save the mailbox first to finish the OAuth connection.',
+            ],
+            'Casella connessa correttamente.' => ['it' => 'Casella connessa correttamente.', 'en' => 'Mailbox connected successfully.'],
+            'L\'autenticazione OAuth è disponibile solo per account IMAP.' => [
+                'it' => 'L\'autenticazione OAuth è disponibile solo per account IMAP.',
+                'en' => 'OAuth authentication is only available for IMAP accounts.',
+            ],
+            'Provider OAuth non configurato. Contatta un amministratore.' => [
+                'it' => 'Provider OAuth non configurato. Contatta un amministratore.',
+                'en' => 'OAuth provider not configured. Contact an administrator.',
+            ],
+            'Provider OAuth' => ['it' => 'Provider OAuth', 'en' => 'OAuth providers'],
+            'App registration condivisa usata dal pulsante "Connetti" quando un utente sceglie l\'autenticazione OAuth per una propria casella.' => [
+                'it' => 'App registration condivisa usata dal pulsante "Connetti" quando un utente sceglie l\'autenticazione OAuth per una propria casella.',
+                'en' => 'Shared app registration used by the "Connect" button when a user picks OAuth authentication for their own mailbox.',
+            ],
+            'Google — Client ID' => ['it' => 'Google — Client ID', 'en' => 'Google — Client ID'],
+            'Google — Client secret' => ['it' => 'Google — Client secret', 'en' => 'Google — Client secret'],
+            'Microsoft 365 — Client ID' => ['it' => 'Microsoft 365 — Client ID', 'en' => 'Microsoft 365 — Client ID'],
+            'Microsoft 365 — Client secret' => ['it' => 'Microsoft 365 — Client secret', 'en' => 'Microsoft 365 — Client secret'],
+            'Redirect URI da registrare presso ciascun provider' => [
+                'it' => 'Redirect URI da registrare presso ciascun provider',
+                'en' => 'Redirect URI to register with each provider',
+            ],
+            'Autorizzazione OAuth negata o annullata.' => ['it' => 'Autorizzazione OAuth negata o annullata.', 'en' => 'OAuth authorization denied or cancelled.'],
+            'Il provider OAuth non corrisponde a quello configurato per questo account.' => [
+                'it' => 'Il provider OAuth non corrisponde a quello configurato per questo account.',
+                'en' => 'The OAuth provider does not match the one configured for this account.',
+            ],
+            'Il provider OAuth :provider ha rifiutato la richiesta: :detail' => [
+                'it' => 'Il provider OAuth :provider ha rifiutato la richiesta: :detail',
+                'en' => 'The :provider OAuth provider rejected the request: :detail',
+            ],
+            'Parametro state OAuth malformato.' => ['it' => 'Parametro state OAuth malformato.', 'en' => 'Malformed OAuth state parameter.'],
+            'Parametro state OAuth non valido.' => ['it' => 'Parametro state OAuth non valido.', 'en' => 'Invalid OAuth state parameter.'],
+            'Questo account non usa OAuth.' => ['it' => 'Questo account non usa OAuth.', 'en' => 'This account does not use OAuth.'],
+            'Richiesta OAuth priva del parametro state.' => ['it' => 'Richiesta OAuth priva del parametro state.', 'en' => 'OAuth request missing the state parameter.'],
+            'Sessione di autorizzazione OAuth non valida o scaduta.' => [
+                'it' => 'Sessione di autorizzazione OAuth non valida o scaduta.',
+                'en' => 'Invalid or expired OAuth authorization session.',
+            ],
+            'Il provider non ha restituito un refresh token: ricollega l\'account autorizzando l\'accesso offline.' => [
+                'it' => 'Il provider non ha restituito un refresh token: ricollega l\'account autorizzando l\'accesso offline.',
+                'en' => 'The provider did not return a refresh token: reconnect the account and authorize offline access.',
+            ],
+            'Sessione OAuth scaduta: ricollega l\'account dalla pagina "Le mie caselle".' => [
+                'it' => 'Sessione OAuth scaduta: ricollega l\'account dalla pagina "Le mie caselle".',
+                'en' => 'OAuth session expired: reconnect the account from the "My mailboxes" page.',
+            ],
+
+            // Mail compose redesign + centralized signatures —
+            // resources/js/mail.js's compose block, admin/mail-signatures/*,
+            // admin/users/_form.blade.php's phone/job_title fields.
+            'Allegati' => ['it' => 'Allegati', 'en' => 'Attachments'],
+            'Trascina qui i file oppure clicca per selezionarli' => [
+                'it' => 'Trascina qui i file oppure clicca per selezionarli',
+                'en' => 'Drag files here or click to browse',
+            ],
+            'Rimuovi allegato' => ['it' => 'Rimuovi allegato', 'en' => 'Remove attachment'],
+            'Scrivi un indirizzo e premi virgola o invio…' => [
+                'it' => 'Scrivi un indirizzo e premi virgola o invio…',
+                'en' => 'Type an address and press comma or enter…',
+            ],
+            'Indirizzo e-mail non valido.' => ['it' => 'Indirizzo e-mail non valido.', 'en' => 'Invalid email address.'],
+            'Telefono' => ['it' => 'Telefono', 'en' => 'Phone'],
+            'Ruolo/carica' => ['it' => 'Ruolo/carica', 'en' => 'Job title'],
+            'Firma' => ['it' => 'Firma', 'en' => 'Signature'],
+            'Firme e-mail' => ['it' => 'Firme e-mail', 'en' => 'Email signatures'],
+            'Nuova firma' => ['it' => 'Nuova firma', 'en' => 'New signature'],
+            'Modifica firma' => ['it' => 'Modifica firma', 'en' => 'Edit signature'],
+            'Crea firma' => ['it' => 'Crea firma', 'en' => 'Create signature'],
+            'Es. Firma commerciale' => ['it' => 'Es. Firma commerciale', 'en' => 'E.g. Sales signature'],
+            'Corpo della firma' => ['it' => 'Corpo della firma', 'en' => 'Signature body'],
+            'Inserisci segnaposto' => ['it' => 'Inserisci segnaposto', 'en' => 'Insert placeholder'],
+            'I segnaposto vengono sostituiti con i dati reali dell\'utente quando la firma viene usata in un messaggio.' => [
+                'it' => 'I segnaposto vengono sostituiti con i dati reali dell\'utente quando la firma viene usata in un messaggio.',
+                'en' => 'Placeholders are replaced with the user\'s real data when the signature is used in a message.',
+            ],
+            'Firma creata correttamente.' => ['it' => 'Firma creata correttamente.', 'en' => 'Signature created successfully.'],
+            'Firma aggiornata correttamente.' => ['it' => 'Firma aggiornata correttamente.', 'en' => 'Signature updated successfully.'],
+            'Firma eliminata correttamente.' => ['it' => 'Firma eliminata correttamente.', 'en' => 'Signature deleted successfully.'],
         ];
 
         $now = Carbon::now();

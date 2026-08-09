@@ -18,7 +18,7 @@
 @section('content')
     <form action="{{ route('entities.store', $entity) }}" method="POST" id="entity-record-form">
         @csrf
-        @include('entities._form', ['entity' => $entity, 'record' => null, 'relationOptions' => $relationOptions])
+        @include('entities._form', ['entity' => $entity, 'record' => null, 'relationOptions' => $relationOptions, 'productsBlockOptions' => $productsBlockOptions ?? []])
     </form>
 
     <script>

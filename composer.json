@@ -22,7 +22,8 @@
         "league/flysystem-ftp": "^3.31",
         "league/flysystem-sftp-v3": "^3.33",
         "onelogin/php-saml": "^4.3",
-        "symfony/expression-language": "^7.0"
+        "symfony/expression-language": "^7.0",
+        "webklex/php-imap": "^6.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -58,7 +59,8 @@
             "@php artisan key:generate",
             "@php artisan migrate --force",
             "npm install --ignore-scripts",
-            "npm run build"
+            "npm run build",
+            "@php -r \"is_link('public/hugerte') || symlink('../node_modules/hugerte', 'public/hugerte');\""
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",

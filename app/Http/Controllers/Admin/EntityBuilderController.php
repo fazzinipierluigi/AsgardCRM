@@ -39,7 +39,46 @@ class EntityBuilderController extends Controller
             'fieldTypes' => EntityFieldType::options(),
             'relationTargets' => $this->relationResolver->targetOptions($entity),
             'manualWorkflows' => $this->manualWorkflows(),
+            'catalogEntityOptions' => $this->catalogEntityOptions($entity),
+            'decimalFieldsByEntity' => $this->decimalFieldsByEntity(),
         ]);
+    }
+
+    /**
+     * Every OTHER installed entity, offered as a "Blocco Prodotti" field's
+     * catalog target — same "self excluded" shape as
+     * EntityRelationResolver::targetOptions(), just entity-only (no
+     * model targets, a catalog is always another entity's own records).
+     *
+     * @return array<string, string>
+     */
+    private function catalogEntityOptions(Entity $entity): array
+    {
+        return Entity::where('is_installed', true)
+            ->where('id', '!=', $entity->id)
+            ->orderBy('name')
+            ->pluck('name', 'slug')
+            ->all();
+    }
+
+    /**
+     * Every installed entity's Decimal fields, keyed by entity slug — lets
+     * the field modal's "unit price column" <select> repopulate client-side
+     * as soon as a catalog entity is picked (resources/js/entity-builder.js),
+     * without a round trip per selection.
+     *
+     * @return array<string, array<string, string>>
+     */
+    private function decimalFieldsByEntity(): array
+    {
+        return Entity::where('is_installed', true)->get()
+            ->mapWithKeys(fn (Entity $e) => [
+                $e->slug => $e->allFields()
+                    ->filter(fn (EntityField $f) => $f->type === EntityFieldType::DecimalNumber)
+                    ->pluck('name', 'column_name')
+                    ->all(),
+            ])
+            ->all();
     }
 
     /**
@@ -253,6 +292,15 @@ class EntityBuilderController extends Controller
 
         if ($type === 'button') {
             return ButtonConfigValidator::parse($fieldInput);
+        }
+
+        if ($type === 'products_block') {
+            return [
+                'catalog_entity_slug' => trim((string) ($fieldInput['products_catalog'] ?? '')) ?: null,
+                'price_column' => trim((string) ($fieldInput['products_price_column'] ?? '')) ?: null,
+                'extra_columns' => StoreEntityFieldRequest::parseTableColumns((string) ($fieldInput['products_extra_columns'] ?? '')),
+                'total_target_column' => trim((string) ($fieldInput['products_total_target'] ?? '')) ?: null,
+            ];
         }
 
         if ($type !== 'select') {

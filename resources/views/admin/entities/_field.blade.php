@@ -11,6 +11,12 @@
     $tableColumnsText = $field && $field->options && $type === 'table'
         ? collect($field->options['columns'] ?? [])->map(fn ($c) => "{$c['name']}:{$c['label']}:{$c['type']}:".($c['required'] ? 'si' : 'no'))->implode("\n")
         : '';
+    $productsCatalog = $field && $field->options && $type === 'products_block' ? ($field->options['catalog_entity_slug'] ?? '') : '';
+    $productsPriceColumn = $field && $field->options && $type === 'products_block' ? ($field->options['price_column'] ?? '') : '';
+    $productsExtraColumnsText = $field && $field->options && $type === 'products_block'
+        ? collect($field->options['extra_columns'] ?? [])->map(fn ($c) => "{$c['name']}:{$c['label']}:{$c['type']}:".($c['required'] ? 'si' : 'no'))->implode("\n")
+        : '';
+    $productsTotalTarget = $field && $field->options && $type === 'products_block' ? ($field->options['total_target_column'] ?? '') : '';
     $width = $field?->width ?? 12;
 @endphp
 <div class="field-item repeatable-row col-md-{{ $width }}" data-width="{{ $width }}" data-tab-token="{{ $tabToken }}" data-card-token="{{ $cardToken }}" data-field-token="{{ $fieldToken }}">
@@ -26,6 +32,10 @@
     <input type="hidden" name="{{ $namePrefix }}[button_importer_ids]" class="field-buttonimporterids-input" value="{{ $buttonImporterIds }}">
     <input type="hidden" name="{{ $namePrefix }}[button_javascript]" class="field-buttonjavascript-input" value="{{ $buttonJavascript }}">
     <input type="hidden" name="{{ $namePrefix }}[table_columns]" class="field-tablecolumns-input" value="{{ $tableColumnsText }}">
+    <input type="hidden" name="{{ $namePrefix }}[products_catalog]" class="field-productscatalog-input" value="{{ $productsCatalog }}">
+    <input type="hidden" name="{{ $namePrefix }}[products_price_column]" class="field-productspricecolumn-input" value="{{ $productsPriceColumn }}">
+    <input type="hidden" name="{{ $namePrefix }}[products_extra_columns]" class="field-productsextracolumns-input" value="{{ $productsExtraColumnsText }}">
+    <input type="hidden" name="{{ $namePrefix }}[products_total_target]" class="field-productstotaltarget-input" value="{{ $productsTotalTarget }}">
     <input type="hidden" name="{{ $namePrefix }}[default_value]" class="field-defaultvalue-input" value="{{ $field?->default_value }}">
     <input type="hidden" name="{{ $namePrefix }}[width]" class="field-width-input" value="{{ $width }}">
 

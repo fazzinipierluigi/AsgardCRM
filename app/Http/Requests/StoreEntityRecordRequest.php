@@ -38,7 +38,7 @@ class StoreEntityRecordRequest extends FormRequest
             // Generated fields (Code) are never submitted by the user —
             // their value comes from EntityCodeGenerator, not the request.
             // Action fields (Button) never hold a value at all.
-            if ($field->type->isGenerated() || $field->type->isAction()) {
+            if ($field->type->isGenerated() || $field->type->isAction() || $field->is_hidden) {
                 continue;
             }
 

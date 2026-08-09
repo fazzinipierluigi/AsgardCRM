@@ -23,6 +23,7 @@ CLAUDE.md
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
+/public/hugerte
 /public/storage
 /storage/*.key
 /storage/installed

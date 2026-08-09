@@ -94,7 +94,7 @@
 
             <div class="tab-content" id="tabs-content">
                 @foreach ($entity->tabs as $tab)
-                    @include('admin.entities._tab', ['tabToken' => $tab->id, 'tab' => $tab, 'active' => $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+                    @include('admin.entities._tab', ['tabToken' => $tab->id, 'tab' => $tab, 'active' => $loop->first, 'mandatory' => $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
                 @endforeach
             </div>
         </fieldset>
@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <div class="modal" id="field-modal" tabindex="-1" data-testid="field-modal" data-field-types="{{ json_encode($fieldTypes) }}">
+    <div class="modal" id="field-modal" tabindex="-1" data-testid="field-modal" data-field-types="{{ json_encode($fieldTypes) }}" data-decimal-fields-by-entity="{{ json_encode($decimalFieldsByEntity ?? []) }}">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -249,6 +249,44 @@
                         <div id="field-modal-table-columns-rows" class="d-flex flex-column gap-2 mb-2"></div>
                         <button type="button" class="btn btn-sm btn-outline-primary" id="field-modal-table-columns-add" data-testid="table-column-add-btn">{{ t('Aggiungi colonna') }}</button>
                         <input type="hidden" id="field-modal-table-columns">
+                    </div>
+                    <div class="mb-2 field-modal-products-group d-none">
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Entità catalogo') }}</label>
+                            <select class="form-select" id="field-modal-products-catalog" data-testid="field-modal-products-catalog">
+                                <option value="">{{ t('Seleziona...') }}</option>
+                                @foreach ($catalogEntityOptions ?? [] as $slug => $label)
+                                    <option value="{{ $slug }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Campo prezzo del catalogo') }}</label>
+                            <select class="form-select" id="field-modal-products-price-column" data-tom-select-manual data-testid="field-modal-products-price-column">
+                                <option value="">{{ t('Seleziona prima l\'entità catalogo...') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Colonne aggiuntive') }}</label>
+                            <div class="row g-2 mb-1 d-none d-md-flex">
+                                <div class="col-md-3"><small class="form-hint">{{ t('Nome colonna') }}</small></div>
+                                <div class="col-md-4"><small class="form-hint">{{ t('Etichetta') }}</small></div>
+                                <div class="col-md-3"><small class="form-hint">{{ t('Tipo colonna') }}</small></div>
+                                <div class="col-md-1 text-center"><small class="form-hint">{{ t('Obbl') }}</small></div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div id="field-modal-products-extra-columns-rows" class="d-flex flex-column gap-2 mb-2"></div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="field-modal-products-extra-columns-add" data-testid="products-extra-column-add-btn">{{ t('Aggiungi colonna') }}</button>
+                            <input type="hidden" id="field-modal-products-extra-columns">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Campo Totale collegato (opzionale)') }}</label>
+                            <select class="form-select" id="field-modal-products-total-target" data-tom-select-manual data-testid="field-modal-products-total-target">
+                                <option value="">{{ t('Nessuno') }}</option>
+                            </select>
+                            <small class="form-hint">{{ t('Un campo Numero decimale di questa stessa entità che riceverà il totale calcolato del blocco.') }}</small>
+                        </div>
+                        <small class="form-hint">{{ t('La casella "Obbligatorio" sopra indica che il blocco richiede almeno un prodotto per poter salvare.') }}</small>
                     </div>
                     <div class="mb-2">
                         <label class="form-label">{{ t('Valore predefinito') }}</label>

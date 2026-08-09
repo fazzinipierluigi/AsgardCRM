@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password', 'login_provider_id', 'provider_identifier'])]
+#[Fillable(['name', 'username', 'email', 'phone', 'job_title', 'password', 'login_provider_id', 'provider_identifier'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {

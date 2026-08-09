@@ -74,6 +74,32 @@
             </a>
         </li>
 
+        @include('layouts._menu_section_title', ['title' => t('E-mail')])
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.mail-settings.*') ? 'active' : '' }}" href="{{ route('admin.mail-settings.edit') }}" data-testid="menu-mail-settings">
+                <span class="nav-link-icon">
+                    {!! icon('mail') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Impostazioni e-mail') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.mail-connectors.*') ? 'active' : '' }}" href="{{ route('admin.mail-connectors.index') }}" data-testid="menu-mail-connectors">
+                <span class="nav-link-icon">
+                    {!! icon('plug-connected') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Connettori e-mail aziendali') }}</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.mail-signatures.*') ? 'active' : '' }}" href="{{ route('admin.mail-signatures.index') }}" data-testid="menu-mail-signatures">
+                <span class="nav-link-icon">
+                    {!! icon('signature') !!}
+                </span>
+                <span class="nav-link-title">{{ t('Firme e-mail') }}</span>
+            </a>
+        </li>
+
         @include('layouts._menu_section_title', ['title' => t('Integrazioni')])
         <li class="nav-item">
             <a class="nav-link {{ request()->routeIs('admin.connectors.*') ? 'active' : '' }}" href="{{ route('admin.connectors.index') }}" data-testid="menu-connectors">
