@@ -1,0 +1,43 @@
+{
+    "name": "fazzinipierluigi/crm-core",
+    "description": "Core package (models, migrations, service provider) for the AsgardCRM extensible entity/workflow CRM.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pierluigi Fazzini",
+            "email": "fazzinipierluigi@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/fazzinipierluigi/crm-core",
+    "keywords": ["Laravel", "CRM", "crm-core"],
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "fazzinipierluigi/just-a-gate": "^1.0",
+        "fazzinipierluigi/laraccoon-layouts": "^1.0",
+        "fazzinipierluigi/laraccoon_datasource": "^1.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^4.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fazzinipierluigi\\CrmCore\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fazzinipierluigi\\CrmCore\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fazzinipierluigi\\CrmCore\\CrmServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
