@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "directorytree/ldaprecord-laravel": "^4.0",
+        "fazzinipierluigi/crm-core": "@dev",
         "fazzinipierluigi/just-a-gate": "^1.0",
         "fazzinipierluigi/laraccoon-layouts": "^1.0",
         "fazzinipierluigi/laraccoon_datasource": "^1.0",
@@ -110,5 +111,10 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [{
+        "name": "crm-core",
+        "type": "path",
+        "url": "packages/fazzinipierluigi/crm-core"
+    }]
 }

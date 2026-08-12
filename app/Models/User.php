@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
 use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'username', 'email', 'phone', 'job_title', 'password', 'login_provider_id', 'provider_identifier'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements CrmUser
 {
     /** @use HasFactory<UserFactory> */
     use Authorizable, HasFactory, Notifiable;

@@ -2,10 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\EntityRecord;
 use App\Services\EnvFileWriter;
-use App\Services\Workflows\WorkflowActionExecutor;
-use App\Services\Workflows\WorkflowEntityTriggerDispatcher;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,12 +12,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Singleton so a Redirect action executed deep inside
-        // WorkflowEngine::completeUserTask() can hand its computed URL
-        // back to WorkflowUserTaskController::update() (same request,
-        // same container) via WorkflowActionExecutor::$lastRedirectUrl.
-        $this->app->singleton(WorkflowActionExecutor::class);
-
         // Bound to the real .env path by default; tests bind a temp-file
         // instance so the installation wizard never touches the project's
         // actual .env.
@@ -32,7 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        EntityRecord::created(fn (EntityRecord $record) => app(WorkflowEntityTriggerDispatcher::class)->handleCreated($record));
-        EntityRecord::updated(fn (EntityRecord $record) => app(WorkflowEntityTriggerDispatcher::class)->handleUpdated($record));
+        // EntityRecord::created/updated -> WorkflowEntityTriggerDispatcher
+        // and the WorkflowActionExecutor singleton now live in
+        // Fazzinipierluigi\CrmCore\CrmServiceProvider (Modulo 1 del
+        // package crm-core) — vedi docs/package-conversion/03-migrazione-moduli.md.
     }
 }
