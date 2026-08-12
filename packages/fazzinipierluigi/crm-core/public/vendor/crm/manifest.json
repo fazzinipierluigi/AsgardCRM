@@ -1,13 +1,13 @@
 {
-  "_Graph-CZ33aeIq.css": {
-    "file": "assets/Graph-CZ33aeIq.css",
-    "src": "_Graph-CZ33aeIq.css"
+  "_Graph-B964pEZj.css": {
+    "file": "assets/Graph-B964pEZj.css",
+    "src": "_Graph-B964pEZj.css"
   },
-  "_Graph-iyliw-AW.js": {
-    "file": "assets/Graph-iyliw-AW.js",
+  "_Graph-BRhK9iMp.js": {
+    "file": "assets/Graph-BRhK9iMp.js",
     "name": "Graph",
     "css": [
-      "assets/Graph-CZ33aeIq.css"
+      "assets/Graph-B964pEZj.css"
     ],
     "assets": [
       "assets/transparent-CIyfV8Zx.gif",
@@ -23,9 +23,9 @@
       "_lib-CoKWi0hM.js"
     ]
   },
-  "_fonts-ByERk4Wt.css": {
-    "file": "assets/fonts-ByERk4Wt.css",
-    "src": "_fonts-ByERk4Wt.css"
+  "_fonts-CRPw2Kff.css": {
+    "file": "assets/fonts-CRPw2Kff.css",
+    "src": "_fonts-CRPw2Kff.css"
   },
   "_hugerte-e3BmFx9B.js": {
     "file": "assets/hugerte-e3BmFx9B.js",
@@ -255,7 +255,7 @@
     "isEntry": true
   },
   "resources/js/workflow-builder.js": {
-    "file": "assets/workflow-builder-BHZuAx7y.js",
+    "file": "assets/workflow-builder-BTBsSVOw.js",
     "name": "workflow-builder",
     "src": "resources/js/workflow-builder.js",
     "isEntry": true,
@@ -263,16 +263,16 @@
       "_sortable.esm-DD7UL5Tv.js",
       "_bootstrap.esm-CsuvlKo9.js",
       "_jsonlogic-editor-D0h0ZMTp.js",
-      "_Graph-iyliw-AW.js"
+      "_Graph-BRhK9iMp.js"
     ]
   },
   "resources/js/workflow-instance-viewer.js": {
-    "file": "assets/workflow-instance-viewer-YF_pBtxd.js",
+    "file": "assets/workflow-instance-viewer-D43jn2Xm.js",
     "name": "workflow-instance-viewer",
     "src": "resources/js/workflow-instance-viewer.js",
     "isEntry": true,
     "imports": [
-      "_Graph-iyliw-AW.js"
+      "_Graph-BRhK9iMp.js"
     ]
   }
 }

@@ -71,13 +71,17 @@ class CrmServiceProvider extends ServiceProvider
             ], 'crm-views');
 
             // Pre-built Vite output (see packages/fazzinipierluigi/crm-core's
-            // own package.json/vite.config.js) — a Composer-installed
-            // package can't run `npm run build` on the consuming host, so
-            // the compiled assets are committed and published as-is.
-            // Package views call @vite([...], 'vendor/crm'), which reads
+            // own package.json/vite.config.js, buildDirectory: 'vendor/crm')
+            // — a Composer-installed package can't run `npm run build` on
+            // the consuming host, so the compiled assets are committed and
+            // published as-is. The plugin's buildDirectory MUST match this
+            // publish target 1:1: paths inside the compiled manifest/font
+            // CSS (e.g. @font-face src URLs) are baked in at build time,
+            // not resolved at request time. Package views call
+            // @vite([...], 'vendor/crm'), which reads
             // public_path('vendor/crm/manifest.json').
             $this->publishes([
-                __DIR__.'/../public/build' => public_path('vendor/crm'),
+                __DIR__.'/../public/vendor/crm' => public_path('vendor/crm'),
             ], 'crm-assets');
 
             // HugeRTE fetches its own runtime assets (skins/icons/plugins)

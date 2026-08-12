@@ -6,6 +6,13 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
+            // Matches the published location (public_path('vendor/crm'),
+            // see CrmServiceProvider's crm-assets tag) and the
+            // @vite([...], 'vendor/crm') calls in every package/host view
+            // that load these assets — must match exactly, or paths baked
+            // into the compiled manifest/font CSS (e.g. @font-face src
+            // URLs) point at the wrong directory.
+            buildDirectory: 'vendor/crm',
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
