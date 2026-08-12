@@ -1,11 +1,11 @@
 <?php
 
-use App\Mail\ComposedMail;
-use App\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Mail\ComposedMail;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
 use App\Models\User;
-use App\Services\Mail\DTO\MailComposeAttachmentDTO;
-use App\Services\Mail\DTO\MailComposeDTO;
-use App\Services\Mail\SmtpMailSender;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeAttachmentDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\SmtpMailSender;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 

@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailSetting;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use App\Models\User;
-use App\Services\Mail\ImapMailReader;
+use Fazzinipierluigi\CrmCore\Services\Mail\ImapMailReader;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

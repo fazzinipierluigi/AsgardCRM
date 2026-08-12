@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailFolderCacheSync;
-use App\Models\MailMessageCache;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailFolderCacheSync;
+use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
 use App\Models\User;
-use App\Services\Mail\DTO\MailMessageSummaryDTO;
-use App\Services\Mail\MailMessageHeaderCache;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

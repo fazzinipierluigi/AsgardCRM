@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\MailEncryption;
-use App\Services\Mail\Pop3\Pop3Client;
+use Fazzinipierluigi\CrmCore\Enums\MailEncryption;
+use Fazzinipierluigi\CrmCore\Services\Mail\Pop3\Pop3Client;
 
 /**
  * Drives Pop3Client against a real, in-process POP3 stub server

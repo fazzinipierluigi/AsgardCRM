@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailConnector;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailConnector;
 use App\Models\User;
-use App\Services\Mail\DTO\MailComposeDTO;
-use App\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

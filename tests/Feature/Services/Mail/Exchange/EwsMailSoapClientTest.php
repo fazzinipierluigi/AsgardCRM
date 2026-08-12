@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\Mail\Exchange\EwsMailSoapClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailSoapClient;
 use Illuminate\Support\Facades\Http;
 
 function ewsMailFixture(string $name): string

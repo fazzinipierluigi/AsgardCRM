@@ -1,19 +1,19 @@
 <?php
 
-use App\Mail\ComposedMail;
+use Fazzinipierluigi\CrmCore\Mail\ComposedMail;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use App\Models\MailAccount;
-use App\Models\MailMessageCache;
-use App\Models\MailSetting;
-use App\Models\MailSignature;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
+use Fazzinipierluigi\CrmCore\Models\MailSetting;
+use Fazzinipierluigi\CrmCore\Models\MailSignature;
 use App\Models\User;
-use App\Services\Mail\DTO\MailAttachmentSummaryDTO;
-use App\Services\Mail\DTO\MailFolderDTO;
-use App\Services\Mail\DTO\MailMessageDTO;
-use App\Services\Mail\MailClientFactory;
-use App\Services\Mail\MailReaderInterface;
-use App\Services\Mail\Testing\FakeMailClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentSummaryDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
+use Fazzinipierluigi\CrmCore\Services\Mail\MailReaderInterface;
+use Fazzinipierluigi\CrmCore\Services\Mail\Testing\FakeMailClient;
 use Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;

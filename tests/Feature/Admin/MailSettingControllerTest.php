@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\MailSetting;
+use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

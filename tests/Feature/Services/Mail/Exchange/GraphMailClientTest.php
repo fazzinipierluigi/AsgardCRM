@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailConnector;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailConnector;
 use App\Models\User;
-use App\Services\Mail\DTO\MailComposeAttachmentDTO;
-use App\Services\Mail\DTO\MailComposeDTO;
-use App\Services\Mail\Exchange\GraphMailClient;
-use App\Services\Mail\Exchange\MailGraphTokenClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeAttachmentDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\GraphMailClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\MailGraphTokenClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

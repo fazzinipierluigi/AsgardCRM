@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailSetting;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;

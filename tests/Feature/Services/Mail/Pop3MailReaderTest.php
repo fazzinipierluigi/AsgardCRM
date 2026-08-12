@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
 use App\Models\User;
-use App\Services\Mail\Pop3MailReader;
+use Fazzinipierluigi\CrmCore\Services\Mail\Pop3MailReader;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

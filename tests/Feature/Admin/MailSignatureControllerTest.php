@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailSignature;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailSignature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

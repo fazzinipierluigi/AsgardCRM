@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\MailAccount;
-use App\Models\MailConnector;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailConnector;
 use App\Models\User;
-use App\Services\Mail\Exchange\EwsMailClient;
-use App\Services\Mail\Exchange\GraphMailClient;
-use App\Services\Mail\ImapMailReader;
-use App\Services\Mail\MailClientFactory;
-use App\Services\Mail\Pop3MailReader;
-use App\Services\Mail\SmtpMailSender;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\GraphMailClient;
+use Fazzinipierluigi\CrmCore\Services\Mail\ImapMailReader;
+use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
+use Fazzinipierluigi\CrmCore\Services\Mail\Pop3MailReader;
+use Fazzinipierluigi\CrmCore\Services\Mail\SmtpMailSender;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

@@ -1,10 +1,10 @@
 <?php
 
-use App\Enums\MailOAuthProvider;
-use App\Models\MailAccount;
-use App\Models\MailSetting;
+use Fazzinipierluigi\CrmCore\Enums\MailOAuthProvider;
+use Fazzinipierluigi\CrmCore\Models\MailAccount;
+use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use App\Models\User;
-use App\Services\Mail\OAuth\MailOAuthService;
+use Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;

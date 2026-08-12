@@ -2,9 +2,6 @@
 
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
-use App\Http\Controllers\Admin\MailConnectorController;
-use App\Http\Controllers\Admin\MailSettingController;
-use App\Http\Controllers\Admin\MailSignatureController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
@@ -17,9 +14,6 @@ use App\Http\Controllers\CalendarSettingsController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\Install\InstallController;
-use App\Http\Controllers\MailAccountController;
-use App\Http\Controllers\MailController;
-use App\Http\Controllers\MailOAuthController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TicketTimerController;
 use App\Http\Controllers\TrashController;
@@ -104,39 +98,6 @@ Route::middleware('auth')->group(function () {
     Route::get('calendar/settings', [CalendarSettingsController::class, 'edit'])->name('calendar.settings.edit');
     Route::put('calendar/settings/shares', [CalendarSettingsController::class, 'updateShares'])->name('calendar.settings.shares.update');
 
-    // The "E-mail" system entity's own webmail UI — self-service, no
-    // ACL permission (see MailAccountController's docblock): a user's
-    // mailbox accounts are personal, like adding an account in a
-    // desktop mail client. 'mail/accounts*' registered before
-    // 'mail/{mailAccount}/...' so it can never be swallowed by that
-    // wildcard (same ordering gotcha as documents/importers/workflows).
-    Route::get('mail/accounts', [MailAccountController::class, 'index'])->name('mail.accounts.index');
-    Route::get('mail/accounts/create', [MailAccountController::class, 'create'])->name('mail.accounts.create');
-    Route::post('mail/accounts', [MailAccountController::class, 'store'])->name('mail.accounts.store');
-    Route::get('mail/accounts/{mailAccount}/edit', [MailAccountController::class, 'edit'])->name('mail.accounts.edit');
-    Route::put('mail/accounts/{mailAccount}', [MailAccountController::class, 'update'])->name('mail.accounts.update');
-    Route::delete('mail/accounts/{mailAccount}', [MailAccountController::class, 'destroy'])->name('mail.accounts.destroy');
-
-    // "Connetti con Google/Microsoft" (see MailAuthMethod/MailOAuthService)
-    // — connect() is scoped under mail/accounts/{mailAccount}/... like the
-    // rest of that CRUD; callback() has no account id in its URL at all
-    // (Google/Microsoft only ever redirect back to one fixed, provider-
-    // registered URI), the account is instead resolved from the signed
-    // `state` param MailOAuthService::authorizeUrl() generates.
-    Route::get('mail/accounts/{mailAccount}/oauth/{provider}/connect', [MailOAuthController::class, 'connect'])->name('mail.oauth.connect');
-    Route::get('mail/oauth/{provider}/callback', [MailOAuthController::class, 'callback'])->name('mail.oauth.callback');
-
-    Route::get('mail/compose', [MailController::class, 'compose'])->name('mail.compose');
-    Route::post('mail/send', [MailController::class, 'send'])->name('mail.send');
-    Route::get('mail', [MailController::class, 'index'])->name('mail.index');
-    Route::get('mail/{mailAccount}/folders', [MailController::class, 'folders'])->name('mail.folders');
-    Route::get('mail/{mailAccount}/messages', [MailController::class, 'messages'])->name('mail.messages');
-    Route::get('mail/{mailAccount}/messages/show', [MailController::class, 'show'])->name('mail.messages.show');
-    Route::get('mail/{mailAccount}/messages/attachment', [MailController::class, 'attachmentDownload'])->name('mail.messages.attachment');
-    Route::get('mail/{mailAccount}/messages/reply', [MailController::class, 'reply'])->name('mail.messages.reply');
-    Route::get('mail/{mailAccount}/messages/forward', [MailController::class, 'forward'])->name('mail.messages.forward');
-    Route::post('mail/{mailAccount}/attach', [MailController::class, 'attach'])->name('mail.attach');
-
     // The Ticket entity's own timer, backing its "Avvia timer"/"Ferma
     // timer" Button fields (see TicketEntitySeeder) — not the generic
     // entities.fields.trigger route, since neither of that controller's
@@ -167,19 +128,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
         Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
-
-        Route::get('mail-settings', [MailSettingController::class, 'edit'])->name('mail-settings.edit');
-        Route::put('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');
-
-        Route::get('mail-connectors/data', [MailConnectorController::class, 'data'])->name('mail-connectors.data');
-        Route::resource('mail-connectors', MailConnectorController::class)
-            ->except('show')
-            ->parameters(['mail-connectors' => 'mailConnector']);
-
-        Route::get('mail-signatures/data', [MailSignatureController::class, 'data'])->name('mail-signatures.data');
-        Route::resource('mail-signatures', MailSignatureController::class)
-            ->except('show')
-            ->parameters(['mail-signatures' => 'mailSignature']);
 
     });
 
