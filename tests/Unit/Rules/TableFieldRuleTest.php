@@ -1,6 +1,6 @@
 <?php
 
-use App\Rules\TableFieldRule;
+use Fazzinipierluigi\CrmCore\Rules\TableFieldRule;
 
 /**
  * Runs the rule directly against a value, returning whether it passed

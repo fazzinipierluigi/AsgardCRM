@@ -1,14 +1,14 @@
 <?php
 
-use App\Enums\WorkflowInstanceStatus;
-use App\Enums\WorkflowNodeType;
-use App\Enums\WorkflowTimerStatus;
-use App\Enums\WorkflowTokenStatus;
-use App\Enums\WorkflowUserTaskStatus;
-use App\Jobs\Workflows\ExecuteServiceTaskJob;
-use App\Models\WorkflowNode;
-use App\Services\Workflows\TaskExecutors\SyncTaskExecutor;
-use App\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\CrmCore\Jobs\Workflows\ExecuteServiceTaskJob;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors\SyncTaskExecutor;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 

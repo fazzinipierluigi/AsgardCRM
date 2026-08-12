@@ -7,7 +7,7 @@
     // (Entity::indexUrl()/indexRouteIsActive()), since Calendario/
     // Documenti/E-mail each get their own dedicated UI/controller
     // instead of the generic per-entity grid every other entity uses.
-    $installedEntities = \App\Models\Entity::where('is_installed', true)
+    $installedEntities = \Fazzinipierluigi\CrmCore\Models\Entity::where('is_installed', true)
         ->orderBy('menu_position')
         ->orderBy('name')
         ->get();

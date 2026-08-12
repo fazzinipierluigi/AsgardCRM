@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
-use App\Rules\ProductsBlockRule;
+use Fazzinipierluigi\CrmCore\Rules\ProductsBlockRule;
 use Database\Seeders\ClientiEntitySeeder;
 use Database\Seeders\PreventiviEntitySeeder;
 use Database\Seeders\ProdottiEntitySeeder;

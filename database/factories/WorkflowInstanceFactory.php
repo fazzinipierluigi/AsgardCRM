@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Enums\WorkflowInstanceStatus;
-use App\Models\Workflow;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowInstanceFactory extends Factory
 {
+    protected $model = WorkflowInstance::class;
+
     /**
      * Define the model's default state.
      *

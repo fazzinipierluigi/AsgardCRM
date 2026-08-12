@@ -1,11 +1,11 @@
 <?php
 
-use App\Enums\WorkflowInstanceStatus;
-use App\Enums\WorkflowNodeType;
-use App\Models\Workflow;
-use App\Models\WorkflowEdge;
-use App\Models\WorkflowNode;
-use App\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityRecord;
-use App\Models\EntityTab;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 

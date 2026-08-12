@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\DynamicDatabaseConnector;
+use Fazzinipierluigi\CrmCore\Services\DynamicDatabaseConnector;
 use Illuminate\Support\Facades\DB;
 
 function dynamicConnectorSqliteDatabase(): string

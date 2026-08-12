@@ -1,14 +1,14 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Enums\EntityVisibilityLevel;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityRecord;
-use App\Models\EntityRoleVisibility;
-use App\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use App\Models\User;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

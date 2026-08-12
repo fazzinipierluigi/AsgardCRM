@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Models\Workflow;
-use App\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowVersionFactory extends Factory
 {
+    protected $model = WorkflowVersion::class;
+
     /**
      * Define the model's default state.
      *

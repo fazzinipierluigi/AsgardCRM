@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\Entity;
-use App\Models\EntityRecord;
-use App\Models\EntityRelation;
-use App\Models\EntityRelationLink;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Models\EntityRelationLink;
 use Database\Seeders\EmailEntitySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

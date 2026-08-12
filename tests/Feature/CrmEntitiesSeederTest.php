@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\Entity;
-use App\Models\EntityFieldCondition;
-use App\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityFieldCondition;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
 use Database\Seeders\CalendarEntitySeeder;
 use Database\Seeders\ClientiEntitySeeder;
 use Database\Seeders\ContattiEntitySeeder;

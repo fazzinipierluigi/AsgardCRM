@@ -1,10 +1,10 @@
 <?php
 
-use App\Enums\WorkflowInstanceStatus;
-use App\Enums\WorkflowVersionStatus;
-use App\Models\Workflow;
-use App\Models\WorkflowInstance;
-use App\Services\Workflows\WorkflowGraphPersister;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowVersionStatus;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowGraphPersister;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

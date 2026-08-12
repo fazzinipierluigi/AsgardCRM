@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\EntityRecord;
-use App\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

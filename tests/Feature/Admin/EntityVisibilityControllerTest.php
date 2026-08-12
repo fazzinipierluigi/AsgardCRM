@@ -1,8 +1,8 @@
 <?php
 
-use App\Enums\EntityVisibilityLevel;
-use App\Models\Entity;
-use App\Models\EntityRoleVisibility;
+use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

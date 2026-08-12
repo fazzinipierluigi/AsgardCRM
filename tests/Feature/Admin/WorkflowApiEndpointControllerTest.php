@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 

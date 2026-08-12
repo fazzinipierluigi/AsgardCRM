@@ -1,9 +1,9 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityFieldCondition;
-use App\Models\EntityFieldConditionTarget;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityFieldCondition;
+use Fazzinipierluigi\CrmCore\Models\EntityFieldConditionTarget;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;

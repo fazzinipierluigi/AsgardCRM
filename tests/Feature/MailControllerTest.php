@@ -1,8 +1,8 @@
 <?php
 
 use App\Mail\ComposedMail;
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\MailAccount;
 use App\Models\MailMessageCache;
 use App\Models\MailSetting;

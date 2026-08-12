@@ -1,13 +1,13 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityFieldChange;
-use App\Models\EntityRecord;
-use App\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityFieldChange;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use App\Models\User;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

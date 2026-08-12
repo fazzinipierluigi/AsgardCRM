@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Importer;
-use App\Services\Importers\Channels\DatabaseImporterChannel;
+use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\CrmCore\Services\Importers\Channels\DatabaseImporterChannel;
 use Illuminate\Support\Facades\DB;
 
 /**

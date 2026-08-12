@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\EntityRecord;
-use App\Models\EntityRelation;
-use App\Models\EntityRelationLink;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Models\EntityRelationLink;
 use App\Models\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\WorkflowNode;
-use App\Support\ButtonConfigValidator;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Support\ButtonConfigValidator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

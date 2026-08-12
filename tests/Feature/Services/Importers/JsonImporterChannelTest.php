@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Importer;
-use App\Services\Importers\Channels\JsonImporterChannel;
+use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\CrmCore\Services\Importers\Channels\JsonImporterChannel;
 
 test('fetch decodes a top-level json array of objects', function () {
     $path = tempnam(sys_get_temp_dir(), 'importer_json_');

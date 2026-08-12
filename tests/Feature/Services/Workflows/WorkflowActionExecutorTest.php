@@ -1,21 +1,21 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Enums\WorkflowActionPhase;
-use App\Enums\WorkflowActionType;
-use App\Mail\WorkflowNotificationMail;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityFieldChange;
-use App\Models\EntityRecord;
-use App\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
+use Fazzinipierluigi\CrmCore\Mail\WorkflowNotificationMail;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityFieldChange;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use App\Models\User;
-use App\Models\WorkflowApiEndpoint;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowSqlConnection;
-use App\Services\EntityInstaller;
-use App\Services\Workflows\WorkflowActionExecutor;
+use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowSqlConnection;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowActionExecutor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;

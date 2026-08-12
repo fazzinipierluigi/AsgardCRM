@@ -1,11 +1,11 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Enums\WorkflowTokenStatus;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowToken;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowTokenFactory extends Factory
 {
+    protected $model = WorkflowToken::class;
+
     /**
      * Define the model's default state.
      *

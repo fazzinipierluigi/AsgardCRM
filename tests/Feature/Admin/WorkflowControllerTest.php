@@ -1,10 +1,10 @@
 <?php
 
-use App\Enums\WorkflowInstanceStatus;
-use App\Models\Workflow;
-use App\Models\WorkflowEdge;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 

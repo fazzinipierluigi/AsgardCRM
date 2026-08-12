@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\DocumentFolder;
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Database\Seeders\DocumentsEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Models\WorkflowEdge;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowEdgeFactory extends Factory
 {
+    protected $model = WorkflowEdge::class;
+
     /**
      * Define the model's default state.
      *

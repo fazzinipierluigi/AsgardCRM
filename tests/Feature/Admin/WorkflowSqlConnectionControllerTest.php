@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\WorkflowSqlConnection;
+use Fazzinipierluigi\CrmCore\Models\WorkflowSqlConnection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 

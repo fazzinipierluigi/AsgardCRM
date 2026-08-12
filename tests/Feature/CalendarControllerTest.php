@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
 use Database\Seeders\CalendarEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;

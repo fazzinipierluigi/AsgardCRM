@@ -97,7 +97,7 @@
                         @endunless
 
                         <div class="navbar-nav flex-row order-md-last ms-auto align-items-center">
-                            @foreach (\App\Models\Entity::where('is_installed', true)->where('show_in_quick_access', true)->orderBy('quick_access_position')->get() as $quickAccessEntity)
+                            @foreach (\Fazzinipierluigi\CrmCore\Models\Entity::where('is_installed', true)->where('show_in_quick_access', true)->orderBy('quick_access_position')->get() as $quickAccessEntity)
                                 @can("entity_{$quickAccessEntity->slug}.index")
                                     <button
                                         type="button"

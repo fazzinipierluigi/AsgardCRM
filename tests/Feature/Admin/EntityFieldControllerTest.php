@@ -1,15 +1,15 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Enums\WorkflowActionPhase;
-use App\Enums\WorkflowActionType;
-use App\Enums\WorkflowVersionStatus;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityTab;
-use App\Models\WorkflowAction;
-use App\Models\WorkflowNode;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowVersionStatus;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

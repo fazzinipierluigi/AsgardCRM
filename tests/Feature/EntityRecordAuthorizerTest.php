@@ -1,11 +1,11 @@
 <?php
 
-use App\Enums\EntityVisibilityLevel;
-use App\Models\Entity;
-use App\Models\EntityRecord;
-use App\Models\EntityRoleVisibility;
+use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
 use App\Models\User;
-use App\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

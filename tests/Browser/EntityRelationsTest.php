@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\EntityRecord;
-use App\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
 use Laravel\Dusk\Browser;
 
 test('a user can attach and detach a related record through the relations sidebar and sheet', function () {

@@ -1,16 +1,16 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Jobs\RunImporterJob;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityRecord;
-use App\Models\EntityTab;
-use App\Models\Importer;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Models\Importer;
 use App\Models\User;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowNode;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

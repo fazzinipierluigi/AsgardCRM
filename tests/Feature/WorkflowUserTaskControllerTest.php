@@ -1,19 +1,19 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Enums\WorkflowActionPhase;
-use App\Enums\WorkflowActionType;
-use App\Enums\WorkflowInstanceStatus;
-use App\Enums\WorkflowNodeType;
-use App\Enums\WorkflowUserTaskStatus;
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
-use App\Models\Workflow;
-use App\Models\WorkflowEdge;
-use App\Models\WorkflowNode;
-use App\Services\EntityInstaller;
-use App\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

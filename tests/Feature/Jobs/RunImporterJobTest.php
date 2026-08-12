@@ -1,10 +1,10 @@
 <?php
 
-use App\Enums\ImporterRunStatus;
-use App\Jobs\RunImporterJob;
-use App\Models\Entity;
-use App\Models\Importer;
-use App\Services\Importers\ImporterRunner;
+use Fazzinipierluigi\CrmCore\Enums\ImporterRunStatus;
+use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\CrmCore\Services\Importers\ImporterRunner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Mockery\MockInterface;

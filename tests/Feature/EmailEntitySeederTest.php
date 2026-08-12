@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;

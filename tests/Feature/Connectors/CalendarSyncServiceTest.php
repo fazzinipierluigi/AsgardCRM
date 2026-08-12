@@ -3,8 +3,8 @@
 use App\Models\CalendarEventExternalLink;
 use App\Models\Connector;
 use App\Models\ConnectorUserMailbox;
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
 use App\Services\Connectors\CalendarSyncService;
 use Database\Seeders\CalendarEntitySeeder;

@@ -1,14 +1,14 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Enums\EntityRelationTargetType;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityField;
-use App\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use App\Models\User;
-use App\Models\WorkflowNode;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;

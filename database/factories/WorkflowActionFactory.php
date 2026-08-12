@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Enums\WorkflowActionPhase;
-use App\Enums\WorkflowActionType;
-use App\Models\WorkflowAction;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
+use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowActionFactory extends Factory
 {
+    protected $model = WorkflowAction::class;
+
     /**
      * Define the model's default state.
      *

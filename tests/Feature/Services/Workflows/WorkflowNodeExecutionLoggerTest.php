@@ -1,14 +1,14 @@
 <?php
 
-use App\Enums\WorkflowActionPhase;
-use App\Enums\WorkflowActionType;
-use App\Enums\WorkflowInstanceStatus;
-use App\Enums\WorkflowNodeExecutionStatus;
-use App\Enums\WorkflowNodeType;
-use App\Enums\WorkflowUserTaskStatus;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowNodeExecution;
-use App\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeExecutionStatus;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNodeExecution;
+use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

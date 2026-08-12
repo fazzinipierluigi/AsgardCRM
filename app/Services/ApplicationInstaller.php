@@ -9,6 +9,7 @@ use App\Models\VersionHistory;
 use Database\Seeders\CalendarEntitySeeder;
 use Database\Seeders\LanguageSeeder;
 use Database\Seeders\TranslationSeeder;
+use Fazzinipierluigi\CrmCore\Services\DynamicDatabaseConnector;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;

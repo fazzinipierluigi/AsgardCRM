@@ -1,12 +1,12 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityListWidget;
-use App\Models\EntityTab;
-use App\Models\WorkflowNode;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityListWidget;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

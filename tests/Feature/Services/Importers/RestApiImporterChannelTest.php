@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Importer;
-use App\Services\Importers\Channels\RestApiImporterChannel;
+use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\CrmCore\Services\Importers\Channels\RestApiImporterChannel;
 use Illuminate\Support\Facades\Http;
 
 test('fetch extracts rows from a data key', function () {

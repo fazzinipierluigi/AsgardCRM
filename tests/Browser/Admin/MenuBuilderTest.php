@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Laravel\Dusk\Browser;
 
 function menuBuilderEntity(string $name, string $slug, array $attributes = []): Entity

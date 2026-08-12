@@ -1,15 +1,15 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use App\Models\Language;
 use App\Models\Translation;
 use App\Models\User;
-use App\Models\Workflow;
-use App\Models\WorkflowVersion;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Enums\WorkflowTimerStatus;
-use App\Models\WorkflowInstance;
-use App\Models\WorkflowNode;
-use App\Models\WorkflowTimer;
-use App\Models\WorkflowToken;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
+use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
+use Fazzinipierluigi\CrmCore\Models\WorkflowTimer;
+use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowTimerFactory extends Factory
 {
+    protected $model = WorkflowTimer::class;
+
     /**
      * Define the model's default state.
      *

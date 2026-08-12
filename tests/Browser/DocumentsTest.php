@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Database\Seeders\DocumentsEntitySeeder;
 use Laravel\Dusk\Browser;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Laravel\Dusk\Browser;
 
 test('a quick access icon opens the entity in a full-page offcanvas sheet, not a navigation', function () {

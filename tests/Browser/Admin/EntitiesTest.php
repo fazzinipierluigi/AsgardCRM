@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Laravel\Dusk\Browser;
 
 test('admin can create an entity and design its tab/card/field structure', function () {

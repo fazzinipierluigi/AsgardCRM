@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Factories;
+namespace Fazzinipierluigi\CrmCore\Database\Factories;
 
-use App\Enums\WorkflowVariableType;
-use App\Models\WorkflowVariable;
-use App\Models\WorkflowVersion;
+use Fazzinipierluigi\CrmCore\Enums\WorkflowVariableType;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVariable;
+use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class WorkflowVariableFactory extends Factory
 {
+    protected $model = WorkflowVariable::class;
+
     /**
      * Define the model's default state.
      *

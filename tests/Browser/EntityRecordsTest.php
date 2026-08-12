@@ -1,11 +1,11 @@
 <?php
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityCard;
-use App\Models\EntityRecord;
-use App\Models\EntityTab;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Laravel\Dusk\Browser;
 
 test('a user can create and then edit a record through the generic entity form', function () {
