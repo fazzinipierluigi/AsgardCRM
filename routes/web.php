@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\ConnectorController;
-use App\Http\Controllers\Admin\ConnectorMailboxController;
 use App\Http\Controllers\Admin\DocumentStorageController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
@@ -190,11 +188,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
         Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
-
-        Route::get('connectors/data', [ConnectorController::class, 'data'])->name('connectors.data');
-        Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
-        Route::put('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'update'])->name('connectors.mailboxes.update');
-        Route::resource('connectors', ConnectorController::class)->except('show');
 
         Route::get('mail-settings', [MailSettingController::class, 'edit'])->name('mail-settings.edit');
         Route::put('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');

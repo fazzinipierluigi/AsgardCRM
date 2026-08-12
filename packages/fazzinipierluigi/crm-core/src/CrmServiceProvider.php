@@ -6,6 +6,7 @@ use Fazzinipierluigi\CrmCore\Console\Commands\BackfillInstalledEntityUpgrades;
 use Fazzinipierluigi\CrmCore\Console\Commands\FireDueWorkflowTimers;
 use Fazzinipierluigi\CrmCore\Console\Commands\RunDueImporters;
 use Fazzinipierluigi\CrmCore\Console\Commands\RunDueWorkflows;
+use Fazzinipierluigi\CrmCore\Console\Commands\SyncCalendarConnectors;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowActionExecutor;
 use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEntityTriggerDispatcher;
@@ -45,6 +46,7 @@ class CrmServiceProvider extends ServiceProvider
             Schedule::command(RunDueImporters::class)->everyMinute()->withoutOverlapping();
             Schedule::command(RunDueWorkflows::class)->everyMinute()->withoutOverlapping();
             Schedule::command(FireDueWorkflowTimers::class)->everyMinute()->withoutOverlapping();
+            Schedule::command(SyncCalendarConnectors::class)->everyMinute()->withoutOverlapping();
         });
 
         if ($this->app->runningInConsole()) {
@@ -73,6 +75,7 @@ class CrmServiceProvider extends ServiceProvider
                 FireDueWorkflowTimers::class,
                 RunDueImporters::class,
                 RunDueWorkflows::class,
+                SyncCalendarConnectors::class,
             ]);
         }
     }

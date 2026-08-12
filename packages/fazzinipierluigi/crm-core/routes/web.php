@@ -2,11 +2,12 @@
 
 // Package routes are added module by module during Fase 3 of the
 // package conversion (see docs/package-conversion/03-migrazione-moduli.md).
-// This file currently carries Modulo 1 (Core: Entity + Workflow + Importer).
-// Route names are unchanged from the original app/routes/web.php so
-// existing route() calls/links keep working once the app is wired to
-// the package (Fase 3, step 6).
+// This file currently carries Modulo 1 (Core: Entity + Workflow + Importer)
+// e Modulo 2 (Connettori calendario). Route names are unchanged
+// dall'originale app/routes/web.php.
 
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldConditionController;
@@ -90,6 +91,11 @@ Route::middleware('auth')->group(function () {
         // isn't swallowed by the {workflow} wildcard first.
         Route::resource('workflows', WorkflowController::class)->except('show');
         Route::get('workflows/{workflow}', [WorkflowController::class, 'show'])->name('workflows.show');
+
+        Route::get('connectors/data', [ConnectorController::class, 'data'])->name('connectors.data');
+        Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
+        Route::put('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'update'])->name('connectors.mailboxes.update');
+        Route::resource('connectors', ConnectorController::class)->except('show');
     });
 
     // Installed entities' own records — not admin-only. Permission and
