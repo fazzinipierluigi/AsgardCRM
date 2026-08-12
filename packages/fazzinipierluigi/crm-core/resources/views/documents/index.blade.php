@@ -202,5 +202,5 @@
         .document-tree-toggle.collapsed .icon { transform: rotate(0deg); }
     </style>
 
-    @vite('resources/js/documents.js')
+    @vite('resources/js/documents.js', 'vendor/crm')
 @endsection

@@ -67,5 +67,5 @@
         <div id="menu-builder-hidden-inputs"></div>
     </form>
 
-    @vite('resources/js/menu-builder.js')
+    @vite('resources/js/menu-builder.js', 'vendor/crm')
 @endsection

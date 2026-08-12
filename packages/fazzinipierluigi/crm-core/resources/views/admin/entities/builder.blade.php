@@ -300,5 +300,5 @@
         </div>
     </div>
 
-    @vite('resources/js/entity-builder.js')
+    @vite('resources/js/entity-builder.js', 'vendor/crm')
 @endsection

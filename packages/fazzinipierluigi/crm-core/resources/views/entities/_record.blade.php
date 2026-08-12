@@ -217,4 +217,4 @@
     window.ENTITY_FIELD_CONDITIONS = @json($mode === 'edit' ? ($fieldConditions ?? []) : []);
 </script>
 
-@vite(['resources/js/entity-record-form.js', 'resources/js/entity-relations.js', 'resources/js/entity-field-conditions.js'])
+@vite(['resources/js/entity-record-form.js', 'resources/js/entity-relations.js', 'resources/js/entity-field-conditions.js'], 'vendor/crm')

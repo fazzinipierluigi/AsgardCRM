@@ -131,5 +131,5 @@
         window.CALENDAR_CAN_CREATE = @json($canCreate);
     </script>
 
-    @vite('resources/js/calendar.js')
+    @vite('resources/js/calendar.js', 'vendor/crm')
 @endsection

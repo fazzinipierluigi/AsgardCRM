@@ -117,5 +117,5 @@
         .mail-folder-link.active { background: var(--tblr-primary-lt); border-radius: var(--tblr-border-radius); }
     </style>
 
-    @vite('resources/js/mail.js')
+    @vite('resources/js/mail.js', 'vendor/crm')
 @endsection

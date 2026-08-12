@@ -7,7 +7,7 @@
 
         <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'], 'vendor/crm')
         {{ Vite::fonts() }}
     </head>
     <body class="border-top-wide border-primary d-flex flex-column">

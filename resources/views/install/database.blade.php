@@ -7,7 +7,8 @@
 
         <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
 
-        @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/install-wizard.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'], 'vendor/crm')
+        @vite(['resources/js/install-wizard.js'])
         {{ Vite::fonts() }}
     </head>
     <body class="border-top-wide border-primary d-flex flex-column">

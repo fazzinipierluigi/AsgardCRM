@@ -25,6 +25,7 @@ CLAUDE.md
 /public/hot
 /public/hugerte
 /public/storage
+/public/vendor
 /storage/*.key
 /storage/installed
 /storage/pail

@@ -70,6 +70,25 @@ class CrmServiceProvider extends ServiceProvider
                 __DIR__.'/../resources/views' => resource_path('views/vendor/crm'),
             ], 'crm-views');
 
+            // Pre-built Vite output (see packages/fazzinipierluigi/crm-core's
+            // own package.json/vite.config.js) — a Composer-installed
+            // package can't run `npm run build` on the consuming host, so
+            // the compiled assets are committed and published as-is.
+            // Package views call @vite([...], 'vendor/crm'), which reads
+            // public_path('vendor/crm/manifest.json').
+            $this->publishes([
+                __DIR__.'/../public/build' => public_path('vendor/crm'),
+            ], 'crm-assets');
+
+            // HugeRTE fetches its own runtime assets (skins/icons/plugins)
+            // over plain HTTP from base_url: '/hugerte' (see
+            // resources/js/hugerte.js) — not bundled by Vite. Published as
+            // a real copy, not a symlink into node_modules (the consuming
+            // host has no node_modules for this package at all).
+            $this->publishes([
+                __DIR__.'/../public/hugerte' => public_path('hugerte'),
+            ], 'crm-assets');
+
             $this->commands([
                 BackfillInstalledEntityUpgrades::class,
                 FireDueWorkflowTimers::class,

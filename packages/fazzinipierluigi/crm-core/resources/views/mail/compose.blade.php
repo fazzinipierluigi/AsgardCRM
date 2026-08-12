@@ -111,5 +111,5 @@
         .mail-compose-dropzone.mail-compose-dropzone-active { border-color: var(--tblr-primary); background: var(--tblr-primary-lt); color: var(--tblr-primary); }
     </style>
 
-    @vite('resources/js/mail.js')
+    @vite('resources/js/mail.js', 'vendor/crm')
 @endsection

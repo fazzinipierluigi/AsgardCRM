@@ -33,5 +33,5 @@
         };
     </script>
 
-    @vite('resources/js/ticket-timer.js')
+    @vite('resources/js/ticket-timer.js', 'vendor/crm')
 @endif

@@ -129,5 +129,5 @@
         };
     </script>
 
-    @vite('resources/js/entity-condition-builder.js')
+    @vite('resources/js/entity-condition-builder.js', 'vendor/crm')
 @endsection

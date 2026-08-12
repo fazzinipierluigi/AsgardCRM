@@ -391,4 +391,4 @@
     </script>
 @endsection
 
-@vite('resources/js/workflow-builder.js')
+@vite('resources/js/workflow-builder.js', 'vendor/crm')

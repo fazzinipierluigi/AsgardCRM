@@ -28,4 +28,4 @@
     </div>
 @endsection
 
-@vite('resources/js/importer-wizard.js')
+@vite('resources/js/importer-wizard.js', 'vendor/crm')

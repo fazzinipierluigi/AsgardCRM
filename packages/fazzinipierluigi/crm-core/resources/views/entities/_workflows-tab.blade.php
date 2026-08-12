@@ -43,4 +43,4 @@
     </div>
 </div>
 
-@vite('resources/js/workflow-instance-viewer.js')
+@vite('resources/js/workflow-instance-viewer.js', 'vendor/crm')

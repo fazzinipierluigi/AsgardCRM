@@ -18,7 +18,7 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
         <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'], 'vendor/crm')
         {{ Vite::fonts() }}
     </head>
     <body>

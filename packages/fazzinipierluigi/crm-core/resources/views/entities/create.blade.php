@@ -25,5 +25,5 @@
         window.ENTITY_FIELD_CONDITIONS = @json($fieldConditions ?? []);
     </script>
 
-    @vite(['resources/js/entity-record-form.js', 'resources/js/entity-field-conditions.js'])
+    @vite(['resources/js/entity-record-form.js', 'resources/js/entity-field-conditions.js'], 'vendor/crm')
 @endsection

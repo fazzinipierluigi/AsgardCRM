@@ -25,5 +25,5 @@
         </div>
     </div>
 
-    @vite('resources/js/mail-signature-form.js')
+    @vite('resources/js/mail-signature-form.js', 'vendor/crm')
 @endsection
