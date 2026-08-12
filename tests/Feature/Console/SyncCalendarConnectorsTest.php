@@ -1,7 +1,7 @@
 <?php
 
-use App\Jobs\SyncConnectorJob;
-use App\Models\Connector;
+use Fazzinipierluigi\CrmCore\Jobs\SyncConnectorJob;
+use Fazzinipierluigi\CrmCore\Models\Connector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 

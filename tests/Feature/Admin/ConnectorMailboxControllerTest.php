@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Connector;
-use App\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Connector;
-use App\Services\Connectors\Exchange\GraphTokenClient;
+use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\GraphTokenClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

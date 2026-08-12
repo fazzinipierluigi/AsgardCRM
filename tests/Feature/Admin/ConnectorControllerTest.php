@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Connector;
+use Fazzinipierluigi\CrmCore\Models\Connector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

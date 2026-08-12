@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\Connectors\Exchange\EwsSoapClient;
+use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\EwsSoapClient;
 use Illuminate\Support\Facades\Http;
 
 function ewsFixture(string $name): string

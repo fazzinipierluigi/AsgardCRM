@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Connector;
-use App\Models\ConnectorSyncState;
-use App\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\CrmCore\Models\ConnectorSyncState;
+use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
 use App\Models\User;
-use App\Services\Connectors\Exchange\GraphExchangeConnector;
+use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\GraphExchangeConnector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

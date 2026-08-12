@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Connector;
-use App\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
 use Laravel\Dusk\Browser;
 
 test('admin can create an exchange graph connector', function () {
