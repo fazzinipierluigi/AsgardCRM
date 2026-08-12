@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\DocumentStorageController;
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
 use App\Http\Controllers\Admin\MailConnectorController;
@@ -15,7 +14,6 @@ use App\Http\Controllers\Auth\SamlLoginController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CalendarSettingsController;
-use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\Install\InstallController;
@@ -106,22 +104,6 @@ Route::middleware('auth')->group(function () {
     Route::get('calendar/settings', [CalendarSettingsController::class, 'edit'])->name('calendar.settings.edit');
     Route::put('calendar/settings/shares', [CalendarSettingsController::class, 'updateShares'])->name('calendar.settings.shares.update');
 
-    // The "Documenti" system entity's own folder-browser UI — same
-    // manual entity_documenti.* permission pattern as the Calendar
-    // above. 'documents/upload' and 'documents/folders' are literal
-    // segments registered before the wildcard 'documents/{folder?}'
-    // catch-all, or that wildcard would swallow them first (same
-    // ordering gotcha as the importers/workflows routes below).
-    Route::get('documents/upload', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('documents/folders', [DocumentController::class, 'storeFolder'])->name('documents.folders.store');
-    Route::delete('documents/folders/{folder}', [DocumentController::class, 'destroyFolder'])->name('documents.folders.destroy');
-    Route::get('documents/{record}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
-    Route::put('documents/{record}', [DocumentController::class, 'update'])->name('documents.update');
-    Route::delete('documents/{record}', [DocumentController::class, 'destroy'])->name('documents.destroy');
-    Route::get('documents/{record}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::post('documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::get('documents/{folder?}', [DocumentController::class, 'index'])->name('documents.index');
-
     // The "E-mail" system entity's own webmail UI — self-service, no
     // ACL permission (see MailAccountController's docblock): a user's
     // mailbox accounts are personal, like adding an account in a
@@ -185,9 +167,6 @@ Route::middleware('auth')->group(function () {
 
         Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
         Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
-
-        Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
-        Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
 
         Route::get('mail-settings', [MailSettingController::class, 'edit'])->name('mail-settings.edit');
         Route::put('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');

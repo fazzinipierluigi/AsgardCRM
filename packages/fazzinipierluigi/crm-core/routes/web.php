@@ -8,6 +8,7 @@
 
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\DocumentStorageController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldConditionController;
@@ -20,6 +21,7 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowApiEndpointControlle
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowSqlConnectionController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityFieldButtonController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRecordController;
@@ -96,7 +98,25 @@ Route::middleware('auth')->group(function () {
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');
         Route::put('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'update'])->name('connectors.mailboxes.update');
         Route::resource('connectors', ConnectorController::class)->except('show');
+
+        Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
+        Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
     });
+
+    // The "Documenti" system entity's own folder-browser UI — same
+    // manual entity_documenti.* permission pattern as EntityRecordController.
+    // 'documents/upload' and 'documents/folders' registered before the
+    // wildcard 'documents/{folder?}' catch-all, or that wildcard would
+    // swallow them first.
+    Route::get('documents/upload', [DocumentController::class, 'create'])->name('documents.create');
+    Route::post('documents/folders', [DocumentController::class, 'storeFolder'])->name('documents.folders.store');
+    Route::delete('documents/folders/{folder}', [DocumentController::class, 'destroyFolder'])->name('documents.folders.destroy');
+    Route::get('documents/{record}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::put('documents/{record}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::delete('documents/{record}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+    Route::get('documents/{record}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::post('documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('documents/{folder?}', [DocumentController::class, 'index'])->name('documents.index');
 
     // Installed entities' own records — not admin-only. Permission and
     // visibility checks happen manually inside EntityRecordController,
