@@ -56,6 +56,14 @@ class CrmServiceProvider extends ServiceProvider
                 __DIR__.'/../database/migrations' => database_path('migrations'),
             ], 'crm-migrations');
 
+            // fazzinipierluigi/laraccoon-layouts doesn't auto-load its own
+            // migration (only exposes it for vendor:publish) — bundled
+            // into our own crm-migrations tag so installing crm-core
+            // yields a complete schema in one step.
+            $this->publishes([
+                base_path('vendor/fazzinipierluigi/laraccoon-layouts/database/migrations') => database_path('migrations'),
+            ], 'crm-migrations');
+
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/crm'),
             ], 'crm-views');
