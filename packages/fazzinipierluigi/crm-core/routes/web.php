@@ -10,6 +10,9 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\DocumentStorageController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailConnectorController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSettingController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSignatureController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldConditionController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldController;
@@ -22,6 +25,9 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowSqlConnectionController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailAccountController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailOAuthController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityFieldButtonController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRecordController;
@@ -101,7 +107,52 @@ Route::middleware('auth')->group(function () {
 
         Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
         Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
+
+        Route::get('mail-settings', [MailSettingController::class, 'edit'])->name('mail-settings.edit');
+        Route::put('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');
+
+        Route::get('mail-connectors/data', [MailConnectorController::class, 'data'])->name('mail-connectors.data');
+        Route::resource('mail-connectors', MailConnectorController::class)
+            ->except('show')
+            ->parameters(['mail-connectors' => 'mailConnector']);
+
+        Route::get('mail-signatures/data', [MailSignatureController::class, 'data'])->name('mail-signatures.data');
+        Route::resource('mail-signatures', MailSignatureController::class)
+            ->except('show')
+            ->parameters(['mail-signatures' => 'mailSignature']);
     });
+
+    // The "E-mail" system entity's own webmail UI — self-service, no
+    // ACL permission: a user's mailbox accounts are personal, like
+    // adding an account in a desktop mail client. 'mail/accounts*'
+    // registered before 'mail/{mailAccount}/...' so it can never be
+    // swallowed by that wildcard.
+    Route::get('mail/accounts', [MailAccountController::class, 'index'])->name('mail.accounts.index');
+    Route::get('mail/accounts/create', [MailAccountController::class, 'create'])->name('mail.accounts.create');
+    Route::post('mail/accounts', [MailAccountController::class, 'store'])->name('mail.accounts.store');
+    Route::get('mail/accounts/{mailAccount}/edit', [MailAccountController::class, 'edit'])->name('mail.accounts.edit');
+    Route::put('mail/accounts/{mailAccount}', [MailAccountController::class, 'update'])->name('mail.accounts.update');
+    Route::delete('mail/accounts/{mailAccount}', [MailAccountController::class, 'destroy'])->name('mail.accounts.destroy');
+
+    // "Connetti con Google/Microsoft" (see MailAuthMethod/MailOAuthService)
+    // — connect() is scoped under mail/accounts/{mailAccount}/... like the
+    // rest of that CRUD; callback() has no account id in its URL at all
+    // (Google/Microsoft only ever redirect back to one fixed, provider-
+    // registered URI), the account is instead resolved from the signed
+    // `state` param MailOAuthService::authorizeUrl() generates.
+    Route::get('mail/accounts/{mailAccount}/oauth/{provider}/connect', [MailOAuthController::class, 'connect'])->name('mail.oauth.connect');
+    Route::get('mail/oauth/{provider}/callback', [MailOAuthController::class, 'callback'])->name('mail.oauth.callback');
+
+    Route::get('mail/compose', [MailController::class, 'compose'])->name('mail.compose');
+    Route::post('mail/send', [MailController::class, 'send'])->name('mail.send');
+    Route::get('mail', [MailController::class, 'index'])->name('mail.index');
+    Route::get('mail/{mailAccount}/folders', [MailController::class, 'folders'])->name('mail.folders');
+    Route::get('mail/{mailAccount}/messages', [MailController::class, 'messages'])->name('mail.messages');
+    Route::get('mail/{mailAccount}/messages/show', [MailController::class, 'show'])->name('mail.messages.show');
+    Route::get('mail/{mailAccount}/messages/attachment', [MailController::class, 'attachmentDownload'])->name('mail.messages.attachment');
+    Route::get('mail/{mailAccount}/messages/reply', [MailController::class, 'reply'])->name('mail.messages.reply');
+    Route::get('mail/{mailAccount}/messages/forward', [MailController::class, 'forward'])->name('mail.messages.forward');
+    Route::post('mail/{mailAccount}/attach', [MailController::class, 'attach'])->name('mail.attach');
 
     // The "Documenti" system entity's own folder-browser UI — same
     // manual entity_documenti.* permission pattern as EntityRecordController.
