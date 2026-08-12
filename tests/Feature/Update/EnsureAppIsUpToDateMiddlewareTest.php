@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureAppIsUpToDate;
-use App\Models\Setting;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use App\Models\VersionHistory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;

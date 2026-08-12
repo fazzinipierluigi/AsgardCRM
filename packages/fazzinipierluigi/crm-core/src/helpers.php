@@ -1,21 +1,21 @@
 <?php
 
-use App\Models\Language;
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 
 if (! function_exists('preferences')) {
     /**
-     * The full user-preferences definition (config/preferences.php), with
-     * the "language" entry's options sourced dynamically from the
+     * The full user-preferences definition (config('crm.preferences')),
+     * with the "language" entry's options sourced dynamically from the
      * `languages` table instead of a static config array — use this
-     * instead of config('preferences') directly wherever "language" is
-     * involved (its default is config('app.locale')).
+     * instead of config('crm.preferences') directly wherever "language"
+     * is involved (its default is config('app.locale')).
      *
      * @return array<string, array{default: string, options: array<string, string>}>
      */
     function preferences(): array
     {
-        $preferences = config('preferences');
+        $preferences = config('crm.preferences');
 
         $preferences['language'] = [
             'default' => config('app.locale'),
@@ -29,7 +29,7 @@ if (! function_exists('preferences')) {
 if (! function_exists('icon')) {
     /**
      * Inline SVG markup for a Tabler icon, read straight from the Tabler
-     * Icons npm package's static SVG files (config('icons.path')).
+     * Icons npm package's static SVG files (config('crm.icons.path')).
      *
      * New-code rule: never load the icon webfont — always print an
      * icon's actual SVG content into the page via this helper (or its JS
@@ -45,7 +45,7 @@ if (! function_exists('icon')) {
     {
         static $cache = [];
 
-        $variant = basename($variant ?? config('icons.default_variant'));
+        $variant = basename($variant ?? config('crm.icons.default_variant'));
         $name = basename($name);
         $key = "{$variant}/{$name}";
 
@@ -53,7 +53,7 @@ if (! function_exists('icon')) {
             return $cache[$key];
         }
 
-        $path = config('icons.path')."/{$variant}/{$name}.svg";
+        $path = config('crm.icons.path')."/{$variant}/{$name}.svg";
 
         return $cache[$key] = is_file($path) ? file_get_contents($path) : '';
     }
@@ -72,13 +72,13 @@ if (! function_exists('icon_names')) {
     {
         static $cache = [];
 
-        $variant = basename($variant ?? config('icons.default_variant'));
+        $variant = basename($variant ?? config('crm.icons.default_variant'));
 
         if (array_key_exists($variant, $cache)) {
             return $cache[$variant];
         }
 
-        $names = collect(glob(config('icons.path')."/{$variant}/*.svg") ?: [])
+        $names = collect(glob(config('crm.icons.path')."/{$variant}/*.svg") ?: [])
             ->map(fn (string $file) => basename($file, '.svg'))
             ->sort()
             ->values()

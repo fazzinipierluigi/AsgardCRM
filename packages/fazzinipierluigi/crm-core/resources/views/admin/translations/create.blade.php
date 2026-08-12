@@ -21,7 +21,7 @@
             <form action="{{ route('admin.translations.store') }}" method="POST" id="translation-form">
                 @csrf
                 @php $translation = null; @endphp
-                @include('admin.translations._form')
+                @include('crm::admin.translations._form')
             </form>
         </div>
     </div>

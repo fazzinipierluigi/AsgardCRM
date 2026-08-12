@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Setting;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use App\Models\VersionHistory;
 use Closure;
 use Illuminate\Http\Request;

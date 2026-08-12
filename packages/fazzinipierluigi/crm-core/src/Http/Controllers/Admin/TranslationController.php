@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreTranslationRequest;
-use App\Http\Requests\Admin\UpdateTranslationRequest;
-use App\Models\Language;
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
+use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreTranslationRequest;
+use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateTranslationRequest;
+use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +19,7 @@ class TranslationController extends Controller
      */
     public function index(): View
     {
-        return view('admin.translations.index', ['languages' => Language::orderBy('name')->get()]);
+        return view('crm::admin.translations.index', ['languages' => Language::orderBy('name')->get()]);
     }
 
     /**
@@ -105,7 +105,7 @@ class TranslationController extends Controller
      */
     public function create(): View
     {
-        return view('admin.translations.create', ['languages' => Language::orderBy('name')->get()]);
+        return view('crm::admin.translations.create', ['languages' => Language::orderBy('name')->get()]);
     }
 
     /**
@@ -131,7 +131,7 @@ class TranslationController extends Controller
     {
         $values = Translation::where('key', $translation->key)->pluck('value', 'language');
 
-        return view('admin.translations.edit', [
+        return view('crm::admin.translations.edit', [
             'translation' => $translation,
             'languages' => Language::orderBy('name')->get(),
             'values' => $values,

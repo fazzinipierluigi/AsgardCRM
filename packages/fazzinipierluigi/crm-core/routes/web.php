@@ -9,7 +9,9 @@
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\DocumentStorageController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\LanguageController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MenuController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\TranslationController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSettingController;
@@ -29,6 +31,7 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarSettingsController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\GlobalSearchController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\IconController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailAccountController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailOAuthController;
@@ -36,12 +39,24 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\EntityFieldButtonController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRecordController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRelationLinkController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\SettingsController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\TrashController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
+
+    // NOT "/icons/..." — Apache's stock httpd-autoindex.conf can define a
+    // server-wide Alias /icons/ that intercepts that path before it ever
+    // reaches Laravel, regardless of vhost/.htaccess rewrite rules.
+    Route::get('tabler-icons/{variant}/{name}', [IconController::class, 'show'])
+        ->name('icons.show')
+        ->where(['variant' => '[a-z]+', 'name' => '[a-z0-9-]+']);
+
+    Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::put('settings/preferences', [SettingsController::class, 'updatePreferences'])->name('settings.preferences.update');
 
     // The Calendar's own FullCalendar UI — not admin-only, and not the
     // generic entities.* CRUD: permission is checked by hand against
@@ -119,6 +134,11 @@ Route::middleware('auth')->group(function () {
         // isn't swallowed by the {workflow} wildcard first.
         Route::resource('workflows', WorkflowController::class)->except('show');
         Route::get('workflows/{workflow}', [WorkflowController::class, 'show'])->name('workflows.show');
+
+        Route::get('translations/data', [TranslationController::class, 'data'])->name('translations.data');
+        Route::resource('translations', TranslationController::class)->except('show');
+
+        Route::resource('languages', LanguageController::class)->only(['index', 'store', 'destroy']);
 
         Route::get('connectors/data', [ConnectorController::class, 'data'])->name('connectors.data');
         Route::get('connectors/{connector}/mailboxes', [ConnectorMailboxController::class, 'edit'])->name('connectors.mailboxes.edit');

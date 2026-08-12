@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Fazzinipierluigi\CrmCore\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;

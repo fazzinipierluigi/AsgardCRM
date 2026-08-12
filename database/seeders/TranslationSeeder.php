@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 

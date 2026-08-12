@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\LoginProvider;
-use App\Models\Setting;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use App\Models\User;
 use App\Models\VersionHistory;
 use Database\Seeders\CalendarEntitySeeder;

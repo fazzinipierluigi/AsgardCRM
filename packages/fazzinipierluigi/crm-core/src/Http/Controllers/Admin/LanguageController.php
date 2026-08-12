@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreLanguageRequest;
-use App\Models\Language;
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
+use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreLanguageRequest;
+use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -16,7 +16,7 @@ class LanguageController extends Controller
      */
     public function index(): View
     {
-        return view('admin.languages.index', ['languages' => Language::orderBy('name')->get()]);
+        return view('crm::admin.languages.index', ['languages' => Language::orderBy('name')->get()]);
     }
 
     /**

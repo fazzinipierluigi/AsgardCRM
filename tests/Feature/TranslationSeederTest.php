@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Database\Seeders\TranslationSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

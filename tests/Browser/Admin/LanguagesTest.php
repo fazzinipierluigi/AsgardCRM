@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Language;
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Laravel\Dusk\Browser;
 
 test('admin can add a new language and use it right away in a translation', function () {

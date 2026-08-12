@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use Laravel\Dusk\Browser;
 
 test('admin can create, edit and delete a translation', function () {

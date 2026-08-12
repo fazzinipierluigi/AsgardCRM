@@ -22,7 +22,7 @@
                 @csrf
                 @method('PUT')
                 @php $keyReadonly = true; @endphp
-                @include('admin.translations._form')
+                @include('crm::admin.translations._form')
             </form>
         </div>
     </div>

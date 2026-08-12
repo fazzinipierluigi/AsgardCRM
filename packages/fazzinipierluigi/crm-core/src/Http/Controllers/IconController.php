@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Fazzinipierluigi\CrmCore\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

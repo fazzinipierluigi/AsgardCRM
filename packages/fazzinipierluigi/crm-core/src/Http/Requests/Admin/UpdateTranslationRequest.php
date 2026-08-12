@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdatePreferencesRequest extends FormRequest
+class UpdateTranslationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,10 +22,9 @@ class UpdatePreferencesRequest extends FormRequest
      */
     public function rules(): array
     {
-        return collect(preferences())
-            ->mapWithKeys(fn (array $preference, string $key) => [
-                $key => ['required', Rule::in(array_keys($preference['options']))],
-            ])
-            ->all();
+        return [
+            'values' => ['array'],
+            'values.*' => ['nullable', 'string'],
+        ];
     }
 }

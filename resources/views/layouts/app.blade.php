@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    data-bs-theme="{{ auth()->user()?->getSetting('theme', config('preferences.theme.default')) }}"
-    data-bs-theme-base="{{ auth()->user()?->getSetting('theme_base', config('preferences.theme_base.default')) }}"
-    data-bs-theme-primary="{{ auth()->user()?->getSetting('theme_color', config('preferences.theme_color.default')) }}"
+    data-bs-theme="{{ auth()->user()?->getSetting('theme', config('crm.preferences.theme.default')) }}"
+    data-bs-theme-base="{{ auth()->user()?->getSetting('theme_base', config('crm.preferences.theme_base.default')) }}"
+    data-bs-theme-primary="{{ auth()->user()?->getSetting('theme_color', config('crm.preferences.theme_color.default')) }}"
 >
     <head>
         <meta charset="utf-8">

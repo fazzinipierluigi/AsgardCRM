@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Language;
-use App\Models\Translation;
+use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\CrmCore\Models\Translation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Setting;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

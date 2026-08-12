@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;

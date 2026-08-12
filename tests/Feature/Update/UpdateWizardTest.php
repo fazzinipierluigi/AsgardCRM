@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Setting;
+use Fazzinipierluigi\CrmCore\Models\Setting;
 use App\Models\VersionHistory;
 use App\Services\DependencyInstaller;
 use Illuminate\Foundation\Testing\RefreshDatabase;

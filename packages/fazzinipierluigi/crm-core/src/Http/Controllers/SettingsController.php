@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Fazzinipierluigi\CrmCore\Http\Controllers;
 
-use App\Http\Requests\UpdatePreferencesRequest;
-use App\Http\Requests\UpdateSettingsRequest;
+use Fazzinipierluigi\CrmCore\Http\Requests\UpdatePreferencesRequest;
+use Fazzinipierluigi\CrmCore\Http\Requests\UpdateSettingsRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -22,7 +22,7 @@ class SettingsController extends Controller
                 $key => $user->getSetting($key, $preference['default']),
             ]);
 
-        return view('settings.edit', ['user' => $user, 'preferences' => $preferences]);
+        return view('crm::settings.edit', ['user' => $user, 'preferences' => $preferences]);
     }
 
     /**

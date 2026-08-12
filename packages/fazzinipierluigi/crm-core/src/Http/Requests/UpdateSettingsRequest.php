@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace Fazzinipierluigi\CrmCore\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

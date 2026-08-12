@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace Fazzinipierluigi\CrmCore\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +11,7 @@ class Setting extends Model
 {
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(config('crm.user_model'));
     }
 
     /**

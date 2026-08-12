@@ -47,7 +47,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             var grid = new window.RaccoonGrid({
                 theme: 'tabler',
-                dark: @json(auth()->user()->getSetting('theme', config('preferences.theme.default')) === 'dark'),
+                dark: @json(auth()->user()->getSetting('theme', config('crm.preferences.theme.default')) === 'dark'),
                 pagination: { enabled: true, pageSize: 25 },
                 searchBar: true,
                 filterBar: true,
