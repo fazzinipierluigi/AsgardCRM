@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
 use App\Http\Requests\StoreDocumentFolderRequest;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Models\DocumentFolder;
-use App\Models\Entity;
-use App\Models\EntityField;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Services\DocumentStorageDiskResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

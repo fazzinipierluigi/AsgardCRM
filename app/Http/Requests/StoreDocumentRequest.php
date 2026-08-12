@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Concerns\BuildsEntityFieldRules;
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Http\Requests\Concerns\BuildsEntityFieldRules;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

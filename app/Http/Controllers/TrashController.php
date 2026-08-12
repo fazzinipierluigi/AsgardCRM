@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityField;
-use App\Models\EntityRecord;
-use App\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

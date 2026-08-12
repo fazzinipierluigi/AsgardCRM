@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Models\EntityField;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;
-use App\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

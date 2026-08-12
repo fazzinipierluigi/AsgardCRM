@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SendMailRequest;
-use App\Models\Entity;
-use App\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\MailAccount;
 use App\Models\MailSetting;
 use App\Services\Mail\DTO\MailComposeAttachmentDTO;

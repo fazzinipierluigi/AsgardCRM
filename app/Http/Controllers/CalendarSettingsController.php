@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateCalendarSharesRequest;
-use App\Models\CalendarShare;
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\CalendarShare;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

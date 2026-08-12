@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Enums\EntityFieldType;
-use App\Models\Entity;
-use App\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
 use Illuminate\Database\Seeder;
 
 /**

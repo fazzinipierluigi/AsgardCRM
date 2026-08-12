@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\Entity;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

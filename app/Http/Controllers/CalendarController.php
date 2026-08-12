@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EntityFieldType;
-use App\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
+use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
 use App\Http\Requests\StoreCalendarEventRequest;
 use App\Http\Requests\UpdateCalendarEventRequest;
-use App\Models\Entity;
-use App\Models\EntityField;
-use App\Models\EntityRecord;
-use App\Services\CalendarAuthorizer;
-use App\Services\EntityRelationResolver;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Services\CalendarAuthorizer;
+use Fazzinipierluigi\CrmCore\Services\EntityRelationResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

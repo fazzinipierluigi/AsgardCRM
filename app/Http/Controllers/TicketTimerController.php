@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Entity;
-use App\Models\EntityRecord;
-use App\Models\EntityRelation;
-use App\Services\EntityRecordAuthorizer;
-use App\Services\EntityRelationLinkResolver;
+use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Models\EntityRelation;
+use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\CrmCore\Services\EntityRelationLinkResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
