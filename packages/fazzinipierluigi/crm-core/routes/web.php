@@ -9,6 +9,7 @@
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\DocumentStorageController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MenuController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSettingController;
@@ -24,7 +25,10 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowApiEndpointControlle
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowSqlConnectionController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarSettingsController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\GlobalSearchController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailAccountController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\MailOAuthController;
@@ -32,10 +36,26 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\EntityFieldButtonController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRecordController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRelationLinkController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\TrashController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
+    Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
+
+    // The Calendar's own FullCalendar UI — not admin-only, and not the
+    // generic entities.* CRUD: permission is checked by hand against
+    // entity_calendario.*, same as EntityRecordController does for
+    // every other entity.
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+    Route::post('calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');
+    Route::put('calendar/events/{record}', [CalendarController::class, 'update'])->name('calendar.events.update');
+    Route::delete('calendar/events/{record}', [CalendarController::class, 'destroy'])->name('calendar.events.destroy');
+    Route::get('calendar/relatables', [CalendarController::class, 'relatables'])->name('calendar.relatables');
+    Route::get('calendar/settings', [CalendarSettingsController::class, 'edit'])->name('calendar.settings.edit');
+    Route::put('calendar/settings/shares', [CalendarSettingsController::class, 'updateShares'])->name('calendar.settings.shares.update');
+
     Route::prefix('admin')->name('admin.')->middleware('acl')->group(function () {
         Route::get('entities/data', [EntityController::class, 'data'])->name('entities.data');
         Route::get('entities/{entity}/builder', [EntityBuilderController::class, 'edit'])->name('entities.builder.edit');
@@ -107,6 +127,9 @@ Route::middleware('auth')->group(function () {
 
         Route::get('document-storage', [DocumentStorageController::class, 'edit'])->name('document-storage.edit');
         Route::put('document-storage', [DocumentStorageController::class, 'update'])->name('document-storage.update');
+
+        Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
+        Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
 
         Route::get('mail-settings', [MailSettingController::class, 'edit'])->name('mail-settings.edit');
         Route::put('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');
@@ -197,4 +220,14 @@ Route::middleware('auth')->group(function () {
     Route::get('workflow-tasks/data', [WorkflowUserTaskController::class, 'data'])->name('workflow-tasks.data');
     Route::get('workflow-tasks/{workflowUserTask}', [WorkflowUserTaskController::class, 'edit'])->name('workflow-tasks.edit');
     Route::put('workflow-tasks/{workflowUserTask}', [WorkflowUserTaskController::class, 'update'])->name('workflow-tasks.update');
+
+    // Il Cestino: permessi globali (trash.show/restore/empty/delete),
+    // incrociati per riga/entità con entity_{slug}.delete — vedi
+    // TrashController.
+    Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
+    Route::get('trash/{entity:slug}/data', [TrashController::class, 'data'])->name('trash.data');
+    Route::post('trash/{entity:slug}/{record}/restore', [TrashController::class, 'restore'])->name('trash.restore');
+    Route::delete('trash/{entity:slug}/{record}', [TrashController::class, 'forceDelete'])->name('trash.force-delete');
+    Route::delete('trash/{entity:slug}', [TrashController::class, 'emptyEntity'])->name('trash.empty-entity');
+    Route::delete('trash', [TrashController::class, 'emptyAll'])->name('trash.empty-all');
 });

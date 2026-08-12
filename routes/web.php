@@ -2,21 +2,16 @@
 
 use App\Http\Controllers\Admin\LanguageController;
 use App\Http\Controllers\Admin\LoginProviderController;
-use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TranslationController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\SamlLoginController;
 use App\Http\Controllers\Auth\SocialLoginController;
-use App\Http\Controllers\CalendarController;
-use App\Http\Controllers\CalendarSettingsController;
-use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\Install\InstallController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\TicketTimerController;
-use App\Http\Controllers\TrashController;
 use App\Http\Controllers\Update\UpdateController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,8 +64,6 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
-
     // NOT "/icons/..." — Apache's stock httpd-autoindex.conf defines a
     // server-wide `Alias /icons/ "/usr/share/httpd/icons/"` (FancyIndexing
     // icons) that intercepts that path before it ever reaches Laravel,
@@ -84,19 +77,6 @@ Route::middleware('auth')->group(function () {
     Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::put('settings/preferences', [SettingsController::class, 'updatePreferences'])->name('settings.preferences.update');
-
-    // The Calendar's own FullCalendar UI — not admin-only, and not the
-    // generic entities.* CRUD (see CalendarController): permission is
-    // checked by hand against entity_calendario.*, same as
-    // EntityRecordController does for every other entity.
-    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
-    Route::get('calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
-    Route::post('calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');
-    Route::put('calendar/events/{record}', [CalendarController::class, 'update'])->name('calendar.events.update');
-    Route::delete('calendar/events/{record}', [CalendarController::class, 'destroy'])->name('calendar.events.destroy');
-    Route::get('calendar/relatables', [CalendarController::class, 'relatables'])->name('calendar.relatables');
-    Route::get('calendar/settings', [CalendarSettingsController::class, 'edit'])->name('calendar.settings.edit');
-    Route::put('calendar/settings/shares', [CalendarSettingsController::class, 'updateShares'])->name('calendar.settings.shares.update');
 
     // The Ticket entity's own timer, backing its "Avvia timer"/"Ferma
     // timer" Button fields (see TicketEntitySeeder) — not the generic
@@ -126,20 +106,5 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('languages', LanguageController::class)->only(['index', 'store', 'destroy']);
 
-        Route::get('menu', [MenuController::class, 'edit'])->name('menu.edit');
-        Route::put('menu', [MenuController::class, 'update'])->name('menu.update');
-
     });
-
-    // Il Cestino: permessi globali (trash.show/restore/empty/delete),
-    // incrociati per riga/entità con entity_{slug}.delete — vedi
-    // TrashController. Stesso motivo dei controller sopra: nessun
-    // middleware `acl` possibile su un controller condiviso da tutte le
-    // entità.
-    Route::get('trash', [TrashController::class, 'index'])->name('trash.index');
-    Route::get('trash/{entity:slug}/data', [TrashController::class, 'data'])->name('trash.data');
-    Route::post('trash/{entity:slug}/{record}/restore', [TrashController::class, 'restore'])->name('trash.restore');
-    Route::delete('trash/{entity:slug}/{record}', [TrashController::class, 'forceDelete'])->name('trash.force-delete');
-    Route::delete('trash/{entity:slug}', [TrashController::class, 'emptyEntity'])->name('trash.empty-entity');
-    Route::delete('trash', [TrashController::class, 'emptyAll'])->name('trash.empty-all');
 });
