@@ -15,7 +15,9 @@
         "illuminate/support": "^11.0|^12.0|^13.0",
         "fazzinipierluigi/just-a-gate": "^1.0",
         "fazzinipierluigi/laraccoon-layouts": "^1.0",
-        "fazzinipierluigi/laraccoon_datasource": "^1.0"
+        "fazzinipierluigi/laraccoon_datasource": "^1.0",
+        "jwadhams/json-logic-php": "^1.5",
+        "symfony/expression-language": "^7.0"
     },
     "require-dev": {
         "orchestra/testbench": "^9.0|^10.0|^11.0",

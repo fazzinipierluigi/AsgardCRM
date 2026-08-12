@@ -26,4 +26,20 @@ return [
 
     'route_middleware' => ['web'],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Entities
+    |--------------------------------------------------------------------------
+    */
+    'entities' => [
+        /*
+        | Models that a "Relazione" field can point to besides other
+        | Entities. Fully-qualified class name => display label, used to
+        | populate the target picker in the entity builder.
+        */
+        'relatable_models' => [
+            \App\Models\User::class => 'Utente',
+        ],
+    ],
+
 ];

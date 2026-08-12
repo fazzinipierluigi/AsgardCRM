@@ -1,0 +1,304 @@
+@extends('layouts.admin')
+
+@section('title', t('Progetta :entity', ['entity' => $entity->name]))
+
+@section('breadcrumb')
+    <li class="breadcrumb-item">
+        <a href="{{ route('admin.entities.index') }}">{{ t('Entità') }}</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        <a href="{{ route('admin.entities.builder.edit', $entity) }}">{{ t('Progetta :entity', ['entity' => $entity->name]) }}</a>
+    </li>
+@endsection
+
+@section('buttons')
+    @if ($entity->is_installed)
+        <a href="{{ route('admin.entities.widgets.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-widgets-link">{{ t('Gestisci widget lista') }}</a>
+        <a href="{{ route('admin.entities.relations.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-relations-link">{{ t('Gestisci relazioni') }}</a>
+        <a href="{{ route('admin.entities.conditions.index', $entity) }}" class="btn btn-outline-primary" data-testid="entity-builder-conditions-link">{{ t('Gestisci condizioni') }}</a>
+    @endif
+    <button type="submit" form="entity-builder-form" class="btn btn-primary" data-testid="entity-builder-submit">{{ t('Salva struttura') }}</button>
+@endsection
+
+@section('content')
+    <style>
+        .field-resize-handle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 14px;
+            cursor: ew-resize;
+            background: linear-gradient(to right, transparent, rgba(98, 105, 118, .12));
+            border-top-right-radius: var(--tblr-border-radius, .25rem);
+            border-bottom-right-radius: var(--tblr-border-radius, .25rem);
+        }
+        .field-resize-handle::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 5px;
+            width: 2px;
+            height: 22px;
+            transform: translateY(-50%);
+            background: rgba(98, 105, 118, .5);
+            border-radius: 1px;
+        }
+        .field-resize-handle:hover,
+        .field-resize-handle.is-resizing {
+            background: rgba(32, 107, 196, .25);
+        }
+        .field-resize-handle:hover::after,
+        .field-resize-handle.is-resizing::after {
+            background: #206bc4;
+        }
+        body.is-resizing-field {
+            cursor: ew-resize !important;
+            user-select: none !important;
+        }
+    </style>
+
+    @if (session('status') === 'entity-structure-saved')
+        <div class="alert alert-success" data-testid="entity-builder-status">
+            {{ t('Struttura salvata correttamente.') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger" data-testid="entity-builder-errors">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if ($entity->is_installed)
+        <div class="alert alert-info" data-testid="entity-builder-installed-notice">
+            {{ t('Entità installata: puoi aggiungere/rinominare tab e card, aggiungere nuovi campi, modificare i metadati dei campi esistenti (etichetta, obbligatorietà, opzioni, larghezza, ordine) ed eliminarli — su un campo già esistente nome colonna e tipo restano fissi.') }}
+        </div>
+    @endif
+
+    <form action="{{ route('admin.entities.builder.update', $entity) }}" method="POST" id="entity-builder-form" data-installed="{{ $entity->is_installed ? '1' : '0' }}" data-usage-url-template="{{ $entity->is_installed ? route('admin.entities.fields.usage', [$entity, '__FIELD__']) : '' }}">
+        @csrf
+        @method('PUT')
+
+        <fieldset>
+            <ul class="nav nav-tabs mb-2" id="tabs-nav" role="tablist">
+                @foreach ($entity->tabs as $tab)
+                    @include('crm::admin.entities._tab_nav', ['tab' => $tab, 'tabToken' => $tab->id, 'active' => $loop->first, 'entity' => $entity])
+                @endforeach
+            </ul>
+            <button type="button" class="btn btn-sm btn-outline-primary mb-3" id="add-tab-btn" data-testid="entity-builder-add-tab">{{ t('Aggiungi tab') }}</button>
+
+            <div class="tab-content" id="tabs-content">
+                @foreach ($entity->tabs as $tab)
+                    @include('crm::admin.entities._tab', ['tabToken' => $tab->id, 'tab' => $tab, 'active' => $loop->first, 'mandatory' => $loop->first, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+                @endforeach
+            </div>
+        </fieldset>
+    </form>
+
+    <template id="tab-nav-template">
+        @include('crm::admin.entities._tab_nav', ['tab' => null, 'tabToken' => '__TAB__', 'active' => false, 'entity' => $entity])
+    </template>
+    <template id="tab-pane-template">
+        @include('crm::admin.entities._tab', ['tabToken' => '__TAB__', 'tab' => null, 'active' => false, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+    </template>
+    <template id="card-template">
+        @include('crm::admin.entities._card', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'card' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+    </template>
+    <template id="field-template">
+        @include('crm::admin.entities._field', ['tabToken' => '__TAB__', 'cardToken' => '__CARD__', 'fieldToken' => '__FIELD__', 'field' => null, 'relationTargets' => $relationTargets, 'fieldTypes' => $fieldTypes, 'entity' => $entity])
+    </template>
+    <template id="table-column-row-template">
+        <div class="row g-2 align-items-center table-column-row" data-testid="table-column-row">
+            <div class="col-md-3">
+                <input type="text" class="form-control form-control-sm table-column-name" placeholder="{{ t('es. quantita') }}">
+            </div>
+            <div class="col-md-4">
+                <input type="text" class="form-control form-control-sm table-column-label" placeholder="{{ t('Etichetta') }}">
+            </div>
+            <div class="col-md-3">
+                <select class="form-select form-select-sm table-column-type" data-tom-select-manual>
+                    <option value="string">{{ t('Testo') }}</option>
+                    <option value="integer">{{ t('Numero intero') }}</option>
+                    <option value="decimal">{{ t('Numero decimale') }}</option>
+                    <option value="date">{{ t('Data') }}</option>
+                    <option value="checkbox">{{ t('Checkbox') }}</option>
+                </select>
+            </div>
+            <div class="col-md-1 d-flex align-items-center justify-content-center">
+                <input type="checkbox" class="form-check-input table-column-required mt-0" title="{{ t('Obbligatoria') }}">
+            </div>
+            <div class="col-md-1 d-flex align-items-center">
+                <button type="button" class="btn btn-sm btn-danger table-column-remove-btn" title="{{ t('Rimuovi colonna') }}" data-testid="table-column-remove-btn">✕</button>
+            </div>
+        </div>
+    </template>
+
+    {{-- Reused for naming/renaming both tabs and cards --}}
+    <div class="modal" id="name-modal" tabindex="-1" data-testid="name-modal" data-tab-label="{{ t('Nome tab') }}" data-card-label="{{ t('Nome card') }}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="name-modal-title"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control" id="name-modal-input" data-testid="name-modal-input">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="name-modal-save" data-testid="name-modal-save">{{ t('Salva') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="field-modal" tabindex="-1" data-testid="field-modal" data-field-types="{{ json_encode($fieldTypes) }}" data-decimal-fields-by-entity="{{ json_encode($decimalFieldsByEntity ?? []) }}">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ t('Campo') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">{{ t('Nome campo') }}</label>
+                        <input type="text" class="form-control" id="field-modal-name" data-testid="field-modal-name">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">{{ t('Nome colonna') }}</label>
+                        <input type="text" class="form-control" id="field-modal-column" placeholder="es. cognome" data-testid="field-modal-column">
+                        <small class="form-hint d-none" id="field-modal-column-locked-hint">{{ t('Non modificabile: l\'entità è già installata.') }}</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">{{ t('Tipo') }}</label>
+                        <select class="form-select" id="field-modal-type" data-testid="field-modal-type">
+                            @foreach ($fieldTypes as $value => $label)
+                                <option value="{{ $value }}">{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        <small class="form-hint d-none" id="field-modal-type-locked-hint">{{ t('Non modificabile: l\'entità è già installata.') }}</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-check">
+                            <input type="checkbox" class="form-check-input" id="field-modal-required">
+                            <span class="form-check-label">{{ t('Obbligatorio') }}</span>
+                        </label>
+                    </div>
+                    <div class="mb-2 field-modal-options-group d-none">
+                        <label class="form-label">{{ t('Opzioni (una per riga, formato chiave:Etichetta)') }}</label>
+                        <textarea class="form-control" id="field-modal-options" rows="3"></textarea>
+                    </div>
+                    <div class="mb-2 field-modal-code-group d-none">
+                        <label class="form-label">{{ t('Prefisso') }}</label>
+                        <input type="text" class="form-control" id="field-modal-code-prefix" placeholder="es. INV-">
+                        <small class="form-hint">{{ t('Il valore generato sarà "prefisso" + numero progressivo, es. INV-1, INV-2...') }}</small>
+                    </div>
+                    <div class="mb-2 field-modal-relation-group d-none">
+                        <label class="form-label">{{ t('Relazione verso') }}</label>
+                        <select class="form-select" id="field-modal-relation">
+                            <option value="">{{ t('Seleziona...') }}</option>
+                            @foreach ($relationTargets as $group => $targets)
+                                <optgroup label="{{ $group }}">
+                                    @foreach ($targets as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
+                                </optgroup>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2 field-modal-button-group d-none">
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Azione al click') }}</label>
+                            <select class="form-select" id="field-modal-button-action">
+                                <option value="workflow">{{ t('Avvia un flusso (workflow manuale)') }}</option>
+                                <option value="importer">{{ t('Lancia uno o più importatori') }}</option>
+                                <option value="javascript">{{ t('Esegui codice JavaScript') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-2 field-modal-button-workflow-group d-none">
+                            <label class="form-label">{{ t('Workflow da avviare') }}</label>
+                            <select class="form-select" id="field-modal-button-workflow">
+                                <option value="">{{ t('Seleziona...') }}</option>
+                                @foreach ($manualWorkflows as $workflow)
+                                    <option value="{{ $workflow->id }}">{{ $workflow->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-2 field-modal-button-importer-group d-none">
+                            <label class="form-label">{{ t('ID importatori (separati da virgola)') }}</label>
+                            <input type="text" class="form-control" id="field-modal-button-importer-ids" placeholder="es. 3,7,12">
+                        </div>
+                        <div class="mb-2 field-modal-button-javascript-group d-none">
+                            <label class="form-label">{{ t('Codice JavaScript') }}</label>
+                            <textarea class="form-control font-monospace" id="field-modal-button-javascript" rows="6"></textarea>
+                        </div>
+                    </div>
+                    <div class="mb-2 field-modal-table-group d-none">
+                        <label class="form-label">{{ t('Colonne') }}</label>
+                        <div class="row g-2 mb-1 d-none d-md-flex" id="field-modal-table-columns-header">
+                            <div class="col-md-3"><small class="form-hint">{{ t('Nome colonna') }}</small></div>
+                            <div class="col-md-4"><small class="form-hint">{{ t('Etichetta') }}</small></div>
+                            <div class="col-md-3"><small class="form-hint">{{ t('Tipo colonna') }}</small></div>
+                            <div class="col-md-1 text-center"><small class="form-hint">{{ t('Obbl') }}</small></div>
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div id="field-modal-table-columns-rows" class="d-flex flex-column gap-2 mb-2"></div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="field-modal-table-columns-add" data-testid="table-column-add-btn">{{ t('Aggiungi colonna') }}</button>
+                        <input type="hidden" id="field-modal-table-columns">
+                    </div>
+                    <div class="mb-2 field-modal-products-group d-none">
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Entità catalogo') }}</label>
+                            <select class="form-select" id="field-modal-products-catalog" data-testid="field-modal-products-catalog">
+                                <option value="">{{ t('Seleziona...') }}</option>
+                                @foreach ($catalogEntityOptions ?? [] as $slug => $label)
+                                    <option value="{{ $slug }}">{{ $label }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Campo prezzo del catalogo') }}</label>
+                            <select class="form-select" id="field-modal-products-price-column" data-tom-select-manual data-testid="field-modal-products-price-column">
+                                <option value="">{{ t('Seleziona prima l\'entità catalogo...') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Colonne aggiuntive') }}</label>
+                            <div class="row g-2 mb-1 d-none d-md-flex">
+                                <div class="col-md-3"><small class="form-hint">{{ t('Nome colonna') }}</small></div>
+                                <div class="col-md-4"><small class="form-hint">{{ t('Etichetta') }}</small></div>
+                                <div class="col-md-3"><small class="form-hint">{{ t('Tipo colonna') }}</small></div>
+                                <div class="col-md-1 text-center"><small class="form-hint">{{ t('Obbl') }}</small></div>
+                                <div class="col-md-1"></div>
+                            </div>
+                            <div id="field-modal-products-extra-columns-rows" class="d-flex flex-column gap-2 mb-2"></div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="field-modal-products-extra-columns-add" data-testid="products-extra-column-add-btn">{{ t('Aggiungi colonna') }}</button>
+                            <input type="hidden" id="field-modal-products-extra-columns">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">{{ t('Campo Totale collegato (opzionale)') }}</label>
+                            <select class="form-select" id="field-modal-products-total-target" data-tom-select-manual data-testid="field-modal-products-total-target">
+                                <option value="">{{ t('Nessuno') }}</option>
+                            </select>
+                            <small class="form-hint">{{ t('Un campo Numero decimale di questa stessa entità che riceverà il totale calcolato del blocco.') }}</small>
+                        </div>
+                        <small class="form-hint">{{ t('La casella "Obbligatorio" sopra indica che il blocco richiede almeno un prodotto per poter salvare.') }}</small>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">{{ t('Valore predefinito') }}</label>
+                        <input type="text" class="form-control" id="field-modal-default">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="field-modal-save" data-testid="field-modal-save">{{ t('Salva campo') }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @vite('resources/js/entity-builder.js')
+@endsection

@@ -2,6 +2,7 @@
 
 namespace Fazzinipierluigi\CrmCore;
 
+use Fazzinipierluigi\CrmCore\Console\Commands\BackfillInstalledEntityUpgrades;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -36,6 +37,10 @@ class CrmServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/crm'),
             ], 'crm-views');
+
+            $this->commands([
+                BackfillInstalledEntityUpgrades::class,
+            ]);
         }
     }
 }
