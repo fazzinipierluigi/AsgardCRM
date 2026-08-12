@@ -44,7 +44,7 @@
                 <div class="col-md-4 mb-3">
                     <label for="type" class="form-label">{{ t('Tipo di storage') }}</label>
                     <select id="type" name="type" class="form-select @error('type') is-invalid @enderror" data-testid="document-storage-type-select">
-                        @foreach (\App\Enums\DocumentStorageType::options() as $value2 => $label)
+                        @foreach (\Fazzinipierluigi\CrmCore\Enums\DocumentStorageType::options() as $value2 => $label)
                             <option value="{{ $value2 }}" @selected(old('type', $setting->type->value) === $value2)>{{ $label }}</option>
                         @endforeach
                     </select>

@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\DocumentFolder;
+use Fazzinipierluigi\CrmCore\Models\DocumentFolder;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use App\Models\User;

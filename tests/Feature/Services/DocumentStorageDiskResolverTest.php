@@ -1,8 +1,8 @@
 <?php
 
-use App\Enums\DocumentStorageType;
-use App\Models\DocumentStorageSetting;
-use App\Services\DocumentStorageDiskResolver;
+use Fazzinipierluigi\CrmCore\Enums\DocumentStorageType;
+use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
+use Fazzinipierluigi\CrmCore\Services\DocumentStorageDiskResolver;
 
 test('builds an s3 disk config from the stored settings', function () {
     $setting = new DocumentStorageSetting([

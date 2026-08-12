@@ -28,7 +28,7 @@
             data-testid="connector-type-select"
             @if ($isEdit) disabled @endif
         >
-            @foreach (\App\Enums\ConnectorType::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\CrmCore\Enums\ConnectorType::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected(old('type', $connector?->type?->value) === $value2)>{{ $label }}</option>
             @endforeach
         </select>
@@ -58,7 +58,7 @@
     <div class="col-md-6 mb-3">
         <label for="sync_direction" class="form-label">{{ t('Direzione sincronizzazione') }}</label>
         <select id="sync_direction" name="sync_direction" class="form-select @error('sync_direction') is-invalid @enderror">
-            @foreach (\App\Enums\ConnectorSyncDirection::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\CrmCore\Enums\ConnectorSyncDirection::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected(old('sync_direction', $connector?->sync_direction?->value ?? 'bidirectional') === $value2)>{{ $label }}</option>
             @endforeach
         </select>

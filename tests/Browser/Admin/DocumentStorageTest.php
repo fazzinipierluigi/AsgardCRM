@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\DocumentStorageSetting;
+use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
 use Laravel\Dusk\Browser;
 
 test('admin can switch document storage to an s3 bucket and back', function () {

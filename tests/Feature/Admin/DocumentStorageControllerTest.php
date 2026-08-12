@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\DocumentStorageSetting;
+use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

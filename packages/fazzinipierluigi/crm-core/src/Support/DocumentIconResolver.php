@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support;
+namespace Fazzinipierluigi\CrmCore\Support;
 
 /**
  * Maps a document's file extension to a Tabler icon name (see
