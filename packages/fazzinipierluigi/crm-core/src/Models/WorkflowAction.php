@@ -4,7 +4,7 @@ namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
 use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
-use Database\Factories\WorkflowActionFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowActionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +16,11 @@ class WorkflowAction extends Model
 {
     /** @use HasFactory<WorkflowActionFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowActionFactory::new();
+    }
 
     protected function casts(): array
     {

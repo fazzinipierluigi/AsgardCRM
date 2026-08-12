@@ -3,7 +3,7 @@
 namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Database\Factories\WorkflowUserTaskFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowUserTaskFactory;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +25,11 @@ class WorkflowUserTask extends Model
 {
     /** @use HasFactory<WorkflowUserTaskFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowUserTaskFactory::new();
+    }
 
     protected function casts(): array
     {

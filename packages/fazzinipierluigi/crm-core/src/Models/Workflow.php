@@ -2,7 +2,7 @@
 
 namespace Fazzinipierluigi\CrmCore\Models;
 
-use Database\Factories\WorkflowFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,11 @@ class Workflow extends Model
 {
     /** @use HasFactory<WorkflowFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowFactory::new();
+    }
 
     protected function casts(): array
     {

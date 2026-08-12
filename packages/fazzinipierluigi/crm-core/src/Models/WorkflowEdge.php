@@ -3,7 +3,7 @@
 namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Database\Factories\WorkflowEdgeFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowEdgeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,6 +15,11 @@ class WorkflowEdge extends Model
 {
     /** @use HasFactory<WorkflowEdgeFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowEdgeFactory::new();
+    }
 
     protected function casts(): array
     {

@@ -4,7 +4,7 @@ namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
 use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Database\Factories\WorkflowInstanceFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowInstanceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +16,11 @@ class WorkflowInstance extends Model
 {
     /** @use HasFactory<WorkflowInstanceFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowInstanceFactory::new();
+    }
 
     protected function casts(): array
     {

@@ -3,7 +3,7 @@
 namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowVariableType;
-use Database\Factories\WorkflowVariableFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowVariableFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,11 @@ class WorkflowVariable extends Model
 {
     /** @use HasFactory<WorkflowVariableFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowVariableFactory::new();
+    }
 
     protected function casts(): array
     {

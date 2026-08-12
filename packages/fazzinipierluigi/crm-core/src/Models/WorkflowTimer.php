@@ -3,7 +3,7 @@
 namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Database\Factories\WorkflowTimerFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowTimerFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,11 @@ class WorkflowTimer extends Model
 {
     /** @use HasFactory<WorkflowTimerFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowTimerFactory::new();
+    }
 
     protected function casts(): array
     {

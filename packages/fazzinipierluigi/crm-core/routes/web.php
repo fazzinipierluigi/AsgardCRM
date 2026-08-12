@@ -14,6 +14,7 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityRelationController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityVisibilityController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ImporterController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowApiEndpointController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowController;
@@ -57,6 +58,16 @@ Route::middleware('auth')->group(function () {
         Route::post('entities/import', [EntityController::class, 'import'])->name('entities.import');
         Route::get('entities/{entity}/export', [EntityController::class, 'export'])->name('entities.export');
         Route::resource('entities', EntityController::class)->except('show');
+
+        Route::get('importers/data', [ImporterController::class, 'data'])->name('importers.data');
+        Route::post('importers/preview', [ImporterController::class, 'preview'])->name('importers.preview');
+        Route::get('importers/{importer}/runs/data', [ImporterController::class, 'runsData'])->name('importers.runs.data');
+        Route::post('importers/{importer}/run', [ImporterController::class, 'run'])->name('importers.run');
+        // ->except('show') registered before the catch-all {importer} show
+        // route below, so the resource's literal 'importers/create' segment
+        // isn't swallowed by the {importer} wildcard first.
+        Route::resource('importers', ImporterController::class)->except('show');
+        Route::get('importers/{importer}', [ImporterController::class, 'show'])->name('importers.show');
 
         Route::resource('sql-connections', WorkflowSqlConnectionController::class)
             ->except('show')

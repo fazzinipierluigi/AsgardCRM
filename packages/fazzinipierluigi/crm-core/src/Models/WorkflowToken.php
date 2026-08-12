@@ -3,7 +3,7 @@
 namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Database\Factories\WorkflowTokenFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowTokenFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +14,11 @@ class WorkflowToken extends Model
 {
     /** @use HasFactory<WorkflowTokenFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowTokenFactory::new();
+    }
 
     protected function casts(): array
     {

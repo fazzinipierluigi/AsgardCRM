@@ -21,7 +21,8 @@
     },
     "require-dev": {
         "orchestra/testbench": "^9.0|^10.0|^11.0",
-        "pestphp/pest": "^4.7"
+        "pestphp/pest": "^4.7",
+        "pestphp/pest-plugin-laravel": "^4.1"
     },
     "autoload": {
         "psr-4": {
@@ -30,14 +31,24 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Fazzinipierluigi\\CrmCore\\Tests\\": "tests/"
-        }
+            "Fazzinipierluigi\\CrmCore\\Tests\\": "tests/",
+            "Fazzinipierluigi\\CrmCore\\Database\\Factories\\": "database/factories/"
+        },
+        "files": [
+            "tests/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {
             "providers": [
                 "Fazzinipierluigi\\CrmCore\\CrmServiceProvider"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
         }
     },
     "minimum-stability": "stable",

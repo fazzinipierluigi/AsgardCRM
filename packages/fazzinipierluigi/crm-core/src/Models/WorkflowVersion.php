@@ -4,7 +4,7 @@ namespace Fazzinipierluigi\CrmCore\Models;
 
 use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
 use Fazzinipierluigi\CrmCore\Enums\WorkflowVersionStatus;
-use Database\Factories\WorkflowVersionFactory;
+use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowVersionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +17,11 @@ class WorkflowVersion extends Model
 {
     /** @use HasFactory<WorkflowVersionFactory> */
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return WorkflowVersionFactory::new();
+    }
 
     protected function casts(): array
     {

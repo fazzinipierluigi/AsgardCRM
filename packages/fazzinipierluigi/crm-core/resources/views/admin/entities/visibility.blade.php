@@ -31,7 +31,7 @@
                         <thead>
                             <tr>
                                 <th>{{ t('Ruolo') }}</th>
-                                @foreach (\App\Enums\EntityVisibilityLevel::options() as $value => $label)
+                                @foreach (\Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel::options() as $value => $label)
                                     <th>{{ $label }}</th>
                                 @endforeach
                             </tr>
@@ -39,11 +39,11 @@
                         <tbody>
                             @foreach ($roles as $role)
                                 @php
-                                    $currentLevel = old("levels.{$role->id}", $currentLevels[$role->id] ?? \App\Enums\EntityVisibilityLevel::OwnOnly->value);
+                                    $currentLevel = old("levels.{$role->id}", $currentLevels[$role->id] ?? \Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel::OwnOnly->value);
                                 @endphp
                                 <tr data-testid="entity-visibility-row-{{ $role->slug }}">
                                     <td>{{ $role->name }}</td>
-                                    @foreach (\App\Enums\EntityVisibilityLevel::options() as $value => $label)
+                                    @foreach (\Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel::options() as $value => $label)
                                         <td>
                                             <input
                                                 type="radio"
