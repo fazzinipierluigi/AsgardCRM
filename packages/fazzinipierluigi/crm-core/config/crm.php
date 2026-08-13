@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+
 return [
 
     /*
@@ -12,7 +14,7 @@ return [
     | binds its own User model here.
     |
     */
-    'user_model' => env('CRM_USER_MODEL', \App\Models\User::class),
+    'user_model' => env('CRM_USER_MODEL', User::class),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,6 +30,26 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Version upgrade steps
+    |--------------------------------------------------------------------------
+    |
+    | Ordered (ascending by version) list of
+    | Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep implementations.
+    | VersionUpgradeRunner runs the ->upgrade() of every step between the
+    | database's recorded version and the deployed code's version
+    | (config('app.version')) — or the ->downgrade() of every step in
+    | between, in reverse, when rolling back. Empty by default: a host
+    | app registers its own steps here as it needs them.
+    |
+    */
+    'upgrades' => [
+        'steps' => [
+            //
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Entities
     |--------------------------------------------------------------------------
     */
@@ -38,7 +60,7 @@ return [
         | populate the target picker in the entity builder.
         */
         'relatable_models' => [
-            \App\Models\User::class => 'Utente',
+            User::class => 'Utente',
         ],
     ],
 

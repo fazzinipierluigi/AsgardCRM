@@ -3,8 +3,10 @@
 namespace Fazzinipierluigi\CrmCore\Tests\Fixtures;
 
 use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\CrmCore\Models\LoginProvider;
 use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -20,9 +22,19 @@ class User extends Authenticatable implements CrmUser
 
     protected $guarded = [];
 
+    public function loginProvider(): BelongsTo
+    {
+        return $this->belongsTo(LoginProvider::class);
+    }
+
+    public function effectiveLoginProvider(): LoginProvider
+    {
+        return $this->loginProvider ?? LoginProvider::local();
+    }
+
     protected static function newFactory()
     {
-        return \Fazzinipierluigi\CrmCore\Tests\Fixtures\UserFactory::new();
+        return UserFactory::new();
     }
 
     /**

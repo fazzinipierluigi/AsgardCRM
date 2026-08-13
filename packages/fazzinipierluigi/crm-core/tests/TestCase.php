@@ -6,9 +6,8 @@ use Fazzinipierluigi\CrmCore\CrmServiceProvider;
 use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\JustAGateServiceProvider;
 use Fazzinipierluigi\LaraccoonLayouts\RaccoonLayoutsServiceProvider;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Schema;
+use LdapRecord\Laravel\LdapServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -33,26 +32,48 @@ abstract class TestCase extends OrchestraTestCase
         // exists under Testbench too.
         $this->loadMigrationsFrom(__DIR__.'/../vendor/fazzinipierluigi/laraccoon-layouts/database/migrations');
 
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
+        // Test-only stand-in for the host's own `users` table — see the
+        // migration file's own docblock for why this must be a real
+        // migration (picked up by a real `Artisan::call('migrate')`, as
+        // ApplicationInstaller runs) rather than an inline Schema::create.
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+
+        // The two loadMigrationsFrom() calls above go through Testbench's
+        // own TestCase::loadMigrationsFrom() (Orchestra\Testbench\Concerns\
+        // InteractsWithMigrations), which — with RefreshDatabase active —
+        // only bookkeeps the path for RefreshDatabase's own one-time lazy
+        // migration run (load_migration_paths()); it never calls the real
+        // Migrator::path(), so the path never shows up in
+        // app('migrator')->paths(). That's invisible to the rest of this
+        // suite (RefreshDatabase's own lazy migrate still picks it up
+        // correctly), but ApplicationInstaller::install() calls a real,
+        // later `Artisan::call('migrate')` (see InstallWizardTest) against
+        // a *different*, non-RefreshDatabase-managed connection — that
+        // migrate run only sees paths registered via the real
+        // Migrator::path(), the mechanism ServiceProvider::loadMigrationsFrom()
+        // uses. Registered a second time here, directly on the real
+        // Migrator, so both mechanisms see these two paths.
+        $migrator = $this->app->make('migrator');
+        $migrator->path(__DIR__.'/../vendor/fazzinipierluigi/laraccoon-layouts/database/migrations');
+        $migrator->path(__DIR__.'/database/migrations');
 
         // layouts.admin/layouts.base are a documented host contract (not
         // shipped/prefixed crm:: by the package) — stub them here so the
         // module's real views can compile under Testbench.
         $this->app['view']->addLocation(__DIR__.'/resources/views');
 
-        // login/dashboard are host-provided named routes (Auth module,
-        // out of Modulo 1's scope) — stub them so redirects triggered by
-        // the `auth` middleware / post-action redirects resolve.
-        Route::get('/login', fn () => 'login stub')->name('login');
+        // dashboard is a host-provided named route (out of this
+        // package's scope) — stubbed so redirects triggered by the
+        // `auth` middleware / post-action redirects resolve. login is a
+        // real package route since Modulo 5 (Auth/Admin/Install/Update),
+        // no longer stubbed here.
         Route::get('/dashboard', fn () => 'dashboard stub')->name('dashboard');
+
+        // /up is normally registered by a real app's own
+        // bootstrap/app.php (->withRouting(health: '/up')) — Testbench's
+        // synthetic skeleton doesn't add one. EnsureAppIsInstalled/
+        // EnsureAppIsUpToDate explicitly bypass it either way.
+        Route::get('/up', fn () => 'ok');
     }
 
     protected function getPackageProviders($app): array
@@ -60,6 +81,7 @@ abstract class TestCase extends OrchestraTestCase
         return [
             JustAGateServiceProvider::class,
             RaccoonLayoutsServiceProvider::class,
+            LdapServiceProvider::class,
             CrmServiceProvider::class,
         ];
     }
@@ -67,6 +89,11 @@ abstract class TestCase extends OrchestraTestCase
     protected function defineEnvironment($app): void
     {
         $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        // Not a stock Laravel config key — the update wizard
+        // (VersionUpdateService) compares it against the database's
+        // recorded app_version Setting. A real host declares its own
+        // in config/app.php (see AsgardCRM's own config/app.php).
+        $app['config']->set('app.version', '1.0.0');
         $app['config']->set('crm.user_model', User::class);
         $app['config']->set('auth.providers.users.model', User::class);
 

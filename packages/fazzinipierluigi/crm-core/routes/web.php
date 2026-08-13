@@ -1,21 +1,20 @@
 <?php
 
-// Package routes are added module by module during Fase 3 of the
+// Package routes are added module by module during Fase 3/5 of the
 // package conversion (see docs/package-conversion/03-migrazione-moduli.md).
-// This file currently carries Modulo 1 (Core: Entity + Workflow + Importer)
-// e Modulo 2 (Connettori calendario). Route names are unchanged
-// dall'originale app/routes/web.php.
+// This file now carries Modulo 1 (Core: Entity + Workflow + Importer),
+// Modulo 2 (Connettori calendario), and Modulo 5 (Auth/Admin/Install/
+// Update). Route names are unchanged dall'originale app/routes/web.php.
+//
+// The `login/saml/*/acs` CSRF exemption (the IdP POSTs with no CSRF
+// token from this app) can't be registered from a package service
+// provider in Laravel 11+'s bootstrap style — it stays a documented
+// host contract in bootstrap/app.php, same as layouts.admin/layouts.base.
 
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ConnectorMailboxController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\DocumentStorageController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\LanguageController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MenuController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\TranslationController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityBuilderController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailConnectorController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSettingController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSignatureController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldConditionController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityFieldController;
@@ -23,28 +22,88 @@ use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityRelationController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\EntityVisibilityController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\ImporterController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\LanguageController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\LoginProviderController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailConnectorController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSettingController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MailSignatureController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\MenuController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\RoleController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\TranslationController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\UserController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowApiEndpointController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowBuilderController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\Admin\WorkflowSqlConnectionController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Auth\AuthenticatedSessionController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Auth\SamlLoginController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Auth\SocialLoginController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\CalendarSettingsController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\GlobalSearchController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\IconController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\MailAccountController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\MailController;
-use Fazzinipierluigi\CrmCore\Http\Controllers\MailOAuthController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityFieldButtonController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityListWidgetController as PublicEntityListWidgetController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRecordController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\EntityRelationLinkController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\GlobalSearchController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\IconController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Install\InstallController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailAccountController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\MailOAuthController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\SettingsController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\TicketTimerController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\TrashController;
+use Fazzinipierluigi\CrmCore\Http\Controllers\Update\UpdateController;
 use Fazzinipierluigi\CrmCore\Http\Controllers\WorkflowUserTaskController;
 use Illuminate\Support\Facades\Route;
 
+Route::prefix('install')->name('install.')->group(function () {
+    Route::get('/', [InstallController::class, 'welcome'])->name('welcome');
+    Route::get('database', [InstallController::class, 'database'])->name('database');
+    Route::post('database', [InstallController::class, 'storeDatabase'])->name('database.store');
+    Route::post('database/test-connection', [InstallController::class, 'testConnection'])->name('database.test');
+    Route::get('admin', [InstallController::class, 'admin'])->name('admin');
+    Route::post('admin', [InstallController::class, 'storeAdmin'])->name('admin.store');
+    Route::get('finish', [InstallController::class, 'finish'])->name('finish');
+    Route::post('finish', [InstallController::class, 'run'])->name('run');
+});
+
+Route::prefix('update')->name('update.')->group(function () {
+    Route::get('/', [UpdateController::class, 'welcome'])->name('welcome');
+    Route::post('/', [UpdateController::class, 'run'])->name('run');
+});
+
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('login/{provider:slug}/redirect', [SocialLoginController::class, 'redirect'])->name('login.social.redirect');
+    Route::get('login/{provider:slug}/callback', [SocialLoginController::class, 'callback'])->name('login.social.callback');
+
+    Route::get('login/saml/{provider:slug}/redirect', [SamlLoginController::class, 'redirect'])->name('login.saml.redirect');
+});
+
+// Reachable by an unauthenticated IdP-initiated POST, so outside the
+// `guest` group (which only guards routes meant to bounce logged-in users
+// away, not ones an external party needs to reach regardless of session
+// state) — the ACS route's own CSRF exemption is a host bootstrap/app.php
+// concern, see the file-level comment above.
+Route::get('login/saml/{provider:slug}/metadata', [SamlLoginController::class, 'metadata'])->name('login.saml.metadata');
+Route::post('login/saml/{provider:slug}/acs', [SamlLoginController::class, 'acs'])->name('login.saml.acs');
+
 Route::middleware('auth')->group(function () {
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    // The Ticket entity's own timer, backing its "Avvia timer"/"Ferma
+    // timer" Button fields (see TicketEntitySeeder) — not the generic
+    // entities.fields.trigger route, since neither of that controller's
+    // two server actions can read now() to stamp a start/stop timestamp.
+    // Permission checked by hand against entity_ticket.edit, same
+    // pattern as the Calendar/Documenti routes above.
+    Route::post('tickets/{record}/timer/start', [TicketTimerController::class, 'start'])->name('tickets.timer.start');
+    Route::post('tickets/{record}/timer/stop', [TicketTimerController::class, 'stop'])->name('tickets.timer.stop');
+
     Route::get('search', [GlobalSearchController::class, 'search'])->name('search');
 
     // NOT "/icons/..." — Apache's stock httpd-autoindex.conf can define a
@@ -163,6 +222,19 @@ Route::middleware('auth')->group(function () {
         Route::resource('mail-signatures', MailSignatureController::class)
             ->except('show')
             ->parameters(['mail-signatures' => 'mailSignature']);
+
+        Route::get('users/data', [UserController::class, 'data'])->name('users.data');
+        Route::resource('users', UserController::class)->except('show');
+
+        Route::get('roles/data', [RoleController::class, 'data'])->name('roles.data');
+        Route::get('roles/{role}/permissions', [RoleController::class, 'editPermissions'])->name('roles.permissions.edit');
+        Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+        Route::resource('roles', RoleController::class)->except('show');
+
+        Route::get('login-providers/data', [LoginProviderController::class, 'data'])->name('login-providers.data');
+        Route::resource('login-providers', LoginProviderController::class)
+            ->except('show')
+            ->parameters(['login-providers' => 'loginProvider']);
     });
 
     // The "E-mail" system entity's own webmail UI — self-service, no

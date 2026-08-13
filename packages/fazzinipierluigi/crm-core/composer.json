@@ -13,11 +13,15 @@
     "require": {
         "php": "^8.3",
         "illuminate/support": "^13.12",
+        "directorytree/ldaprecord-laravel": "^4.0",
         "fazzinipierluigi/just-a-gate": "^1.0",
         "fazzinipierluigi/laraccoon-layouts": "^1.0",
         "fazzinipierluigi/laraccoon_datasource": "^1.0",
         "jwadhams/json-logic-php": "^1.5",
+        "laravel/socialite": "^5.28",
+        "onelogin/php-saml": "^4.3",
         "symfony/expression-language": "^7.0",
+        "symfony/process": "^7.0",
         "webklex/php-imap": "^6.2"
     },
     "require-dev": {
@@ -27,7 +31,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Fazzinipierluigi\\CrmCore\\": "src/"
+            "Fazzinipierluigi\\CrmCore\\": "src/",
+            "Fazzinipierluigi\\CrmCore\\Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "src/helpers.php"

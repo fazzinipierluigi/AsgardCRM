@@ -4,10 +4,15 @@ namespace Fazzinipierluigi\CrmCore;
 
 use Fazzinipierluigi\CrmCore\Console\Commands\BackfillInstalledEntityUpgrades;
 use Fazzinipierluigi\CrmCore\Console\Commands\FireDueWorkflowTimers;
+use Fazzinipierluigi\CrmCore\Console\Commands\ResetInstallCommand;
 use Fazzinipierluigi\CrmCore\Console\Commands\RunDueImporters;
 use Fazzinipierluigi\CrmCore\Console\Commands\RunDueWorkflows;
 use Fazzinipierluigi\CrmCore\Console\Commands\SyncCalendarConnectors;
+use Fazzinipierluigi\CrmCore\Http\Middleware\ApplyUserPreferences;
+use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsInstalled;
+use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsUpToDate;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\CrmCore\Services\EnvFileWriter;
 use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowActionExecutor;
 use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEntityTriggerDispatcher;
 use Illuminate\Support\Facades\Route;
@@ -25,12 +30,36 @@ class CrmServiceProvider extends ServiceProvider
         // back to WorkflowUserTaskController::update() (same request,
         // same container) via WorkflowActionExecutor::$lastRedirectUrl.
         $this->app->singleton(WorkflowActionExecutor::class);
+
+        // Bound to the real .env path by default; tests bind a temp-file
+        // instance so the installation wizard never touches the
+        // consuming host's actual .env.
+        $this->app->singleton(EnvFileWriter::class, fn () => new EnvFileWriter(base_path('.env')));
     }
 
     public function boot(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'crm');
+
+        // EnsureAppIsInstalled/EnsureAppIsUpToDate gate the whole app
+        // (including host-defined routes outside this package, e.g. a
+        // Scaffolding app's own dashboard), so they're registered as
+        // aliases here — the host decides whether/where to apply them in
+        // its own bootstrap/app.php, same as ApplyUserPreferences used to
+        // be host-wired before Modulo 5. Not auto-appended to the 'web'
+        // group globally: forcing them on would make it impossible for a
+        // host to opt out (e.g. Testbench's own test apps, which have no
+        // install wizard route to redirect to).
+        $router = $this->app['router'];
+        $router->aliasMiddleware('crm.installed', EnsureAppIsInstalled::class);
+        $router->aliasMiddleware('crm.up-to-date', EnsureAppIsUpToDate::class);
+
+        // ApplyUserPreferences only needs a resolved user (via the `web`
+        // guard already active on the group below) and no install-wizard
+        // awareness, so it's safe to push onto every host's 'web' group
+        // unconditionally, unlike the two middleware above.
+        $router->pushMiddlewareToGroup('web', ApplyUserPreferences::class);
 
         EntityRecord::created(fn (EntityRecord $record) => app(WorkflowEntityTriggerDispatcher::class)->handleCreated($record));
         EntityRecord::updated(fn (EntityRecord $record) => app(WorkflowEntityTriggerDispatcher::class)->handleUpdated($record));
@@ -103,9 +132,21 @@ class CrmServiceProvider extends ServiceProvider
                 __DIR__.'/../public/hugerte' => public_path('hugerte'),
             ], 'crm-assets');
 
+            // The 3 custom auth.provider_* keys (Modulo 5) live alongside
+            // Laravel's own stock auth.php keys — bare `trans('auth.xxx')`
+            // calls only resolve them once this is published into the
+            // host's own lang_path(), same "not automatic, explicit tag"
+            // caution as crm-migrations-users: a host with its own
+            // customized lang/en/auth.php shouldn't have it silently
+            // overwritten.
+            $this->publishes([
+                __DIR__.'/../lang' => lang_path(),
+            ], 'crm-lang');
+
             $this->commands([
                 BackfillInstalledEntityUpgrades::class,
                 FireDueWorkflowTimers::class,
+                ResetInstallCommand::class,
                 RunDueImporters::class,
                 RunDueWorkflows::class,
                 SyncCalendarConnectors::class,
