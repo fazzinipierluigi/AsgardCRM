@@ -1,0 +1,278 @@
+{
+  "_Graph-B964pEZj.css": {
+    "file": "assets/Graph-B964pEZj.css",
+    "src": "_Graph-B964pEZj.css"
+  },
+  "_Graph-BRhK9iMp.js": {
+    "file": "assets/Graph-BRhK9iMp.js",
+    "name": "Graph",
+    "css": [
+      "assets/Graph-B964pEZj.css"
+    ],
+    "assets": [
+      "assets/transparent-CIyfV8Zx.gif",
+      "assets/window-CZJNCsZQ.gif",
+      "assets/window-title-Db1z3WvS.gif",
+      "assets/button-DNi3kF6N.gif"
+    ]
+  },
+  "_bootstrap.esm-CsuvlKo9.js": {
+    "file": "assets/bootstrap.esm-CsuvlKo9.js",
+    "name": "bootstrap.esm",
+    "imports": [
+      "_lib-CoKWi0hM.js"
+    ]
+  },
+  "_fonts-CRPw2Kff.css": {
+    "file": "assets/fonts-CRPw2Kff.css",
+    "src": "_fonts-CRPw2Kff.css"
+  },
+  "_hugerte-e3BmFx9B.js": {
+    "file": "assets/hugerte-e3BmFx9B.js",
+    "name": "hugerte",
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js"
+    ]
+  },
+  "_instrument-sans-400-normal-D1W7dsQl.woff": {
+    "file": "assets/instrument-sans-400-normal-D1W7dsQl.woff",
+    "src": "_instrument-sans-400-normal-D1W7dsQl.woff"
+  },
+  "_instrument-sans-400-normal-DRC__1Mx.woff2": {
+    "file": "assets/instrument-sans-400-normal-DRC__1Mx.woff2",
+    "src": "_instrument-sans-400-normal-DRC__1Mx.woff2"
+  },
+  "_instrument-sans-500-normal-Dk9ku72i.woff2": {
+    "file": "assets/instrument-sans-500-normal-Dk9ku72i.woff2",
+    "src": "_instrument-sans-500-normal-Dk9ku72i.woff2"
+  },
+  "_instrument-sans-500-normal-Z6ESRlEs.woff": {
+    "file": "assets/instrument-sans-500-normal-Z6ESRlEs.woff",
+    "src": "_instrument-sans-500-normal-Z6ESRlEs.woff"
+  },
+  "_instrument-sans-600-normal-B7fBEWYG.woff2": {
+    "file": "assets/instrument-sans-600-normal-B7fBEWYG.woff2",
+    "src": "_instrument-sans-600-normal-B7fBEWYG.woff2"
+  },
+  "_instrument-sans-600-normal-B9e8oLYv.woff": {
+    "file": "assets/instrument-sans-600-normal-B9e8oLYv.woff",
+    "src": "_instrument-sans-600-normal-B9e8oLYv.woff"
+  },
+  "_jsonlogic-editor-CiPFy8CU.css": {
+    "file": "assets/jsonlogic-editor-CiPFy8CU.css",
+    "src": "_jsonlogic-editor-CiPFy8CU.css"
+  },
+  "_jsonlogic-editor-D0h0ZMTp.js": {
+    "file": "assets/jsonlogic-editor-D0h0ZMTp.js",
+    "name": "jsonlogic-editor",
+    "css": [
+      "assets/jsonlogic-editor-CiPFy8CU.css"
+    ]
+  },
+  "_lib-CoKWi0hM.js": {
+    "file": "assets/lib-CoKWi0hM.js",
+    "name": "lib",
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js"
+    ]
+  },
+  "_montserrat-500-normal-DRFEGfly.woff2": {
+    "file": "assets/montserrat-500-normal-DRFEGfly.woff2",
+    "src": "_montserrat-500-normal-DRFEGfly.woff2"
+  },
+  "_montserrat-500-normal-Dok2oTci.woff": {
+    "file": "assets/montserrat-500-normal-Dok2oTci.woff",
+    "src": "_montserrat-500-normal-Dok2oTci.woff"
+  },
+  "_montserrat-800-normal-C3dfDxXV.woff": {
+    "file": "assets/montserrat-800-normal-C3dfDxXV.woff",
+    "src": "_montserrat-800-normal-C3dfDxXV.woff"
+  },
+  "_montserrat-800-normal-axpkC1rd.woff2": {
+    "file": "assets/montserrat-800-normal-axpkC1rd.woff2",
+    "src": "_montserrat-800-normal-axpkC1rd.woff2"
+  },
+  "_offcanvas-BE1oA21o.js": {
+    "file": "assets/offcanvas-BE1oA21o.js",
+    "name": "offcanvas",
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js",
+      "_scrollbar-DYdpnHCD.js"
+    ]
+  },
+  "_rolldown-runtime-B0Z9INg1.js": {
+    "file": "assets/rolldown-runtime-B0Z9INg1.js",
+    "name": "rolldown-runtime"
+  },
+  "_scrollbar-DYdpnHCD.js": {
+    "file": "assets/scrollbar-DYdpnHCD.js",
+    "name": "scrollbar",
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js"
+    ]
+  },
+  "_sortable.esm-DD7UL5Tv.js": {
+    "file": "assets/sortable.esm-DD7UL5Tv.js",
+    "name": "sortable.esm"
+  },
+  "node_modules/@maxgraph/core/images/button.gif": {
+    "file": "assets/button-DNi3kF6N.gif",
+    "src": "node_modules/@maxgraph/core/images/button.gif"
+  },
+  "node_modules/@maxgraph/core/images/transparent.gif": {
+    "file": "assets/transparent-CIyfV8Zx.gif",
+    "src": "node_modules/@maxgraph/core/images/transparent.gif"
+  },
+  "node_modules/@maxgraph/core/images/window-title.gif": {
+    "file": "assets/window-title-Db1z3WvS.gif",
+    "src": "node_modules/@maxgraph/core/images/window-title.gif"
+  },
+  "node_modules/@maxgraph/core/images/window.gif": {
+    "file": "assets/window-CZJNCsZQ.gif",
+    "src": "node_modules/@maxgraph/core/images/window.gif"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-Cf75oT6R.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-Bko1mDV3.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js",
+      "_scrollbar-DYdpnHCD.js",
+      "_offcanvas-BE1oA21o.js",
+      "_lib-CoKWi0hM.js"
+    ],
+    "css": [
+      "assets/app-DmHed3W8.css"
+    ]
+  },
+  "resources/js/calendar.js": {
+    "file": "assets/calendar-BvUYODXx.js",
+    "name": "calendar",
+    "src": "resources/js/calendar.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap.esm-CsuvlKo9.js"
+    ]
+  },
+  "resources/js/documents.js": {
+    "file": "assets/documents-BbZi5i7W.js",
+    "name": "documents",
+    "src": "resources/js/documents.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js",
+      "_scrollbar-DYdpnHCD.js"
+    ]
+  },
+  "resources/js/entity-builder.js": {
+    "file": "assets/entity-builder-CLkakgIt.js",
+    "name": "entity-builder",
+    "src": "resources/js/entity-builder.js",
+    "isEntry": true,
+    "imports": [
+      "_sortable.esm-DD7UL5Tv.js",
+      "_bootstrap.esm-CsuvlKo9.js"
+    ]
+  },
+  "resources/js/entity-condition-builder.js": {
+    "file": "assets/entity-condition-builder-C2Z067WX.js",
+    "name": "entity-condition-builder",
+    "src": "resources/js/entity-condition-builder.js",
+    "isEntry": true,
+    "imports": [
+      "_jsonlogic-editor-D0h0ZMTp.js"
+    ]
+  },
+  "resources/js/entity-field-conditions.js": {
+    "file": "assets/entity-field-conditions-DRWMnw2m.js",
+    "name": "entity-field-conditions",
+    "src": "resources/js/entity-field-conditions.js",
+    "isEntry": true
+  },
+  "resources/js/entity-record-form.js": {
+    "file": "assets/entity-record-form-Bst4LhS9.js",
+    "name": "entity-record-form",
+    "src": "resources/js/entity-record-form.js",
+    "isEntry": true
+  },
+  "resources/js/entity-relations.js": {
+    "file": "assets/entity-relations-B1n3b2ut.js",
+    "name": "entity-relations",
+    "src": "resources/js/entity-relations.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-B0Z9INg1.js",
+      "_offcanvas-BE1oA21o.js"
+    ]
+  },
+  "resources/js/importer-wizard.js": {
+    "file": "assets/importer-wizard-CN6zm0vn.js",
+    "name": "importer-wizard",
+    "src": "resources/js/importer-wizard.js",
+    "isEntry": true
+  },
+  "resources/js/mail-signature-form.js": {
+    "file": "assets/mail-signature-form-4igsxgHE.js",
+    "name": "mail-signature-form",
+    "src": "resources/js/mail-signature-form.js",
+    "isEntry": true,
+    "imports": [
+      "_hugerte-e3BmFx9B.js"
+    ]
+  },
+  "resources/js/mail.js": {
+    "file": "assets/mail-C-G747Zg.js",
+    "name": "mail",
+    "src": "resources/js/mail.js",
+    "isEntry": true,
+    "imports": [
+      "_hugerte-e3BmFx9B.js"
+    ]
+  },
+  "resources/js/menu-builder.js": {
+    "file": "assets/menu-builder-CQGBS7Xv.js",
+    "name": "menu-builder",
+    "src": "resources/js/menu-builder.js",
+    "isEntry": true,
+    "imports": [
+      "_sortable.esm-DD7UL5Tv.js"
+    ]
+  },
+  "resources/js/ticket-timer.js": {
+    "file": "assets/ticket-timer-Bg5TqYoY.js",
+    "name": "ticket-timer",
+    "src": "resources/js/ticket-timer.js",
+    "isEntry": true
+  },
+  "resources/js/workflow-builder.js": {
+    "file": "assets/workflow-builder-BTBsSVOw.js",
+    "name": "workflow-builder",
+    "src": "resources/js/workflow-builder.js",
+    "isEntry": true,
+    "imports": [
+      "_sortable.esm-DD7UL5Tv.js",
+      "_bootstrap.esm-CsuvlKo9.js",
+      "_jsonlogic-editor-D0h0ZMTp.js",
+      "_Graph-BRhK9iMp.js"
+    ]
+  },
+  "resources/js/workflow-instance-viewer.js": {
+    "file": "assets/workflow-instance-viewer-D43jn2Xm.js",
+    "name": "workflow-instance-viewer",
+    "src": "resources/js/workflow-instance-viewer.js",
+    "isEntry": true,
+    "imports": [
+      "_Graph-BRhK9iMp.js"
+    ]
+  }
+}

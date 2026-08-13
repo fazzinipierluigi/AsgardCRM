@@ -70,6 +70,16 @@ class CrmServiceProvider extends ServiceProvider
                 __DIR__.'/../resources/views' => resource_path('views/vendor/crm'),
             ], 'crm-views');
 
+            // Migration che alterano la tabella `users` dell'host
+            // (username, login_provider_id, phone, job_title) — mai
+            // auto-caricate (Fase 1 decisione 4b): un host con quelle
+            // colonne gia' presenti, o con un proprio schema utenti,
+            // non deve vederle applicate automaticamente da un
+            // `artisan migrate` qualsiasi. Tag separato, esplicito.
+            $this->publishes([
+                __DIR__.'/../database/migrations-users' => database_path('migrations'),
+            ], 'crm-migrations-users');
+
             // Pre-built Vite output (see packages/fazzinipierluigi/crm-core's
             // own package.json/vite.config.js, buildDirectory: 'vendor/crm')
             // — a Composer-installed package can't run `npm run build` on
