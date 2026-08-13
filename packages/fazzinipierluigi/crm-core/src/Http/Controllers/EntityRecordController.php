@@ -41,11 +41,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * checks — see EntityInstaller for the permission keys.
  *
  * Tags/labels used in the allowlist below for RichText fields are kept
- * deliberately minimal (see sanitizeRichText()).
+ * deliberately minimal (see sanitizeRichText()) and match the toolbar's
+ * own execCommand list (resources/js/entity-record-form.js) — no link
+ * command exists, so `<a>` isn't allowed either: an href/attribute
+ * allowlist adds real complexity (javascript: URLs, target=_blank
+ * reverse-tabnabbing) for a feature nothing in the UI produces.
  */
 class EntityRecordController extends Controller
 {
-    private const RICH_TEXT_ALLOWED_TAGS = '<b><i><u><strong><em><ul><ol><li><p><br><a>';
+    /** @var list<string> */
+    private const RICH_TEXT_ALLOWED_TAGS = ['b', 'i', 'u', 'strong', 'em', 'ul', 'ol', 'li', 'p', 'br'];
 
     public function __construct(
         private readonly EntityRecordAuthorizer $authorizer,
@@ -517,9 +522,61 @@ class EntityRecordController extends Controller
         return $attributes;
     }
 
+    /**
+     * strip_tags() with an allowlist only removes disallowed tag
+     * *names* — attributes on the tags it keeps (onmouseover=, style=,
+     * a stray href="javascript:...") survive untouched, so a value
+     * like `<b onmouseover="fetch(...)">` would pass through unchanged
+     * and execute for every later viewer of the record (stored XSS).
+     * DOMDocument-based instead: any disallowed element is unwrapped
+     * (its own tag dropped, its text/children kept), and every
+     * attribute is stripped from whatever tags remain — no allowlist
+     * of "safe" attributes to get wrong.
+     */
     private function sanitizeRichText(?string $value): ?string
     {
-        return $value === null ? null : strip_tags($value, self::RICH_TEXT_ALLOWED_TAGS);
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        $dom = new \DOMDocument;
+        libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="utf-8"?><div>'.$value.'</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+
+        $wrapper = $dom->getElementsByTagName('div')->item(0);
+        $this->sanitizeRichTextNode($wrapper);
+
+        $html = '';
+        foreach ($wrapper->childNodes as $child) {
+            $html .= $dom->saveHTML($child);
+        }
+
+        return $html;
+    }
+
+    private function sanitizeRichTextNode(\DOMNode $node): void
+    {
+        foreach (iterator_to_array($node->childNodes) as $child) {
+            if (! $child instanceof \DOMElement) {
+                continue;
+            }
+
+            $this->sanitizeRichTextNode($child);
+
+            if (! in_array(strtolower($child->tagName), self::RICH_TEXT_ALLOWED_TAGS, true)) {
+                while ($child->firstChild) {
+                    $node->insertBefore($child->firstChild, $child);
+                }
+                $node->removeChild($child);
+
+                continue;
+            }
+
+            foreach (iterator_to_array($child->attributes) as $attribute) {
+                $child->removeAttribute($attribute->name);
+            }
+        }
     }
 
     private function columnFor(EntityField $field): string
