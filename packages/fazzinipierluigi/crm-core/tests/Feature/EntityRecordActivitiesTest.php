@@ -1,13 +1,15 @@
 <?php
 
+use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
 use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\CrmCore\Models\EntityCard;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Database\Seeders\CalendarEntitySeeder;
-use Database\Seeders\ClientiEntitySeeder;
+use Fazzinipierluigi\CrmCore\Models\EntityTab;
+use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 
 uses(RefreshDatabase::class);
 
@@ -16,11 +18,31 @@ uses(RefreshDatabase::class);
  * direction of the calendar's own "Relazione verso" picker (see
  * CalendarController::relatables()), which links a calendar event to
  * any entity's record via the generic relatable_type/relatable_id pair.
+ *
+ * Built here as minimal, package-local fixture entities rather than
+ * reusing the AsgardCRM app's own demo seeders (ClientiEntitySeeder/
+ * CalendarEntitySeeder, host-owned domain data) — this suite must run
+ * standalone under Testbench, with no dependency on the consuming app.
+ * The slugs 'clienti'/'calendario' are load-bearing: EntityRecordController
+ * hardcodes 'calendario' as the activities-source entity slug.
  */
 function seedClientiAndCalendar(): void
 {
-    test()->seed(ClientiEntitySeeder::class);
-    test()->seed(CalendarEntitySeeder::class);
+    $clienti = Entity::create(['name' => 'Clienti', 'slug' => 'clienti', 'table_name' => 'entity_clienti']);
+    $clientiTab = EntityTab::create(['entity_id' => $clienti->id, 'name' => 'Generale', 'position' => 0]);
+    $clientiCard = EntityCard::create(['entity_tab_id' => $clientiTab->id, 'name' => 'Anagrafica', 'position' => 0]);
+    $clientiCard->fields()->create(['name' => 'Ragione sociale', 'column_name' => 'ragione_sociale', 'type' => EntityFieldType::String, 'position' => 0]);
+    app(EntityInstaller::class)->install($clienti);
+
+    $calendario = Entity::create(['name' => 'Calendario', 'slug' => 'calendario', 'table_name' => 'entity_calendario', 'is_calendar' => true]);
+    $calendarioTab = EntityTab::create(['entity_id' => $calendario->id, 'name' => 'Generale', 'position' => 0]);
+    $calendarioCard = EntityCard::create(['entity_tab_id' => $calendarioTab->id, 'name' => 'Evento', 'position' => 0]);
+    $calendarioCard->fields()->create(['name' => 'Titolo', 'column_name' => 'title', 'type' => EntityFieldType::String, 'position' => 0]);
+    $calendarioCard->fields()->create(['name' => 'Mostra come', 'column_name' => 'show_as', 'type' => EntityFieldType::String, 'position' => 1]);
+    $calendarioCard->fields()->create(['name' => 'Stato', 'column_name' => 'status', 'type' => EntityFieldType::String, 'position' => 2]);
+    $calendarioCard->fields()->create(['name' => 'Inizio', 'column_name' => 'start_datetime', 'type' => EntityFieldType::DateTime, 'position' => 3]);
+    $calendarioCard->fields()->create(['name' => 'Fine', 'column_name' => 'end_datetime', 'type' => EntityFieldType::DateTime, 'position' => 4]);
+    app(EntityInstaller::class)->install($calendario);
 }
 
 function userWithClientiAndCalendarPermissions(array $calendarActions = ['index']): User

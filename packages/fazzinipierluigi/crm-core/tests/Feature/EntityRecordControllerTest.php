@@ -7,10 +7,10 @@ use Fazzinipierluigi\CrmCore\Models\EntityFieldChange;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use Fazzinipierluigi\CrmCore\Models\EntityTab;
 use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 
 uses(RefreshDatabase::class);
 
@@ -67,22 +67,12 @@ test('a user with the entity permission can view the records page and list its o
     expect(collect($response->json('data')))->toHaveCount(1);
 });
 
-test('an installed entity shows up in the sidebar menu for a user with permission', function () {
-    $entity = installedEntityWithNameColumn();
-    $user = User::factory()->create();
-    $role = Role::create(['name' => 'Operatore', 'slug' => 'operatore']);
-    $role->givePermission(Permission::where('key', 'entity_contatti.index')->firstOrFail());
-    $user->assignRole($role);
-
-    $this->actingAs($user)->get(route('dashboard'))->assertSee('Contatti');
-});
-
-test('an installed entity is hidden from the sidebar menu without permission', function () {
-    installedEntityWithNameColumn();
-    $user = User::factory()->create();
-
-    $this->actingAs($user)->get(route('dashboard'))->assertDontSee('Contatti');
-});
+// The sidebar menu itself (looping installed entities, rendering their
+// icon/name) lives in the host's own layouts/base.blade.php — a
+// documented host contract (see tests/TestCase.php), not shipped by
+// this package. Covered for real in the AsgardCRM app's own
+// tests/Feature/SidebarMenuTest.php; asserting on it here would only
+// exercise this suite's `dashboard` route stub, not package code.
 
 function installedEntityWithTableColumn(): Entity
 {
@@ -212,16 +202,6 @@ test('the edit page shows the record\'s change history', function () {
         ->assertSee('Luigi Bianchi');
 });
 
-test('an entity icon renders as inline svg in the sidebar menu, not a webfont class', function () {
-    $entity = installedEntityWithNameColumn();
-    $entity->update(['icon' => 'building']);
-    $user = User::factory()->create();
-    $role = Role::create(['name' => 'Operatore', 'slug' => 'operatore']);
-    $role->givePermission(Permission::where('key', 'entity_contatti.index')->firstOrFail());
-    $user->assignRole($role);
-
-    $response = $this->actingAs($user)->get(route('dashboard'));
-
-    $response->assertSee(icon('building'), false);
-    $response->assertDontSee('<i class="building">', false);
-});
+// Regression test for inline-svg-vs-webfont-class icon rendering in the
+// sidebar menu moved to the AsgardCRM app's own tests/Feature/SidebarMenuTest.php
+// — same reasoning as the two removed tests above (host-owned view).

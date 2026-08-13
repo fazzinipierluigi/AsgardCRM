@@ -78,3 +78,13 @@ test('quick access opens a system entity\'s own dedicated page, not the generic 
     $response->assertDontSee('data-url="'.route('entities.index', ['documenti', 'embed' => 1]).'"', false);
     $response->assertDontSee('data-url="'.route('entities.index', ['email', 'embed' => 1]).'"', false);
 });
+
+test('an entity icon renders as inline svg in the sidebar menu, not a webfont class', function () {
+    $admin = adminUser();
+    installedMenuEntity('Contatti', 'contatti', ['show_in_menu' => true, 'icon' => 'building']);
+
+    $response = $this->actingAs($admin)->get(route('dashboard'));
+
+    $response->assertSee(icon('building'), false);
+    $response->assertDontSee('<i class="building">', false);
+});
