@@ -6,7 +6,31 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js', 'resources/js/entity-builder.js', 'resources/js/entity-record-form.js', 'resources/js/entity-relations.js', 'resources/js/entity-condition-builder.js', 'resources/js/entity-field-conditions.js', 'resources/js/calendar.js', 'resources/js/documents.js', 'resources/js/importer-wizard.js', 'resources/js/workflow-builder.js', 'resources/js/workflow-instance-viewer.js', 'resources/js/menu-builder.js', 'resources/js/install-wizard.js', 'resources/js/ticket-timer.js', 'resources/js/mail.js', 'resources/js/mail-signature-form.js'],
+            // Matches the published location (public_path('vendor/crm'),
+            // see CrmServiceProvider's crm-assets tag) and the
+            // @vite([...], 'vendor/crm') calls in every package/host view
+            // that load these assets — must match exactly, or paths baked
+            // into the compiled manifest/font CSS (e.g. @font-face src
+            // URLs) point at the wrong directory.
+            buildDirectory: 'vendor/crm',
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                'resources/js/entity-builder.js',
+                'resources/js/entity-record-form.js',
+                'resources/js/entity-relations.js',
+                'resources/js/entity-condition-builder.js',
+                'resources/js/entity-field-conditions.js',
+                'resources/js/calendar.js',
+                'resources/js/documents.js',
+                'resources/js/importer-wizard.js',
+                'resources/js/workflow-builder.js',
+                'resources/js/workflow-instance-viewer.js',
+                'resources/js/menu-builder.js',
+                'resources/js/ticket-timer.js',
+                'resources/js/mail.js',
+                'resources/js/mail-signature-form.js',
+            ],
             refresh: true,
             fonts: [
                 bunny('Instrument Sans', {
@@ -19,9 +43,4 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
-    server: {
-        watch: {
-            ignored: ['**/storage/framework/views/**'],
-        },
-    },
 });

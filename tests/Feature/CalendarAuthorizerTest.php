@@ -1,13 +1,13 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
-use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
-use Fazzinipierluigi\CrmCore\Models\CalendarShare;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
-use Fazzinipierluigi\CrmCore\Services\CalendarAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\AsgardCRM\Models\CalendarShare;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRoleVisibility;
+use Fazzinipierluigi\AsgardCRM\Services\CalendarAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

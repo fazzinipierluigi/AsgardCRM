@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\CsvImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\CsvImporterChannel;
 
 test('fetch streams every row keyed by header', function () {
     $path = tempnam(sys_get_temp_dir(), 'importer_csv_');

@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailSignature;
-use App\Models\User;
+use Fazzinipierluigi\AsgardCRM\Models\MailSignature;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

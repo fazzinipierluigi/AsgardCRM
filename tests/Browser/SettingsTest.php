@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Laravel\Dusk\Browser;
 
 test('user can change preferences and the theme is applied', function () {

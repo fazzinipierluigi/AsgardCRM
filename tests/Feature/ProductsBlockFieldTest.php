@@ -1,12 +1,12 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\ClientiEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\PreventiviEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\ProdottiEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Rules\ProductsBlockRule;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ClientiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\PreventiviEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ProdottiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Rules\ProductsBlockRule;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

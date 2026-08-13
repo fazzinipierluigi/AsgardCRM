@@ -1,10 +1,10 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 
@@ -72,7 +72,7 @@ test('send builds a MailComposeDTO into an EWS CreateItem request', function () 
 });
 
 test('testConnection reports failure on an EWS error without throwing', function () {
-    Http::fake(['mail.example.com/EWS/Exchange.asmx' => Http::response(file_get_contents(base_path('tests/Fixtures/ews/error-access-denied.xml')), 200, ['Content-Type' => 'text/xml'])]);
+    Http::fake(['mail.example.com/EWS/Exchange.asmx' => Http::response(file_get_contents(dirname(__DIR__, 4).'/Fixtures/ews/error-access-denied.xml'), 200, ['Content-Type' => 'text/xml'])]);
 
     $result = (new EwsMailClient)->testConnection(ewsDirectAccount());
 

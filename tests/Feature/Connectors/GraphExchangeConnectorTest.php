@@ -1,10 +1,10 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorSyncState;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\GraphExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorSyncState;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\GraphExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

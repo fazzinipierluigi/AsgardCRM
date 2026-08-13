@@ -1,0 +1,58 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4']
+
+    # Laravel-version-only: this package's models use the #[Fillable]/
+    # #[Hidden] Eloquent PHP attributes (see src/Models/*), which only
+    # exist in laravel/framework 13.x — verified by running this suite
+    # against a real Laravel 12.61.1 install: every #[Fillable] model
+    # attribute is silently ignored (the attribute class doesn't exist
+    # pre-13), causing a MassAssignmentException on every write. Laravel
+    # 11/12 support was provisionally declared in composer.json at
+    # package-extraction time and never actually verified — this is that
+    # verification, and it failed, so the range was restricted to match
+    # (composer.json: illuminate/support ^13.12, the floor that also
+    # clears 3 open laravel/framework security advisories active on the
+    # whole 11.x line and pre-12.61.1/13.12.0 — see `composer audit`).
+    name: PHP ${{ matrix.php }} — Laravel 13
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring, dom, fileinfo, sqlite3, imap
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Run Pint (dry)
+        run: vendor/bin/pint --test --format=github
+
+      - name: Run tests
+        run: vendor/bin/pest --compact
+
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: composer audit

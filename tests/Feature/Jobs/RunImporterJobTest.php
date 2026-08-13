@@ -1,10 +1,10 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterRunStatus;
-use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\ImporterRunner;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterRunStatus;
+use Fazzinipierluigi\AsgardCRM\Jobs\RunImporterJob;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\ImporterRunner;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Mockery\MockInterface;

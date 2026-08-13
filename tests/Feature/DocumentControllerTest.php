@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\DocumentsEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\DocumentFolder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\DocumentsEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\DocumentFolder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

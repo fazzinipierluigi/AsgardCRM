@@ -1,11 +1,11 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailFolderCacheSync;
-use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailFolderCacheSync;
+use Fazzinipierluigi\AsgardCRM\Models\MailMessageCache;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailMessageHeaderCache;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

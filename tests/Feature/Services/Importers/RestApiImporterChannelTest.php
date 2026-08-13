@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\RestApiImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\RestApiImporterChannel;
 use Illuminate\Support\Facades\Http;
 
 test('fetch extracts rows from a data key', function () {

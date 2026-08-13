@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Jobs\SyncConnectorJob;
-use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Jobs\SyncConnectorJob;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 

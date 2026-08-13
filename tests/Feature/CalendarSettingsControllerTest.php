@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\CalendarShare;
-use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\CalendarShare;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

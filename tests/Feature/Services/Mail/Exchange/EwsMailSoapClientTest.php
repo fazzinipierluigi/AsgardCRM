@@ -1,11 +1,11 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailSoapClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\EwsMailSoapClient;
 use Illuminate\Support\Facades\Http;
 
 function ewsMailFixture(string $name): string
 {
-    return file_get_contents(base_path("tests/Fixtures/ews-mail/{$name}.xml"));
+    return file_get_contents(dirname(__DIR__, 4)."/Fixtures/ews-mail/{$name}.xml");
 }
 
 function ewsMailConfig(array $overrides = []): array
@@ -71,7 +71,7 @@ test('getAttachment decodes the base64 content', function () {
 });
 
 test('an EWS error throws', function () {
-    Http::fake(['mail.example.com/EWS/Exchange.asmx' => Http::response(file_get_contents(base_path('tests/Fixtures/ews/error-access-denied.xml')), 200, ['Content-Type' => 'text/xml'])]);
+    Http::fake(['mail.example.com/EWS/Exchange.asmx' => Http::response(file_get_contents(dirname(__DIR__, 4).'/Fixtures/ews/error-access-denied.xml'), 200, ['Content-Type' => 'text/xml'])]);
 
     expect(fn () => (new EwsMailSoapClient(ewsMailConfig()))->findFolders())->toThrow(RuntimeException::class);
 });

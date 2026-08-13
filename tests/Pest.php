@@ -1,76 +1,34 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityCard;
-use Fazzinipierluigi\CrmCore\Models\EntityTab;
-use Fazzinipierluigi\CrmCore\Models\Language;
-use Fazzinipierluigi\CrmCore\Models\Translation;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityCard;
+use Fazzinipierluigi\AsgardCRM\Models\EntityTab;
+use Fazzinipierluigi\AsgardCRM\Models\Language;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Tests\TestCase;
 use Fazzinipierluigi\JustAGate\Models\Role;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\DuskTestCase;
-use Tests\TestCase;
-
-pest()->extend(DuskTestCase::class)
-    ->use(DatabaseMigrations::class)
-    ->afterEach(fn () => Translation::forgetCache())
-    ->in('Browser');
-
-/*
-|--------------------------------------------------------------------------
-| Test Case
-|--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind different classes or traits.
-|
-*/
 
 pest()->extend(TestCase::class)
- // ->use(RefreshDatabase::class)
-    ->afterEach(fn () => Translation::forgetCache())
+    ->use(RefreshDatabase::class)
     ->in('Feature');
 
-/*
-|--------------------------------------------------------------------------
-| Expectations
-|--------------------------------------------------------------------------
-|
-| When you're writing tests, you often need to check that values meet certain conditions. The
-| "expect()" function gives you access to a set of "expectations" methods that you can use
-| to assert different things. Of course, you may extend the Expectation API at any time.
-|
-*/
-
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Functions
-|--------------------------------------------------------------------------
-|
-| While Pest is very powerful out-of-the-box, you may have some testing code specific to your
-| project that you don't want to repeat in every file. Here you can also expose helpers as
-| global functions to help you to reduce the number of lines of code in your test files.
-|
-*/
-
-function something()
-{
-    // ..
-}
+// Browser/Dusk tests are ported (namespace-rewritten) but not runnable
+// yet: they need a real browser plus compiled front-end assets, and the
+// package has no asset pipeline of its own (Fase 1 punto 8, not
+// implemented). Skipped until that lands — see
+// docs/package-conversion/03-migrazione-moduli.md.
+pest()->extend(TestCase::class)
+    ->beforeEach(fn () => test()->markTestSkipped('Modulo 1: nessuna pipeline asset nel package ancora (Fase 1 punto 8)'))
+    ->in('Browser');
 
 /**
  * Create a user with the (system) admin role, which bypasses every
- * Just A Gate permission check.
+ * Just A Gate permission check. Ported from the host app's tests/Pest.php.
  */
 function adminUser(): User
 {
@@ -86,9 +44,8 @@ function adminUser(): User
 }
 
 /**
- * Seed the "it"/"en" languages (normally done by LanguageSeeder during
- * install) — needed by any test that touches translations/preferences,
- * since RefreshDatabase doesn't run seeders automatically.
+ * Seeds the two languages most tests expect to exist. Ported from the
+ * host app's tests/Pest.php.
  */
 function seedLanguages(): void
 {
@@ -100,7 +57,8 @@ function seedLanguages(): void
  * A minimal installed entity with a single String field "nome" —
  * shared by the EntityRelation and EntityFieldCondition tests, which
  * mostly just need two or three interchangeable installed entities to
- * relate or configure, not a specific field layout.
+ * relate or configure, not a specific field layout. Ported from the
+ * host app's tests/Pest.php.
  */
 function relationTestEntity(string $slug, string $name = 'Entità'): Entity
 {
@@ -118,7 +76,8 @@ function relationTestEntity(string $slug, string $name = 'Entità'): Entity
  * Creates a Workflow with an empty, published WorkflowVersion #1 as
  * its current_version_id — the state every real workflow is in after
  * its first builder save. Tests build the version's nodes/edges via
- * `WorkflowNode::factory()->for($workflow->currentVersion)`.
+ * `WorkflowNode::factory()->for($workflow->currentVersion)`. Ported
+ * from the host app's tests/Pest.php.
  *
  * @param  array<string, mixed>  $attributes
  */

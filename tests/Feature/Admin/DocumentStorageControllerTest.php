@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
+use Fazzinipierluigi\AsgardCRM\Models\DocumentStorageSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

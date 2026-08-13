@@ -1,9 +1,9 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\EwsExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\EwsExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

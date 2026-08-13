@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\Pop3MailReader;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3MailReader;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

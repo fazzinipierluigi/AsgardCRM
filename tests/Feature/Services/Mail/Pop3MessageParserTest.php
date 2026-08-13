@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\Mail\Pop3\Pop3MessageParser;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3\Pop3MessageParser;
 
 test('parses simple headers, including folded lines', function () {
     $raw = "Subject: Ciao\r\nFrom: A <a@example.com>\r\nTo: b@example.com,\r\n c@example.com\r\n";

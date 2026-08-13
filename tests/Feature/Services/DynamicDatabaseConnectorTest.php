@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\DynamicDatabaseConnector;
+use Fazzinipierluigi\AsgardCRM\Services\DynamicDatabaseConnector;
 use Illuminate\Support\Facades\DB;
 
 function dynamicConnectorSqliteDatabase(): string

@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

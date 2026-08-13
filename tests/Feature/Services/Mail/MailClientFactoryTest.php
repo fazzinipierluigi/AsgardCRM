@@ -1,14 +1,14 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailClient;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\GraphMailClient;
-use Fazzinipierluigi\CrmCore\Services\Mail\ImapMailReader;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
-use Fazzinipierluigi\CrmCore\Services\Mail\Pop3MailReader;
-use Fazzinipierluigi\CrmCore\Services\Mail\SmtpMailSender;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\GraphMailClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\ImapMailReader;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailClientFactory;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3MailReader;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\SmtpMailSender;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

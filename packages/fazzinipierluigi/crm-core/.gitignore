@@ -1,8 +1,0 @@
-/node_modules
-/public/hot
-/public/fonts-manifest.dev.json
-
-# Testbench dev environment (Fase 3 step 5) — a library package doesn't
-# ship its own composer.lock/vendor, only the app that installs it does.
-/vendor
-/composer.lock

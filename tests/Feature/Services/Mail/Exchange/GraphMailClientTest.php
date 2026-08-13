@@ -1,12 +1,12 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\GraphMailClient;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\MailGraphTokenClient;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\GraphMailClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\MailGraphTokenClient;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

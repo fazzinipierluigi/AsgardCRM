@@ -1,88 +1,114 @@
-<p align="center">
-  <img src="public/logo.svg" alt="AsgardCRM" width="120">
-</p>
+# crm-core
 
-# AsgardCRM
+Core package (dynamic entities, workflows, calendar, mail, documenti, importer) behind [AsgardCRM](https://github.com/fazzinipierluigi/AsgardCRM), extracted so it can be installed into any Laravel 13 application.
 
-AsgardCRM is a self-hosted CRM platform built for teams that need to model their own data, not just fit into someone else's fixed schema.
+## Requirements
 
-## Features
+- PHP ^8.3
+- Laravel 13 (`illuminate/support: ^13.12`)
 
-- **Custom entities** — build your own record types (contacts, deals, tickets, or anything else) through a visual entity builder, no code required.
-- **Workflows** — automate what happens to your records with a visual workflow editor, including timers and conditional branches.
-- **Configurable menu** — decide what each user sees in the sidebar and quick-access bar, with drag-and-drop ordering.
-- **Roles & permissions** — fine-grained access control down to the individual action, assignable per role.
-- **Multiple sign-in options** — username/password, LDAP, SAML, and OAuth-based social login.
-- **Multi-language interface** — every piece of UI text is translatable at runtime from the admin panel, no redeploy needed.
-- **Calendar** — schedule and visualize events tied to your records.
-- **Light & dark themes** — switchable per user.
-- **Server-side data grids** — fast, filterable, paginated tables even on large datasets.
-- **Automated testing** — the codebase ships with an extensive test suite covering both application logic and browser-driven flows.
+Laravel 11/12 aren't supported — every model uses the `#[Fillable]`/`#[Hidden]` Eloquent PHP attributes, which only exist in Laravel 13. `^13.12` is also the floor that clears 3 `laravel/framework` security advisories open below that version (see `composer audit`; one, CVE-2026-48019, was never patched on the 11.x line at all).
 
 ## Installation
 
-Requirements: PHP 8.3+, Composer, and Node.js with npm. For the database, we recommend **PostgreSQL, MySQL, or MariaDB** for anything beyond quick local testing — SQLite works too, but isn't recommended for production use.
-
 ```bash
-composer install
-npm install
-
-cp .env.example .env
-php artisan key:generate
-
-npm run build
-composer dev
+composer require fazzinipierluigi/crm-core
+php artisan vendor:publish --tag=crm-config --tag=crm-migrations --tag=crm-assets
 ```
 
-Then open the app in your browser. On first visit, an **installation wizard** takes over automatically — no further command-line steps needed:
+### The `users` table
 
-1. **Requirements check** — confirms your PHP version and file permissions are ready.
-2. **Database** — pick your driver (PostgreSQL/MySQL/MariaDB recommended, SQLite for local testing) and enter its connection details; a "Test connection" button verifies them before continuing.
-3. **Administrator account** — create the first user, who gets full access to the app.
-4. **Review & install** — confirms your choices, writes the configuration, runs the database migrations, and logs you in as the new administrator.
+`crm-migrations` deliberately does **not** include the 3 migrations that alter your app's own `users` table (`username`, `login_provider_id`, `phone`, `job_title`). If your `User` model doesn't already have equivalent columns:
 
-The wizard only ever runs once: after installation completes, visiting it again redirects you away.
+```bash
+php artisan vendor:publish --tag=crm-migrations-users
+```
 
-### Updating
+If it does (different names, or you're merging into an existing app), skip this tag and adapt your own schema instead — don't publish it blindly onto a `users` table that isn't yours to reshape.
 
-Deploy the new code (`git pull` or equivalent), then open the app in your browser. If the deployed version differs from the one recorded in the database, an **update wizard** takes over automatically: it refreshes dependencies (composer/npm), runs the database migrations (or rolls them back, if the deployed code is actually older than what the database was last updated to), and records the new version — no manual `composer update`/`npm update`/`migrate` needed.
+### Your `User` model
 
-A rollback only works for a version this same database has already recorded passing through; rolling back further than that is refused rather than guessed at, with a prompt to restore a backup instead.
+```php
+use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\CrmCore\Models\Setting;
+use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 
-## Credits
+class User extends Authenticatable implements CrmUser
+{
+    use Authorizable;
 
-AsgardCRM is built on top of the following open-source libraries.
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        return Setting::valueFor($this->id, $key, $default);
+    }
 
-### Backend (PHP / Composer)
+    public function setSetting(string $key, mixed $value): void
+    {
+        Setting::setValue($this->id, $key, $value);
+    }
+}
+```
 
-| Library | License |
-|---|---|
-| [Laravel](https://laravel.com) | MIT |
-| [Laravel Socialite](https://laravel.com/docs/socialite) | MIT |
-| [Laravel Tinker](https://github.com/laravel/tinker) | MIT |
-| [Laravel Dusk](https://laravel.com/docs/dusk) | MIT |
-| [Pest](https://pestphp.com) | MIT |
-| [LdapRecord-Laravel](https://ldaprecord.com) | MIT |
-| [OneLogin PHP SAML](https://github.com/SAML-Toolkits/php-saml) | MIT |
-| [Symfony Expression Language](https://symfony.com/components/ExpressionLanguage) | MIT |
-| [JSON Logic PHP](https://github.com/JsonLogic/json-logic-php) | MIT |
-| [Just A Gate](https://github.com/fazzinipierluigi/just-a-gate) | MIT |
-| [Laraccoon Datasource](https://github.com/fazzinipierluigi/laraccoon_datasource) | MIT |
-| [Laraccoon Layouts](https://github.com/fazzinipierluigi/laraccoon-layouts) | MIT |
+Point `config('crm.user_model')` (`CRM_USER_MODEL` env) at it if it isn't `App\Models\User`.
 
-### Frontend (npm)
+### Run the migrations
 
-| Library | License |
-|---|---|
-| [Tabler](https://tabler.io) | MIT |
-| [Tabler Icons](https://tabler.io/icons) | MIT |
-| [Bootstrap](https://getbootstrap.com) | MIT |
-| [Raccoon Tables](https://github.com/fazzinipierluigi/raccoon-tables) | MIT |
-| [Chart.js](https://www.chartjs.org) | MIT |
-| [FullCalendar](https://fullcalendar.io) | MIT |
-| [maxGraph](https://maxgraph.github.io) | Apache-2.0 |
-| [SortableJS](https://sortablejs.github.io/Sortable) | MIT |
-| [SweetAlert2](https://sweetalert2.github.io) | MIT |
-| [jsonlogic-editor-core](https://github.com/fazzinipierluigi/jsonlogic-editor-core) | MIT |
-| [Vite](https://vitejs.dev) | MIT |
-| [Tailwind CSS](https://tailwindcss.com) | MIT |
+```bash
+php artisan migrate
+```
+
+See `starter-kit/` in this repo for a complete, verified from-scratch install (minimal auth, seeded admin, adapted layouts) — `docs/package-conversion/04-starter-kit.md` has the full walkthrough.
+
+## Icons
+
+Icons render as inline SVG (never a webfont) from the `@tabler/icons` npm package, read straight off disk — **your host app** installs it, the package doesn't ship its own copy for runtime use:
+
+```bash
+npm install @tabler/icons
+```
+
+`config('crm.icons.path')` defaults to `base_path('node_modules/@tabler/icons/icons')`; override via `CRM_ICONS_PATH` if your icons live elsewhere.
+
+## Assets
+
+The package ships its own **pre-built** Vite output (`public/vendor/crm/`, published by `crm-assets`) — your app's own Vite config/build is untouched, no npm dependency merging. Views load them via `@vite([...], 'vendor/crm')`. If you're developing the package itself: `npm install && npm run build` inside `packages/fazzinipierluigi/crm-core/` (or `npm run dev` for HMR), then republish `crm-assets`.
+
+## Routes
+
+Mounted from `CrmServiceProvider::boot()` under:
+
+```php
+Route::group([
+    'prefix' => config('crm.route_prefix', ''),
+    'middleware' => config('crm.route_middleware', ['web']),
+], ...);
+```
+
+Both configurable via `crm.php` (or `CRM_ROUTE_PREFIX`) if you need to namespace/segregate the package's routes inside a larger app.
+
+## Scheduled commands
+
+Registered automatically once the app is booted (`Schedule::command(...)->everyMinute()`, so your own `schedule:run` cron picks them up — nothing extra to configure):
+
+- `RunDueImporters`
+- `RunDueWorkflows`
+- `FireDueWorkflowTimers`
+- `SyncCalendarConnectors`
+
+Plus `BackfillInstalledEntityUpgrades`, run by hand during an upgrade (not scheduled) — see `docs/package-conversion/03-migrazione-moduli.md` for the entity-upgrade pattern it belongs to.
+
+## Testing
+
+The package's own suite runs fully standalone (no dependency on a consuming app) via Orchestra Testbench:
+
+```bash
+cd packages/fazzinipierluigi/crm-core
+composer install
+vendor/bin/pest
+```
+
+CI (`.github/workflows/crm-core-tests.yml`) runs it against PHP 8.3/8.4, plus `composer audit`.
+
+## Versioning
+
+SemVer, currently `0.x` — `1.0.0` is reserved for the point where an external app (not this monorepo) has installed the package from scratch via Packagist and verified it end-to-end. See `CHANGELOG.md`.

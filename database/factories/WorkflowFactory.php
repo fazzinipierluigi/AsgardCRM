@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Factories;
+namespace Fazzinipierluigi\AsgardCRM\Database\Factories;
 
-use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Rules\TableFieldRule;
+use Fazzinipierluigi\AsgardCRM\Rules\TableFieldRule;
 
 /**
  * Runs the rule directly against a value, returning whether it passed

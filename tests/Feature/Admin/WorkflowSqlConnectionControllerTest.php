@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\WorkflowSqlConnection;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowSqlConnection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 

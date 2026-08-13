@@ -1,20 +1,20 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\EmailEntitySeeder;
-use Fazzinipierluigi\CrmCore\Mail\ComposedMail;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
-use Fazzinipierluigi\CrmCore\Models\MailSignature;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailReaderInterface;
-use Fazzinipierluigi\CrmCore\Services\Mail\Testing\FakeMailClient;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\EmailEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Mail\ComposedMail;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailMessageCache;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
+use Fazzinipierluigi\AsgardCRM\Models\MailSignature;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailClientFactory;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailReaderInterface;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Testing\FakeMailClient;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

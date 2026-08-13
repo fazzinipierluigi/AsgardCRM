@@ -1,11 +1,11 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\EwsSoapClient;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\EwsSoapClient;
 use Illuminate\Support\Facades\Http;
 
 function ewsFixture(string $name): string
 {
-    return file_get_contents(base_path("tests/Fixtures/ews/{$name}.xml"));
+    return file_get_contents(dirname(__DIR__, 2)."/Fixtures/ews/{$name}.xml");
 }
 
 function ewsConfig(array $overrides = []): array

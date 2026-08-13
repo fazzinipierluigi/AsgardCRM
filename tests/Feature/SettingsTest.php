@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\User;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 
@@ -137,4 +137,4 @@ test('theme preference is reflected on the page', function () {
     $response->assertSee('data-bs-theme="dark"', false);
     $response->assertSee('data-bs-theme-base="slate"', false);
     $response->assertSee('data-bs-theme-primary="azure"', false);
-});
+})->skip('The <html> tag\'s theme attributes are set by the host\'s own layouts/app.blade.php, not shipped by this package.');

@@ -1,10 +1,10 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\MailOAuthProvider;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService;
+use Fazzinipierluigi\AsgardCRM\Enums\MailOAuthProvider;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;

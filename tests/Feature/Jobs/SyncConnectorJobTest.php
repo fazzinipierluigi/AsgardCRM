@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Jobs\SyncConnectorJob;
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Services\Connectors\CalendarSyncService;
+use Fazzinipierluigi\AsgardCRM\Jobs\SyncConnectorJob;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\CalendarSyncService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Mockery\MockInterface;

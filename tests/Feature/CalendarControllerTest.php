@@ -1,9 +1,9 @@
 <?php
 
-use App\Models\User;
-use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,6 +51,11 @@ test('a user with calendar permission can view the calendar page', function () {
     $this->actingAs($user)->get(route('calendar.index'))->assertOk();
 });
 
+// The 3 tests below check the sidebar/quick-access menu's own markup
+// (host-owned layouts/base.blade.php, never shipped by this package —
+// see tests/Feature/SidebarMenuTest.php's file-level skip for the same
+// reasoning). Belongs in a real host's own test suite once one exists.
+
 test('the calendar entity shows up in the sidebar menu, linking to the dedicated calendar page', function () {
     $entity = calendarEntity();
     $entity->update(['show_in_menu' => true]);
@@ -60,7 +65,7 @@ test('the calendar entity shows up in the sidebar menu, linking to the dedicated
 
     $response->assertSee('data-testid="menu-entity-calendario"', false)
         ->assertSee(route('calendar.index'), false);
-});
+})->skip('Sidebar menu rendering is host-owned view logic, not shipped by this package.');
 
 test('hiding the calendar entity from the main menu moves it into "Altre entità"', function () {
     $entity = calendarEntity();
@@ -71,7 +76,7 @@ test('hiding the calendar entity from the main menu moves it into "Altre entità
 
     $response->assertSee('data-testid="menu-other-entities"', false)
         ->assertSee(route('calendar.index'), false);
-});
+})->skip('Sidebar menu rendering is host-owned view logic, not shipped by this package.');
 
 test('the calendar entity in quick access opens the calendar page embedded', function () {
     $entity = calendarEntity();
@@ -82,7 +87,7 @@ test('the calendar entity in quick access opens the calendar page embedded', fun
 
     $response->assertSee('data-testid="quick-access-calendario"', false)
         ->assertSee(route('calendar.index', ['embed' => 1]), false);
-});
+})->skip('Sidebar menu rendering is host-owned view logic, not shipped by this package.');
 
 test('embed=1 strips the sidebar chrome from the calendar page, same as any other entity', function () {
     calendarEntity();
@@ -260,7 +265,7 @@ test('relatables endpoint returns options for the requested target', function ()
     $user = userWithCalendarPermissions();
     User::factory()->create(['name' => 'Alfa']);
 
-    $response = $this->actingAs($user)->getJson(route('calendar.relatables', ['type' => 'model:App\\Models\\User']));
+    $response = $this->actingAs($user)->getJson(route('calendar.relatables', ['type' => 'model:'.User::class]));
 
     $response->assertOk();
     expect(collect($response->json())->pluck('label'))->toContain('Alfa');
