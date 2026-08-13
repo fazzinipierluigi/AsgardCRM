@@ -6,6 +6,7 @@ All notable changes to `fazzinipierluigi/asgardcrm` (published as `fazzinipierlu
 
 ### Fixed
 - `crm-assets` now publishes AsgardCRM's own `logo.svg` and favicon set (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `site.webmanifest`, `android-chrome-192x192.png`, `android-chrome-512x512.png`) to the host's public root. The login and install/update wizard views have always referenced these by bare filename, but the files themselves were dropped in `0.2.0`'s app-shell removal and never carried into the package's own publishable assets — every consuming host got a broken image on those pages until now.
+- `install/database.blade.php` fatally errored with `ViteManifestNotFoundException` on every host: it called `@vite(['resources/js/install-wizard.js'])` without the `'vendor/crm'` build directory, so it resolved against the *host's own* (nonexistent) `public/build/manifest.json` instead of the package's published one — and `install-wizard.js` itself didn't exist yet, wasn't in `vite.config.js`'s `input`, and its `#install-test-connection-button`/driver-toggle behavior on the database step was entirely unimplemented. Wrote the file, added it to the build, and fixed the `@vite()` call.
 
 ### Added
 - Bilingual (English/Italiano) Docsify documentation site under `docs/`, published to GitHub Pages via `.github/workflows/docs.yml`.

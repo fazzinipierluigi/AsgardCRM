@@ -221,6 +221,12 @@
     "src": "resources/js/importer-wizard.js",
     "isEntry": true
   },
+  "resources/js/install-wizard.js": {
+    "file": "assets/install-wizard-C9Ly4CXY.js",
+    "name": "install-wizard",
+    "src": "resources/js/install-wizard.js",
+    "isEntry": true
+  },
   "resources/js/mail-signature-form.js": {
     "file": "assets/mail-signature-form-4igsxgHE.js",
     "name": "mail-signature-form",

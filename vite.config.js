@@ -30,6 +30,7 @@ export default defineConfig({
                 'resources/js/ticket-timer.js',
                 'resources/js/mail.js',
                 'resources/js/mail-signature-form.js',
+                'resources/js/install-wizard.js',
             ],
             refresh: true,
             fonts: [
