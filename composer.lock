@@ -807,20 +807,24 @@
             "dist": {
                 "type": "path",
                 "url": "packages/fazzinipierluigi/crm-core",
-                "reference": "9aeae55150a49863a04aa7144f805e3b06605380"
+                "reference": "e1ed072de99ed86083aa555125c706bd63370f9a"
             },
             "require": {
+                "directorytree/ldaprecord-laravel": "^4.0",
                 "fazzinipierluigi/just-a-gate": "^1.0",
                 "fazzinipierluigi/laraccoon-layouts": "^1.0",
                 "fazzinipierluigi/laraccoon_datasource": "^1.0",
-                "illuminate/support": "^11.0|^12.0|^13.0",
+                "illuminate/support": "^13.12",
                 "jwadhams/json-logic-php": "^1.5",
+                "laravel/socialite": "^5.28",
+                "onelogin/php-saml": "^4.3",
                 "php": "^8.3",
                 "symfony/expression-language": "^7.0",
+                "symfony/process": "^7.0",
                 "webklex/php-imap": "^6.2"
             },
             "require-dev": {
-                "orchestra/testbench": "^9.0|^10.0|^11.0",
+                "orchestra/testbench": "^11.0",
                 "pestphp/pest": "^4.7",
                 "pestphp/pest-plugin-laravel": "^4.1"
             },
@@ -834,7 +838,8 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Fazzinipierluigi\\CrmCore\\": "src/"
+                    "Fazzinipierluigi\\CrmCore\\": "src/",
+                    "Fazzinipierluigi\\CrmCore\\Database\\Seeders\\": "database/seeders/"
                 },
                 "files": [
                     "src/helpers.php"
@@ -6918,20 +6923,20 @@
         },
         {
             "name": "symfony/process",
-            "version": "v8.1.0",
+            "version": "v7.4.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "c4a9e58f235a6bf7f97ffbfedae2687353ac79e5"
+                "reference": "f5804be144caceb570f6747519999636b664f24c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/c4a9e58f235a6bf7f97ffbfedae2687353ac79e5",
-                "reference": "c4a9e58f235a6bf7f97ffbfedae2687353ac79e5",
+                "url": "https://api.github.com/repos/symfony/process/zipball/f5804be144caceb570f6747519999636b664f24c",
+                "reference": "f5804be144caceb570f6747519999636b664f24c",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.4.1"
+                "php": ">=8.2"
             },
             "type": "library",
             "autoload": {
@@ -6959,7 +6964,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v8.1.0"
+                "source": "https://github.com/symfony/process/tree/v7.4.13"
             },
             "funding": [
                 {
@@ -6979,7 +6984,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-29T05:06:50+00:00"
+            "time": "2026-05-23T16:05:06+00:00"
         },
         {
             "name": "symfony/routing",

@@ -1,7 +1,7 @@
 <?php
 
-use App\Services\Upgrades\UpgradeStep;
-use App\Services\VersionUpgradeRunner;
+use Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep;
+use Fazzinipierluigi\CrmCore\Services\VersionUpgradeRunner;
 
 class FakeUpgradeStep implements UpgradeStep
 {
@@ -52,7 +52,7 @@ class FakeUpgradeStep200 extends FakeUpgradeStep
 beforeEach(function () {
     FakeUpgradeStep::$log = [];
 
-    config(['upgrades.steps' => [
+    config(['crm.upgrades.steps' => [
         FakeUpgradeStep200::class,
         FakeUpgradeStep110::class,
         FakeUpgradeStep120::class,

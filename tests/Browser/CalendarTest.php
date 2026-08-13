@@ -1,8 +1,8 @@
 <?php
 
+use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Database\Seeders\CalendarEntitySeeder;
 use Laravel\Dusk\Browser;
 
 test('a user can create, edit, and delete a calendar event', function () {

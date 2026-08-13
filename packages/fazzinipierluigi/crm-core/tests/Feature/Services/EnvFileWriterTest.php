@@ -1,6 +1,6 @@
 <?php
 
-use App\Services\EnvFileWriter;
+use Fazzinipierluigi\CrmCore\Services\EnvFileWriter;
 
 function tempEnvFile(string $contents): string
 {

@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\User;
+use Fazzinipierluigi\CrmCore\Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\CrmCore\Mail\ComposedMail;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
@@ -7,14 +9,12 @@ use Fazzinipierluigi\CrmCore\Models\MailAccount;
 use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
 use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use Fazzinipierluigi\CrmCore\Models\MailSignature;
-use App\Models\User;
 use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentSummaryDTO;
 use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
 use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
 use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
 use Fazzinipierluigi\CrmCore\Services\Mail\MailReaderInterface;
 use Fazzinipierluigi\CrmCore\Services\Mail\Testing\FakeMailClient;
-use Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

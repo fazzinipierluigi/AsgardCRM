@@ -1,12 +1,12 @@
 <?php
 
+use App\Models\User;
+use Fazzinipierluigi\CrmCore\Database\Seeders\ClientiEntitySeeder;
+use Fazzinipierluigi\CrmCore\Database\Seeders\PreventiviEntitySeeder;
+use Fazzinipierluigi\CrmCore\Database\Seeders\ProdottiEntitySeeder;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use App\Models\User;
 use Fazzinipierluigi\CrmCore\Rules\ProductsBlockRule;
-use Database\Seeders\ClientiEntitySeeder;
-use Database\Seeders\PreventiviEntitySeeder;
-use Database\Seeders\ProdottiEntitySeeder;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;

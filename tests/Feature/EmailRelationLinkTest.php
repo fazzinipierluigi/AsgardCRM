@@ -1,10 +1,10 @@
 <?php
 
+use Fazzinipierluigi\CrmCore\Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
 use Fazzinipierluigi\CrmCore\Models\EntityRelation;
 use Fazzinipierluigi\CrmCore\Models\EntityRelationLink;
-use Database\Seeders\EmailEntitySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

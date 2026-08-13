@@ -1,6 +1,6 @@
 <?php
 
-use Database\Seeders\TranslationSeeder;
+use Fazzinipierluigi\CrmCore\Database\Seeders\TranslationSeeder;
 use Laravel\Dusk\Browser;
 
 test('the admin sidebar is translated according to the user language preference', function () {

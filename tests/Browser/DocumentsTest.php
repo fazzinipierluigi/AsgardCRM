@@ -1,7 +1,7 @@
 <?php
 
+use Fazzinipierluigi\CrmCore\Database\Seeders\DocumentsEntitySeeder;
 use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
-use Database\Seeders\DocumentsEntitySeeder;
 use Laravel\Dusk\Browser;
 
 test('a user can create a folder, upload a document into it, and delete the document', function () {

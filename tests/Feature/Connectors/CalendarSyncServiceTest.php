@@ -1,13 +1,13 @@
 <?php
 
+use App\Models\User;
+use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
 use Fazzinipierluigi\CrmCore\Models\CalendarEventExternalLink;
 use Fazzinipierluigi\CrmCore\Models\Connector;
 use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
 use Fazzinipierluigi\CrmCore\Models\Entity;
 use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use App\Models\User;
 use Fazzinipierluigi\CrmCore\Services\Connectors\CalendarSyncService;
-use Database\Seeders\CalendarEntitySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 

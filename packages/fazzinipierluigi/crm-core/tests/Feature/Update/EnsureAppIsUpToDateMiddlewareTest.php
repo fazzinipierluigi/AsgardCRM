@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Middleware\EnsureAppIsUpToDate;
+use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsUpToDate;
 use Fazzinipierluigi\CrmCore\Models\Setting;
-use App\Models\VersionHistory;
+use Fazzinipierluigi\CrmCore\Models\VersionHistory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
 uses(RefreshDatabase::class);
 
 /**
- * Global registration of EnsureAppIsUpToDate is skipped in the `testing`
- * environment (see bootstrap/app.php), same rationale as
- * InstalledMiddlewareTest — exercise it directly against ad-hoc routes.
+ * Global registration of EnsureAppIsUpToDate is a host bootstrap/app.php
+ * decision (crm.up-to-date alias, see CrmServiceProvider) — exercise it
+ * directly against ad-hoc routes instead.
  */
 beforeEach(function () {
     Route::get('/__mw_plain', fn () => 'ok')->middleware(EnsureAppIsUpToDate::class);
