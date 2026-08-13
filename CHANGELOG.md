@@ -4,6 +4,12 @@ All notable changes to `fazzinipierluigi/asgardcrm` (published as `fazzinipierlu
 
 ## [Unreleased]
 
+### Fixed
+- `crm-assets` now publishes AsgardCRM's own `logo.svg` and favicon set (`favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `site.webmanifest`, `android-chrome-192x192.png`, `android-chrome-512x512.png`) to the host's public root. The login and install/update wizard views have always referenced these by bare filename, but the files themselves were dropped in `0.2.0`'s app-shell removal and never carried into the package's own publishable assets — every consuming host got a broken image on those pages until now.
+
+### Added
+- Bilingual (English/Italiano) Docsify documentation site under `docs/`, published to GitHub Pages via `.github/workflows/docs.yml`.
+
 ## [0.2.0] - 2026-08-13
 
 ### Changed
