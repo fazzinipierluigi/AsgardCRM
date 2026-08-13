@@ -21,7 +21,7 @@ pest()->extend(TestCase::class)
 // yet: they need a real browser plus compiled front-end assets, and the
 // package has no asset pipeline of its own (Fase 1 punto 8, not
 // implemented). Skipped until that lands — see
-// docs/package-conversion/03-migrazione-moduli.md.
+// dev-notes/package-conversion/03-migrazione-moduli.md.
 pest()->extend(TestCase::class)
     ->beforeEach(fn () => test()->markTestSkipped('Modulo 1: nessuna pipeline asset nel package ancora (Fase 1 punto 8)'))
     ->in('Browser');

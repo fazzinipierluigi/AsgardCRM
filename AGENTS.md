@@ -1,6 +1,6 @@
 # AsgardCRM (package: fazzinipierluigi/asgardcrm)
 
-This repository **is** a Composer package, not a runnable Laravel application. There is no `artisan`, `bootstrap/app.php`, or `public/index.php` here — those were removed on 2026-08-13 when the standalone AsgardCRM app that used to live at this path was folded into this package (see `CHANGELOG.md` `[0.2.0]` and `docs/package-conversion/` for the full history). Do not try to `php artisan serve` or hit an HTTP endpoint from this repo for a sanity check — there is nothing to boot. That verification now happens in the sibling `AsgardCRM-Scaffolding` repo (see below).
+This repository **is** a Composer package, not a runnable Laravel application. There is no `artisan`, `bootstrap/app.php`, or `public/index.php` here — those were removed on 2026-08-13 when the standalone AsgardCRM app that used to live at this path was folded into this package (see `CHANGELOG.md` `[0.2.0]` and `dev-notes/package-conversion/` for the full history). Do not try to `php artisan serve` or hit an HTTP endpoint from this repo for a sanity check — there is nothing to boot. That verification now happens in the sibling `AsgardCRM-Scaffolding` repo (see below).
 
 ## Identity
 
@@ -66,4 +66,16 @@ If you've modified any PHP files: `vendor/bin/pint --dirty --format agent` befor
 
 ## Documentation files
 
-Only create documentation files if explicitly requested. `docs/package-conversion/` is the living, gitignored log of the app→package extraction (Fasi 0–5) and the 2026-08-13 rename/reorg — read it for background before large structural changes, but it isn't committed and isn't a substitute for `README.md`/`CHANGELOG.md`, which are.
+Only create documentation files if explicitly requested. `dev-notes/` (gitignored, not committed) is where internal working notes live — `dev-notes/package-conversion/` is the living log of the app→package extraction (Fasi 0–5) and the 2026-08-13 rename/reorg, and `dev-notes/architecture/` holds design notes for internal boundaries. Read them for background before large structural changes, but they aren't a substitute for `README.md`/`CHANGELOG.md`, which are committed. Never put design docs, implementation plans, or other working/tracking files in `docs/` (see below) — that tree is committed, published, and user-facing only; put anything else in `dev-notes/` instead.
+
+## User-facing documentation site (Docsify)
+
+`docs/` is the source for the published documentation site — **committed to git** (unlike `dev-notes/`), built with [Docsify](https://docsify.js.org/), and deployed to GitHub Pages by `.github/workflows/docs.yml` on every push to `main` that touches `docs/**`. It is bilingual: `docs/en/` (English) and `docs/it/` (Italiano) are parallel page trees — every page must exist, and stay in sync, in both.
+
+Structure:
+
+- `docs/index.html` — Docsify loader/config (sidebar, navbar, search, plugins). Rarely needs touching.
+- `docs/README.md` — root language-picker landing page.
+- `docs/en/`, `docs/it/` — one `.md` file per topic, plus each language's own `_sidebar.md` and `_navbar.md`.
+
+**Keep this site up to date as the package changes.** Whenever you change something that would make an existing page inaccurate or that deserves a new page — routes, config defaults (`config/crm.php`), publish tags, the `CrmUser` contract, a new module/enum a user-facing page already documents, the install steps, supported Laravel/PHP versions — update the corresponding page in **both** `docs/en/` and `docs/it/` (and both `_sidebar.md` files if you add/remove a page) as part of that change, not as a separate follow-up. The installation page in particular must keep covering both install paths: `composer require fazzinipierluigi/asgardcrm` into an existing Laravel app, and starting from `AsgardCRM-Scaffolding`.

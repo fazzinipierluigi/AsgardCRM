@@ -1,7 +1,7 @@
 <?php
 
 // Package routes are added module by module during Fase 3/5 of the
-// package conversion (see docs/package-conversion/03-migrazione-moduli.md).
+// package conversion (see dev-notes/package-conversion/03-migrazione-moduli.md).
 // This file now carries Modulo 1 (Core: Entity + Workflow + Importer),
 // Modulo 2 (Connettori calendario), and Modulo 5 (Auth/Admin/Install/
 // Update). Route names are unchanged dall'originale app/routes/web.php.

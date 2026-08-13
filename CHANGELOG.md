@@ -23,7 +23,7 @@ All notable changes to `fazzinipierluigi/asgardcrm` (published as `fazzinipierlu
 
 ## [0.1.0] - 2026-08-13
 
-First coherent, tested state of the package extracted from the AsgardCRM monorepo (`docs/package-conversion/` has the full phase-by-phase log).
+First coherent, tested state of the package extracted from the AsgardCRM monorepo (`dev-notes/package-conversion/` has the full phase-by-phase log).
 
 ### Added
 - Package scaffold: `Fazzinipierluigi\CrmCore\` namespace, `CrmServiceProvider`, `config/crm.php`.

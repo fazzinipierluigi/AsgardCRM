@@ -4,6 +4,8 @@ Extensible entity/workflow CRM (dynamic entities, workflow engine, calendar, web
 
 This repository *is* the package — `composer.json` at its root, no monorepo wrapper. It used to be published under `fazzinipierluigi/crm-core`, nested inside the standalone AsgardCRM app; both were folded into this single package as of the `asgardcrm` rename (see `CHANGELOG.md`).
 
+📖 Full documentation (English/Italiano): **https://fazzinipierluigi.github.io/AsgardCRM/**
+
 ## Requirements
 
 - PHP ^8.3
@@ -135,7 +137,7 @@ Registered automatically once the app is booted (`Schedule::command(...)->everyM
 - `SyncCalendarConnectors`
 
 Plus, run by hand (not scheduled):
-- `BackfillInstalledEntityUpgrades` — see `docs/package-conversion/03-migrazione-moduli.md` for the entity-upgrade pattern it belongs to.
+- `BackfillInstalledEntityUpgrades` — see `dev-notes/package-conversion/03-migrazione-moduli.md` for the entity-upgrade pattern it belongs to.
 - `ResetInstallCommand` — clears the install-wizard marker, for local development.
 
 ## Testing
