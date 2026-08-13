@@ -4,6 +4,8 @@ namespace Fazzinipierluigi\AsgardCRM\Services;
 
 use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\DocumentsEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\EmailEntitySeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\LanguageSeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\TranslationSeeder;
 use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
@@ -62,6 +64,8 @@ class ApplicationInstaller
         Artisan::call('db:seed', ['--class' => LanguageSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => TranslationSeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => CalendarEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => DocumentsEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => EmailEntitySeeder::class, '--force' => true]);
 
         $role = Role::firstOrCreate(
             ['slug' => 'admin'],
