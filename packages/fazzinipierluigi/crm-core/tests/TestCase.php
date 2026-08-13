@@ -69,6 +69,14 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
         $app['config']->set('crm.user_model', User::class);
         $app['config']->set('auth.providers.users.model', User::class);
+
+        // config('crm.icons.path') defaults to base_path('node_modules/@tabler/icons/icons')
+        // — correct for a real host app (see config/crm.php), but under
+        // Testbench base_path() resolves inside vendor/orchestra/testbench-core's
+        // own synthetic skeleton app, not this package. Point it at the
+        // package's own node_modules (a real devDependency, see package.json)
+        // instead, so icon_names()/icon() resolve real SVGs under test.
+        $app['config']->set('crm.icons.path', __DIR__.'/../node_modules/@tabler/icons/icons');
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver' => 'sqlite',
