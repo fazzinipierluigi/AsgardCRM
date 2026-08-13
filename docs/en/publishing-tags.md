@@ -7,7 +7,7 @@ All of these are registered by `AsgardCRMServiceProvider` and published with `ph
 | `crm-config` | `config/crm.php` | Yes |
 | `crm-migrations` | Core package migrations (entities, workflows, calendar, documents, mail, importers, settings, translations, languages, login providers) | Yes |
 | `crm-migrations-users` | The 3 migrations that alter your app's own `users` table (`username`, `login_provider_id`, `phone`, `job_title`) | **No** — explicit opt-in only |
-| `crm-assets` | Pre-built Vite output into `public/vendor/crm/` | Yes |
+| `crm-assets` | Pre-built Vite output into `public/vendor/crm/`, plus AsgardCRM's own brand mark and favicon set into the host's public root (see [Assets & icons](assets-and-icons.md#brand-assets)) | Yes |
 | `crm-views` | Package Blade views (the `crm::` namespace) | No — only if you need to override a view |
 | `crm-lang` | The 3 custom `auth.provider_*` translation keys | **No** — explicit opt-in only |
 

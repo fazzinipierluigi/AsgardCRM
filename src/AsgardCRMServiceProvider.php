@@ -132,6 +132,24 @@ class AsgardCRMServiceProvider extends ServiceProvider
                 __DIR__.'/../public/hugerte' => public_path('hugerte'),
             ], 'crm-assets');
 
+            // AsgardCRM's own brand mark + favicon set, referenced via
+            // bare asset('logo.svg')/asset('favicon.ico')/etc. by the
+            // login and install/update wizard views (see
+            // resources/views/auth/login.blade.php and
+            // resources/views/install|update/*.blade.php) — published to
+            // the host's public root (not vendor/crm) to match those
+            // hardcoded paths exactly.
+            $this->publishes([
+                __DIR__.'/../public/logo.svg' => public_path('logo.svg'),
+                __DIR__.'/../public/favicon.ico' => public_path('favicon.ico'),
+                __DIR__.'/../public/favicon-16x16.png' => public_path('favicon-16x16.png'),
+                __DIR__.'/../public/favicon-32x32.png' => public_path('favicon-32x32.png'),
+                __DIR__.'/../public/apple-touch-icon.png' => public_path('apple-touch-icon.png'),
+                __DIR__.'/../public/site.webmanifest' => public_path('site.webmanifest'),
+                __DIR__.'/../public/android-chrome-192x192.png' => public_path('android-chrome-192x192.png'),
+                __DIR__.'/../public/android-chrome-512x512.png' => public_path('android-chrome-512x512.png'),
+            ], 'crm-assets');
+
             // The 3 custom auth.provider_* keys (Modulo 5) live alongside
             // Laravel's own stock auth.php keys — bare `trans('auth.xxx')`
             // calls only resolve them once this is published into the

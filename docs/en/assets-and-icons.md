@@ -42,3 +42,8 @@ php artisan vendor:publish --tag=crm-assets --force
 `vite.config.js`'s `buildDirectory: 'vendor/crm'` must match the `crm-assets` publish target (`public_path('vendor/crm')`) **exactly**. Paths inside the compiled manifest and the font CSS's `@font-face src` URLs are baked in at build time, not resolved at request time — a mismatch would silently serve broken font/asset paths on the consuming host.
 
 There's one known, accepted exception: `Vite::renderFontPreloads()` ignores the `buildDirectory` argument passed to `@vite()` per-call and uses the framework's own default property instead — a confirmed Laravel core limitation, not a package bug. The actual `@font-face` CSS is correct either way; only the `<link rel="preload">` hint points at the wrong path, which is a cosmetic issue only (fonts still load correctly via the real `@font-face` CSS).
+
+## Brand assets
+
+The `crm-assets` tag also publishes AsgardCRM's own brand mark and favicon set straight to the host's **public root** (not `vendor/crm/`) — `logo.svg`, `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `site.webmanifest`, `android-chrome-192x192.png`, `android-chrome-512x512.png`. The login page and the install/update wizard views reference these by bare filename (`asset('logo.svg')`, `asset('favicon.ico')`, ...), so they need to land at the host's public root to resolve — publishing `crm-assets` is what makes them appear; a host that skips this tag (or runs an old copy of it from before this was added) sees a broken image icon on those pages instead.
+

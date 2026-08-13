@@ -114,6 +114,8 @@ npm install @tabler/icons
 
 The package ships its own **pre-built** Vite output (`public/vendor/crm/`, published by `crm-assets`) — your app's own Vite config/build is untouched, no npm dependency merging. Views load them via `@vite([...], 'vendor/crm')`. If you're developing the package itself: `npm install && npm run build` in this repo's root (or `npm run dev` for HMR), then republish `crm-assets`.
 
+`crm-assets` also publishes AsgardCRM's own brand mark and favicon set (`logo.svg`, `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `site.webmanifest`, `android-chrome-192x192.png`, `android-chrome-512x512.png`) straight to your app's public root — the login and install/update wizard views reference them by bare filename (`asset('logo.svg')`, etc.), so they need to land there, not under `vendor/crm/`.
+
 ## Routes
 
 Mounted from `AsgardCRMServiceProvider::boot()` under:

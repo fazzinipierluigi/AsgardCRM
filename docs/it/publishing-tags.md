@@ -7,7 +7,7 @@ Tutti questi tag sono registrati da `AsgardCRMServiceProvider` e pubblicati con 
 | `crm-config` | `config/crm.php` | Sì |
 | `crm-migrations` | Migration principali del package (entità, workflow, calendario, documenti, mail, importer, impostazioni, traduzioni, lingue, provider di login) | Sì |
 | `crm-migrations-users` | Le 3 migration che alterano la tabella `users` della tua app (`username`, `login_provider_id`, `phone`, `job_title`) | **No** — solo opt-in esplicito |
-| `crm-assets` | Output Vite pre-compilato in `public/vendor/crm/` | Sì |
+| `crm-assets` | Output Vite pre-compilato in `public/vendor/crm/`, più il marchio e il set favicon di AsgardCRM nella root pubblica dell'host (vedi [Asset e icone](assets-and-icons.md#asset-di-brand)) | Sì |
 | `crm-views` | Viste Blade del package (namespace `crm::`) | No — solo se devi sovrascrivere una vista |
 | `crm-lang` | Le 3 chiavi di traduzione personalizzate `auth.provider_*` | **No** — solo opt-in esplicito |
 
