@@ -1,8 +1,25 @@
 # Changelog
 
-All notable changes to `fazzinipierluigi/crm-core` are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/), starting at `0.x` until an external app has installed the package from scratch (outside this monorepo) and verified it end-to-end — see the note in `README.md`.
+All notable changes to `fazzinipierluigi/asgardcrm` (published as `fazzinipierluigi/crm-core` before the 0.2.0 rename) are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/), starting at `0.x` until an external app has installed the package from scratch (outside a sibling repo on the same disk) and verified it end-to-end — see the note in `README.md`.
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-08-13
+
+### Changed
+- **Renamed** `fazzinipierluigi/crm-core` → `fazzinipierluigi/asgardcrm`; PHP namespace `Fazzinipierluigi\CrmCore\` → `Fazzinipierluigi\AsgardCRM\`; `CrmServiceProvider` → `AsgardCRMServiceProvider`. The internal short name `crm` is unchanged everywhere else on purpose (config file/key, `crm::` view namespace, `crm-*` publish tags, `CRM_*` env vars, `vite.config.js`'s `buildDirectory: 'vendor/crm'`) — renaming those would have forced a Vite asset rebuild for no requested benefit.
+- **Moved to repo root**: this repository (formerly the standalone AsgardCRM app, with the package nested under `packages/fazzinipierluigi/crm-core/`) *is* the package now — no more monorepo wrapper. History preserved (`git log --follow` still works on every moved file). The old app's own Laravel-skeleton files (`app/`, `bootstrap/`, `artisan`, `public/index.php`, etc.) were removed — this repo no longer boots as a runnable application, only as a Composer library.
+- `starter-kit/` removed from this repo; rebuilt fresh as the separate [`AsgardCRM-Scaffolding`](https://github.com/fazzinipierluigi/AsgardCRM-Scaffolding) repository, now with no custom Auth/Admin code of its own (see Added, below) — just a `User` model and bootstrap wiring.
+
+### Added
+- **Modulo 5 — Auth, Admin, Install/Update wizard, demo content**, the last pieces that lived in the standalone app, folded into the package:
+  - Full auth: classic login, SAML, social login, LDAP.
+  - Admin CRUD: Users, Roles, Login-providers.
+  - Install wizard and Update wizard (`EnsureAppIsInstalled`/`EnsureAppIsUpToDate`, now registered as router aliases `crm.installed`/`crm.up-to-date` a host applies explicitly, rather than a host-owned middleware).
+  - `TicketTimerController` and 14 `*EntitySeeder` demo-content classes (Clienti, Fatture, Preventivi, Ticket, and so on) plus `LanguageSeeder`/`TranslationSeeder` — all package-owned, `DatabaseSeeder` in a consuming host calls them optionally.
+  - `CrmUser` contract gained `effectiveLoginProvider()` (Auth/Admin/Install controllers needed to resolve a user's login provider without a concrete `App\Models\User` reference).
+  - New publish tag `crm-lang` (the 3 custom `auth.provider_*` translation keys) — separate/explicit like `crm-migrations-users`, so a host's own customized `lang/en/auth.php` isn't silently overwritten.
+- `RichTextSanitizationTest` — first coverage of `EntityRecordController`'s RichText sanitization path (0 tests existed for it before, see 0.1.0's Fixed entry below for the bug it now guards).
 
 ## [0.1.0] - 2026-08-13
 

@@ -1,6 +1,8 @@
-# crm-core
+# asgardcrm
 
-Core package (dynamic entities, workflows, calendar, mail, documenti, importer) behind [AsgardCRM](https://github.com/fazzinipierluigi/AsgardCRM), extracted so it can be installed into any Laravel 13 application.
+Extensible entity/workflow CRM (dynamic entities, workflow engine, calendar, webmail, documenti, importer) as a reusable Laravel 13 package — full auth (classic + SAML + social), install/update wizard, and admin CRUD for Users/Roles/Login-providers included. Install it into an existing Laravel app, or start from [`AsgardCRM-Scaffolding`](https://github.com/fazzinipierluigi/AsgardCRM-Scaffolding) for a ready-to-run host.
+
+This repository *is* the package — `composer.json` at its root, no monorepo wrapper. It used to be published under `fazzinipierluigi/crm-core`, nested inside the standalone AsgardCRM app; both were folded into this single package as of the `asgardcrm` rename (see `CHANGELOG.md`).
 
 ## Requirements
 
@@ -12,7 +14,7 @@ Laravel 11/12 aren't supported — every model uses the `#[Fillable]`/`#[Hidden]
 ## Installation
 
 ```bash
-composer require fazzinipierluigi/crm-core
+composer require fazzinipierluigi/asgardcrm
 php artisan vendor:publish --tag=crm-config --tag=crm-migrations --tag=crm-assets
 ```
 
@@ -28,9 +30,12 @@ If it does (different names, or you're merging into an existing app), skip this 
 
 ### Your `User` model
 
+The package ships its own login, install/update wizard, and admin CRUD — your host still owns the `User` model itself (concrete Eloquent model, migrations, factory), implementing this contract:
+
 ```php
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
 use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 
 class User extends Authenticatable implements CrmUser
@@ -46,18 +51,52 @@ class User extends Authenticatable implements CrmUser
     {
         Setting::setValue($this->id, $key, $value);
     }
+
+    public function loginProvider(): BelongsTo
+    {
+        return $this->belongsTo(LoginProvider::class);
+    }
+
+    public function effectiveLoginProvider(): LoginProvider
+    {
+        return $this->loginProvider ?? LoginProvider::local();
+    }
 }
 ```
 
 Point `config('crm.user_model')` (`CRM_USER_MODEL` env) at it if it isn't `App\Models\User`.
 
-### Run the migrations
+### Wire the middleware your host applies
+
+The service provider registers `EnsureAppIsInstalled`/`EnsureAppIsUpToDate` as router aliases (`crm.installed`, `crm.up-to-date`) instead of forcing them onto every host globally — a host decides where they apply (e.g. skipped entirely in a test environment with no install wizard route to redirect to):
+
+```php
+->withMiddleware(function (Middleware $middleware): void {
+    $middleware->appendToGroup('web', 'crm.installed');
+    $middleware->appendToGroup('web', 'crm.up-to-date');
+
+    // The SAML ACS endpoint receives its POST straight from the IdP,
+    // which never had a CSRF token from your app.
+    $middleware->validateCsrfTokens(except: ['login/saml/*/acs']);
+})
+```
+
+`ApplyUserPreferences` (locale-from-user-setting) is pushed onto the `web` group automatically by the provider — nothing to wire for that one.
+
+### Publish the auth translation keys and run the migrations
 
 ```bash
+php artisan vendor:publish --tag=crm-lang
 php artisan migrate
 ```
 
-See `starter-kit/` in this repo for a complete, verified from-scratch install (minimal auth, seeded admin, adapted layouts) — `docs/package-conversion/04-starter-kit.md` has the full walkthrough.
+`crm-lang` is separate/explicit for the same reason `crm-migrations-users` is: a host with its own customized `lang/en/auth.php` shouldn't have it silently overwritten.
+
+### Demo content (optional)
+
+14 `Fazzinipierluigi\AsgardCRM\Database\Seeders\*EntitySeeder` classes (Clienti, Fatture, Preventivi, Ticket, and so on) ship as package-owned seeders — call them from your own `DatabaseSeeder` if you want AsgardCRM's own demo entities, or skip them entirely for a blank slate.
+
+See [`AsgardCRM-Scaffolding`](https://github.com/fazzinipierluigi/AsgardCRM-Scaffolding) for a complete, verified from-scratch install doing all of the above.
 
 ## Icons
 
@@ -71,11 +110,11 @@ npm install @tabler/icons
 
 ## Assets
 
-The package ships its own **pre-built** Vite output (`public/vendor/crm/`, published by `crm-assets`) — your app's own Vite config/build is untouched, no npm dependency merging. Views load them via `@vite([...], 'vendor/crm')`. If you're developing the package itself: `npm install && npm run build` inside `packages/fazzinipierluigi/crm-core/` (or `npm run dev` for HMR), then republish `crm-assets`.
+The package ships its own **pre-built** Vite output (`public/vendor/crm/`, published by `crm-assets`) — your app's own Vite config/build is untouched, no npm dependency merging. Views load them via `@vite([...], 'vendor/crm')`. If you're developing the package itself: `npm install && npm run build` in this repo's root (or `npm run dev` for HMR), then republish `crm-assets`.
 
 ## Routes
 
-Mounted from `CrmServiceProvider::boot()` under:
+Mounted from `AsgardCRMServiceProvider::boot()` under:
 
 ```php
 Route::group([
@@ -95,20 +134,21 @@ Registered automatically once the app is booted (`Schedule::command(...)->everyM
 - `FireDueWorkflowTimers`
 - `SyncCalendarConnectors`
 
-Plus `BackfillInstalledEntityUpgrades`, run by hand during an upgrade (not scheduled) — see `docs/package-conversion/03-migrazione-moduli.md` for the entity-upgrade pattern it belongs to.
+Plus, run by hand (not scheduled):
+- `BackfillInstalledEntityUpgrades` — see `docs/package-conversion/03-migrazione-moduli.md` for the entity-upgrade pattern it belongs to.
+- `ResetInstallCommand` — clears the install-wizard marker, for local development.
 
 ## Testing
 
 The package's own suite runs fully standalone (no dependency on a consuming app) via Orchestra Testbench:
 
 ```bash
-cd packages/fazzinipierluigi/crm-core
 composer install
 vendor/bin/pest
 ```
 
-CI (`.github/workflows/crm-core-tests.yml`) runs it against PHP 8.3/8.4, plus `composer audit`.
+CI (`.github/workflows/tests.yml`) runs it against PHP 8.3/8.4 on Laravel 13, plus `composer audit`.
 
 ## Versioning
 
-SemVer, currently `0.x` — `1.0.0` is reserved for the point where an external app (not this monorepo) has installed the package from scratch via Packagist and verified it end-to-end. See `CHANGELOG.md`.
+SemVer, currently `0.x` — `1.0.0` is reserved for the point where an external app (not a sibling repo on the same disk) has installed the package from scratch via Packagist and verified it end-to-end. See `CHANGELOG.md`.
