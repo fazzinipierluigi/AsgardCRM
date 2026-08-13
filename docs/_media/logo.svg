@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="34" height="34" role="img" aria-label="AsgardCRM">
+  <defs>
+    <linearGradient id="agc-g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4dabf7"/>
+      <stop offset="1" stop-color="#206bc4"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 3 L59 15 V33 C59 47 47.5 57.5 32 61 C16.5 57.5 5 47 5 33 V15 Z" fill="url(#agc-g)"/>
+  <path d="M32 3 L59 15 V33 C59 47 47.5 57.5 32 61 Z" fill="#ffffff" fill-opacity="0.12"/>
+  <path d="M32 15 L44 42 H38.4 L36 36 H28 L25.6 42 H20 Z M32 25.5 L29.2 32 H34.8 Z" fill="#ffffff"/>
+</svg>
