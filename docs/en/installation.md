@@ -60,9 +60,11 @@ php artisan migrate
 
 `crm-lang` is separate and explicit for the same reason `crm-migrations-users` is: a host with its own customized `lang/en/auth.php` shouldn't have it silently overwritten.
 
-### 5. Demo content (optional)
+### 5. Built-in system entities
 
-Fourteen `Fazzinipierluigi\AsgardCRM\Database\Seeders\*EntitySeeder` classes (Clienti, Fatture, Preventivi, Ticket, and so on) ship as package-owned seeders. Call them from your own `DatabaseSeeder` if you want AsgardCRM's demo entities, or skip them entirely for a blank slate. There is no package-side seeder that runs them automatically.
+Nothing to do here — once you complete the install wizard (see below), it seeds every built-in system entity for you: Calendario, Documenti, E-mail, and the standard CRM set (Clienti, Fornitori, Prodotti, Lead, Contatti, Opportunità, Preventivi, Ordini di acquisto/vendita, Fatture, Ticket). All fourteen `Fazzinipierluigi\AsgardCRM\Database\Seeders\*EntitySeeder` classes are `is_system => true` and called by `ApplicationInstaller::install()` in an order that respects their Relation-field dependencies. See [Modules overview](modules-overview.md) for what each one covers.
+
+If you're bootstrapping the package **without** the install wizard, call the same seeder classes yourself in the same order — check `ApplicationInstaller::install()`'s call sequence in the package source.
 
 ### 6. Icons
 

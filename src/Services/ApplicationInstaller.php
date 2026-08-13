@@ -4,9 +4,20 @@ namespace Fazzinipierluigi\AsgardCRM\Services;
 
 use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ClientiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ContattiEntitySeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\DocumentsEntitySeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\EmailEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\FattureEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\FornitoriEntitySeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\LanguageSeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\LeadEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OpportunitaEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OrdiniAcquistoEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OrdiniVenditaEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\PreventiviEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ProdottiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\TicketEntitySeeder;
 use Fazzinipierluigi\AsgardCRM\Database\Seeders\TranslationSeeder;
 use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Fazzinipierluigi\AsgardCRM\Models\Setting;
@@ -66,6 +77,26 @@ class ApplicationInstaller
         Artisan::call('db:seed', ['--class' => CalendarEntitySeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => DocumentsEntitySeeder::class, '--force' => true]);
         Artisan::call('db:seed', ['--class' => EmailEntitySeeder::class, '--force' => true]);
+
+        // Every entity below is is_system => true, same as the three
+        // above — seeded in dependency order (a Relation field's FK
+        // needs its target entity's table to already exist, see
+        // EntitySchemaBuilder::addRelationColumn()): Clienti/Fornitori/
+        // Prodotti/Lead have no entity-to-entity dependencies of their
+        // own, everything else points back to one or more of them
+        // (directly or transitively) — see each seeder's own class
+        // docblock for its specific relation fields.
+        Artisan::call('db:seed', ['--class' => ClientiEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => FornitoriEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ProdottiEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => LeadEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => ContattiEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => OpportunitaEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => OrdiniAcquistoEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => PreventiviEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => OrdiniVenditaEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => FattureEntitySeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => TicketEntitySeeder::class, '--force' => true]);
 
         $role = Role::firstOrCreate(
             ['slug' => 'admin'],
