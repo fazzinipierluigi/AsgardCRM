@@ -1,17 +1,17 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityCard;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityTab;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityCard;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityTab;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 
 uses(RefreshDatabase::class);
 
@@ -521,7 +521,7 @@ test('a new select field on an installed entity stores its parsed options', func
 test('a new relation field on an installed entity adds an _id column', function () {
     $entity = installedEntityWithTree();
     $payload = installedPayloadWithNewField($entity, [
-        'name' => 'Responsabile', 'column_name' => 'responsabile', 'type' => 'relation', 'relation_target' => 'model:Fazzinipierluigi\CrmCore\\Models\\User',
+        'name' => 'Responsabile', 'column_name' => 'responsabile', 'type' => 'relation', 'relation_target' => 'model:Fazzinipierluigi\AsgardCRM\\Models\\User',
     ]);
 
     $this->actingAs(adminUser())->put(route('admin.entities.builder.update', $entity), $payload);

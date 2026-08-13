@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\EntityFieldConditionRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityFieldCondition;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\EntityFieldConditionRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityFieldCondition;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +14,7 @@ use Illuminate\View\View;
 
 /**
  * Admin CRUD for an entity's conditional-field rules (see
- * Fazzinipierluigi\CrmCore\Models\EntityFieldCondition) — each rule's targets are always
+ * Fazzinipierluigi\AsgardCRM\Models\EntityFieldCondition) — each rule's targets are always
  * fully replaced on save (delete-then-recreate, like
  * EntityBuilderController's non-installed tree replace) rather than
  * diffed, since a condition's target list is small and has no

@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Enums;
+namespace Fazzinipierluigi\AsgardCRM\Enums;
 
 /**
  * A delegated-OAuth mailbox provider — endpoints, scope and the
  * well-known IMAP/SMTP host+port a MailAccount authenticating this way
- * connects to (see Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService and
+ * connects to (see Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService and
  * ImapMailReader/SmtpMailSender's own oauth branches). Deliberately
  * separate from MailAuthMethod: this enum only knows protocol-level
  * constants, never a MailAccount/MailSetting — MailOAuthService is

@@ -39,7 +39,7 @@
     <div class="col-md-6 mb-3">
         <label for="protocol" class="form-label">{{ t('Protocollo') }}</label>
         <select id="protocol" name="protocol" class="form-select @error('protocol') is-invalid @enderror" data-testid="mail-account-protocol-select" @if ($isEdit) disabled @endif>
-            @foreach (\Fazzinipierluigi\CrmCore\Enums\MailAccountProtocol::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\AsgardCRM\Enums\MailAccountProtocol::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected(old('protocol', $account?->protocol?->value) === $value2)>{{ $label }}</option>
             @endforeach
         </select>
@@ -61,7 +61,7 @@
     <div class="col-md-6 mb-3">
         <label for="auth_method" class="form-label">{{ t('Tipo di autenticazione') }}</label>
         <select id="auth_method" name="auth_method" class="form-select @error('auth_method') is-invalid @enderror" data-testid="mail-account-auth-method-select">
-            @foreach (\Fazzinipierluigi\CrmCore\Enums\MailAuthMethod::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\AsgardCRM\Enums\MailAuthMethod::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected(old('auth_method', $account?->auth_method?->value ?? 'password') === $value2)>{{ $label }}</option>
             @endforeach
         </select>

@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\CalendarSharePermission;
+use Fazzinipierluigi\AsgardCRM\Enums\CalendarSharePermission;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

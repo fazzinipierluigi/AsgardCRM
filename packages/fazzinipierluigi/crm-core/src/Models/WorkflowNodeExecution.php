@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeExecutionStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeExecutionStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

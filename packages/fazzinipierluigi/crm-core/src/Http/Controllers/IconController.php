@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

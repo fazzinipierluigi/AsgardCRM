@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
 
 /**
  * Sends mail from a MailAccount — a separate interface from

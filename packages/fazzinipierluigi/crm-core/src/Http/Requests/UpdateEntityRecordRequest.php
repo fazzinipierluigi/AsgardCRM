@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests;
 
 /**
  * Same per-entity field rules as creation — nothing about validation

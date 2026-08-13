@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreConnectorRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateConnectorRequest;
-use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreConnectorRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateConnectorRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

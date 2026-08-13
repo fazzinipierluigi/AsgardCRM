@@ -1,15 +1,15 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowVersionStatus;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
-use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowVersionStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowAction;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowEdge;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

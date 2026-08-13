@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\DTO;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\DTO;
 
 use Carbon\CarbonImmutable;
 
@@ -9,7 +9,7 @@ use Carbon\CarbonImmutable;
  * from MailReaderInterface::listMessages(). Page 2+ is cached only for
  * MailSetting::cache_ttl_seconds (a short, ephemeral window); a
  * folder's first page is instead persisted by
- * Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache, so it can survive across
+ * Fazzinipierluigi\AsgardCRM\Services\Mail\MailMessageHeaderCache, so it can survive across
  * requests/users. `uid` is the protocol-native message identifier
  * within `folder` (IMAP UID, POP3 UIDL, EWS ItemId) — the pair is what
  * a MailController::attach() call later stores on the entity_email

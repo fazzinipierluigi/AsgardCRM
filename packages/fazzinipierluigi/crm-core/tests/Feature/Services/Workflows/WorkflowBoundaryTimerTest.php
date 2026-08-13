@@ -1,14 +1,14 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Fazzinipierluigi\CrmCore\Jobs\Workflows\ExecuteServiceTaskJob;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors\SyncTaskExecutor;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\AsgardCRM\Jobs\Workflows\ExecuteServiceTaskJob;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors\SyncTaskExecutor;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 

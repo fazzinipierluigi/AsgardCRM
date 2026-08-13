@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Console\Commands;
+namespace Fazzinipierluigi\AsgardCRM\Console\Commands;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterScheduleType;
-use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
-use Fazzinipierluigi\CrmCore\Models\Importer;
 use Cron\CronExpression;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterScheduleType;
+use Fazzinipierluigi\AsgardCRM\Jobs\RunImporterJob;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
 use Illuminate\Console\Command;
 use Throwable;
 

@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowApiEndpoint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 

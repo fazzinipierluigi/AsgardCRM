@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange;
 
-use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;

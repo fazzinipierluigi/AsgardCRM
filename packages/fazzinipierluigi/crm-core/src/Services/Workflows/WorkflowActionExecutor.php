@@ -1,18 +1,18 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\EntityListWidgetRequest;
-use Fazzinipierluigi\CrmCore\Mail\WorkflowNotificationMail;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
-use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowSqlConnection;
-use Fazzinipierluigi\CrmCore\Services\DynamicDatabaseConnector;
-use Fazzinipierluigi\CrmCore\Services\EntityChangeLogger;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionType;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\EntityListWidgetRequest;
+use Fazzinipierluigi\AsgardCRM\Mail\WorkflowNotificationMail;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowAction;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowSqlConnection;
+use Fazzinipierluigi\AsgardCRM\Services\DynamicDatabaseConnector;
+use Fazzinipierluigi\AsgardCRM\Services\EntityChangeLogger;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use RuntimeException;

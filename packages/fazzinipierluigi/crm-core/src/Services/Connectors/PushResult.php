@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors;
 
 /**
  * The outcome of a Connector::push() call — the external identifiers to

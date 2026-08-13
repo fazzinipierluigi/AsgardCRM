@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange;
 
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
@@ -10,7 +10,7 @@ use RuntimeException;
 /**
  * OAuth2 client-credentials ("app-only") token acquisition for
  * Microsoft Graph, scoped to a MailConnector — a standalone duplicate
- * of Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\GraphTokenClient (calendar)
+ * of Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\GraphTokenClient (calendar)
  * rather than a generalization of it: refactoring the shared class to
  * also accept a MailConnector would risk the working calendar-sync
  * path for a mail feature that doesn't need to touch it, at the cost

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Enums;
+namespace Fazzinipierluigi\AsgardCRM\Enums;
 
 /**
  * Deliberately separate from the calendar's ConnectorType, even though

@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Auth;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Auth;
 
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;

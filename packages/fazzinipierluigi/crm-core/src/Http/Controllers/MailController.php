@@ -1,19 +1,19 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Http\Requests\SendMailRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailClientFactory;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\SendMailRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailClientFactory;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailMessageHeaderCache;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

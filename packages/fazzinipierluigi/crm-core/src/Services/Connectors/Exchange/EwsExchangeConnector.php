@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange;
 
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorSyncState;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
-use Fazzinipierluigi\CrmCore\Services\Connectors\ConnectorInterface;
-use Fazzinipierluigi\CrmCore\Services\Connectors\ExternalCalendarEvent;
-use Fazzinipierluigi\CrmCore\Services\Connectors\PullResult;
-use Fazzinipierluigi\CrmCore\Services\Connectors\PushResult;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorSyncState;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\ConnectorInterface;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\ExternalCalendarEvent;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\PullResult;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\PushResult;
 use Illuminate\Support\Carbon;
 use Throwable;
 

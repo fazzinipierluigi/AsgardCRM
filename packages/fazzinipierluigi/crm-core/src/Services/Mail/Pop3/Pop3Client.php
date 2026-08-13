@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Pop3;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3;
 
-use Fazzinipierluigi\CrmCore\Enums\MailEncryption;
+use Fazzinipierluigi\AsgardCRM\Enums\MailEncryption;
 use RuntimeException;
 
 /**

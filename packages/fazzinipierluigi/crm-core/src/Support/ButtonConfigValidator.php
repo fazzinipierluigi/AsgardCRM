@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Support;
+namespace Fazzinipierluigi\AsgardCRM\Support;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTriggerType;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTriggerType;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
 
 /**
  * Validation and options-array parsing for a "button" config

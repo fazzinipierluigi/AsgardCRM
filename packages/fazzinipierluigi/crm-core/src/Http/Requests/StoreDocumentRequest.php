@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests;
 
-use Fazzinipierluigi\CrmCore\Http\Requests\Concerns\BuildsEntityFieldRules;
-use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Concerns\BuildsEntityFieldRules;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -23,7 +23,7 @@ class StoreDocumentRequest extends FormRequest
      * Extensions accepted for upload — a deliberate allowlist (common
      * office/media/archive formats) rather than "any file", since an
      * unrestricted upload would accept executables/scripts onto the
-     * server. Keep in sync with Fazzinipierluigi\CrmCore\Support\DocumentIconResolver's
+     * server. Keep in sync with Fazzinipierluigi\AsgardCRM\Support\DocumentIconResolver's
      * known extensions where it matters for a nicer icon, but this list
      * is the actual security boundary.
      */

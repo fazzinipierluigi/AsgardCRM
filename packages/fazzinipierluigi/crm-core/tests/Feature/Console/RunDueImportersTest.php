@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Jobs\RunImporterJob;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
 

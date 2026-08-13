@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreWorkflowApiEndpointRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateWorkflowApiEndpointRequest;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreWorkflowApiEndpointRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateWorkflowApiEndpointRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowApiEndpoint;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 

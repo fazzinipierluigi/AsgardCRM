@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityFieldCondition;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityFieldCondition;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
 use Illuminate\Database\Seeder;
 
 /**

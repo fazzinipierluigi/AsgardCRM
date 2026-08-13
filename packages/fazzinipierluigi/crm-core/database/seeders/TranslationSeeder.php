@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Models\Translation;
+use Fazzinipierluigi\AsgardCRM\Models\Translation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 

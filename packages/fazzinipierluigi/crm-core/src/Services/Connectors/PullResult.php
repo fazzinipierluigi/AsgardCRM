@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors;
 
 use Illuminate\Support\Collection;
 

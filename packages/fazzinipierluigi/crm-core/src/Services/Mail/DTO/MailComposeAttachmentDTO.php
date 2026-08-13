@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\DTO;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\DTO;
 
 /**
  * A file the user attaches while composing/replying/forwarding —

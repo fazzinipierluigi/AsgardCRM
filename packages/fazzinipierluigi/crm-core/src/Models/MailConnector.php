@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\MailConnectorType;
+use Fazzinipierluigi\AsgardCRM\Enums\MailConnectorType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

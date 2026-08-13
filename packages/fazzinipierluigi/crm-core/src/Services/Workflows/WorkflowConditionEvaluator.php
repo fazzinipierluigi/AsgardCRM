@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
 use JWadhams\JsonLogic;
 

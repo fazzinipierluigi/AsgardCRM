@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's base data (languages, translations, the
      * default calendar and documents entities). The admin role/user/login provider are
-     * created by the installation wizard (Fazzinipierluigi\CrmCore\Services\ApplicationInstaller)
+     * created by the installation wizard (Fazzinipierluigi\AsgardCRM\Services\ApplicationInstaller)
      * instead of here.
      */
     public function run(): void

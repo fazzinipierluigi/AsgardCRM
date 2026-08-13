@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Contracts;
+namespace Fazzinipierluigi\AsgardCRM\Contracts;
 
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 /**

@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors;
 
-use Fazzinipierluigi\CrmCore\Enums\ConnectorSyncDirection;
-use Fazzinipierluigi\CrmCore\Models\CalendarEventExternalLink;
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorSyncState;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorSyncDirection;
+use Fazzinipierluigi\AsgardCRM\Models\CalendarEventExternalLink;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorSyncState;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use Throwable;

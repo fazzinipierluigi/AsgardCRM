@@ -128,7 +128,7 @@
                     <div class="col">
                         <div class="card card-sm h-100" data-testid="document-row-{{ $document->id }}">
                             <a href="{{ route('documents.download', $document) }}" class="card-body d-block text-center py-4 text-reset text-decoration-none" title="{{ $document->nome }}{{ $document->descrizione ? ' — '.$document->descrizione : '' }}">
-                                <span class="d-inline-block icon-lg mb-2">{!! icon(\Fazzinipierluigi\CrmCore\Support\DocumentIconResolver::forFilename($document->original_filename)) !!}</span>
+                                <span class="d-inline-block icon-lg mb-2">{!! icon(\Fazzinipierluigi\AsgardCRM\Support\DocumentIconResolver::forFilename($document->original_filename)) !!}</span>
                                 <div class="text-truncate small fw-medium">{{ $document->nome }}</div>
                                 <div class="text-secondary small">{{ number_format($document->file_size / 1024, 0) }} KB</div>
                             </a>

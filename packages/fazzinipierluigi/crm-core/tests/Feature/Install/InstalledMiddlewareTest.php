@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsInstalled;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Http\Middleware\EnsureAppIsInstalled;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +9,7 @@ uses(RefreshDatabase::class);
 
 /**
  * EnsureAppIsInstalled is only registered as a middleware alias by
- * CrmServiceProvider (crm.installed), never auto-applied to the 'web'
+ * AsgardCRMServiceProvider (crm.installed), never auto-applied to the 'web'
  * group — a host wires it into its own bootstrap/app.php. These tests
  * exercise the middleware directly against ad-hoc routes instead.
  */

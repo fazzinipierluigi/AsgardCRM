@@ -1,16 +1,16 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
-use Fazzinipierluigi\CrmCore\Http\Requests\StoreCalendarEventRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateCalendarEventRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Services\CalendarAuthorizer;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationResolver;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\StoreCalendarEventRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateCalendarEventRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Services\CalendarAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

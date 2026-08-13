@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Support\ButtonConfigValidator;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Support\ButtonConfigValidator;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

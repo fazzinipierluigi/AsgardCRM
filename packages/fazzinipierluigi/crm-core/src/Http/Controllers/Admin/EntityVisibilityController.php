@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateEntityVisibilityRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateEntityVisibilityRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRoleVisibility;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;

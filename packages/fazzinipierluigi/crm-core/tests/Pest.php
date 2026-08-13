@@ -1,14 +1,14 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityCard;
-use Fazzinipierluigi\CrmCore\Models\EntityTab;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
-use Fazzinipierluigi\CrmCore\Tests\TestCase;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityCard;
+use Fazzinipierluigi\AsgardCRM\Models\EntityTab;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Tests\TestCase;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests;
 
 /**
  * Same rules as uploading, except the file itself is optional — see

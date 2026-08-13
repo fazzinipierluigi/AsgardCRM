@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * One row per (mail_account_id, folder) tracking when its
  * MailMessageCache page was last synced live and how many messages the
- * folder held at that point — see Fazzinipierluigi\CrmCore\Services\Mail\
+ * folder held at that point — see Fazzinipierluigi\AsgardCRM\Services\Mail\
  * MailMessageHeaderCache.
  */
 #[Fillable(['mail_account_id', 'folder', 'total', 'synced_at'])]

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreMailConnectorRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateMailConnectorRequest;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreMailConnectorRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateMailConnectorRequest;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +16,7 @@ use Illuminate\View\View;
  * Admin CRUD for MailConnectors — org-wide Exchange app registrations
  * / service accounts a user's personal MailAccount can point at
  * instead of entering their own Exchange credentials (see
- * Fazzinipierluigi\CrmCore\Models\MailAccount::mail_connector_id). Mirrors ConnectorController's
+ * Fazzinipierluigi\AsgardCRM\Models\MailAccount::mail_connector_id). Mirrors ConnectorController's
  * shape closely (same two Exchange types, same encrypted-config
  * pattern, same "blank secret on edit keeps the previous value"
  * trick) — kept as a separate class since it's a distinct, mail-only

@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\ConnectorSyncDirection;
-use Fazzinipierluigi\CrmCore\Enums\ConnectorType;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorSyncDirection;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;

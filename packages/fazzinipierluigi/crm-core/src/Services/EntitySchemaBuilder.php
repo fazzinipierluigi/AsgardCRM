@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Throwable;
@@ -36,7 +36,7 @@ class EntitySchemaBuilder
      * — but not exposed as an editable EntityField, since it isn't one).
      * Documents entities similarly get a fixed set of upload-bookkeeping
      * columns (see DocumentController) plus a `folder_id` pointing into
-     * the entity's own document_folders tree (Fazzinipierluigi\CrmCore\Models\DocumentFolder)
+     * the entity's own document_folders tree (Fazzinipierluigi\AsgardCRM\Models\DocumentFolder)
      * — no real FK constraint despite document_folders being a real,
      * static table, see the comment at its column definition below.
      * Email entities get a fixed set of message-bookmark columns (see

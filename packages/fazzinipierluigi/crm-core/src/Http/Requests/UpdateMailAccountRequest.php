@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests;
 
-use Fazzinipierluigi\CrmCore\Enums\MailAccountProtocol;
-use Fazzinipierluigi\CrmCore\Enums\MailAuthMethod;
-use Fazzinipierluigi\CrmCore\Enums\MailEncryption;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
-use Fazzinipierluigi\CrmCore\Models\MailSignature;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAccountProtocol;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAuthMethod;
+use Fazzinipierluigi\AsgardCRM\Enums\MailEncryption;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Models\MailSignature;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\OAuth;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth;
 
-use Fazzinipierluigi\CrmCore\Enums\MailOAuthProvider;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
 use Carbon\CarbonImmutable;
+use Fazzinipierluigi\AsgardCRM\Enums\MailOAuthProvider;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;

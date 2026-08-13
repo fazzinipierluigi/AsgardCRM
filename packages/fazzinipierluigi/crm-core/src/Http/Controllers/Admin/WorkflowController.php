@@ -1,15 +1,15 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\ImportWorkflowRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreWorkflowRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateWorkflowRequest;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowGraphPersister;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\ImportWorkflowRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreWorkflowRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateWorkflowRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowGraphPersister;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

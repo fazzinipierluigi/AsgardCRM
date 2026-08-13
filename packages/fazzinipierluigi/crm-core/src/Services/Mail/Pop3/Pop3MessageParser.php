@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Pop3;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3;
 
 /**
  * A minimal hand-rolled MIME parser — no external dependency needed:

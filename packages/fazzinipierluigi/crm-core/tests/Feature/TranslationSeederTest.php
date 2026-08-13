@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Database\Seeders\TranslationSeeder;
-use Fazzinipierluigi\CrmCore\Models\Translation;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\TranslationSeeder;
+use Fazzinipierluigi\AsgardCRM\Models\Translation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

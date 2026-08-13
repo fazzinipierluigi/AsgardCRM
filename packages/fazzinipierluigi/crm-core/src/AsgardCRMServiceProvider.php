@@ -1,25 +1,25 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore;
+namespace Fazzinipierluigi\AsgardCRM;
 
-use Fazzinipierluigi\CrmCore\Console\Commands\BackfillInstalledEntityUpgrades;
-use Fazzinipierluigi\CrmCore\Console\Commands\FireDueWorkflowTimers;
-use Fazzinipierluigi\CrmCore\Console\Commands\ResetInstallCommand;
-use Fazzinipierluigi\CrmCore\Console\Commands\RunDueImporters;
-use Fazzinipierluigi\CrmCore\Console\Commands\RunDueWorkflows;
-use Fazzinipierluigi\CrmCore\Console\Commands\SyncCalendarConnectors;
-use Fazzinipierluigi\CrmCore\Http\Middleware\ApplyUserPreferences;
-use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsInstalled;
-use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsUpToDate;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Services\EnvFileWriter;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowActionExecutor;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEntityTriggerDispatcher;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\BackfillInstalledEntityUpgrades;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\FireDueWorkflowTimers;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\ResetInstallCommand;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\RunDueImporters;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\RunDueWorkflows;
+use Fazzinipierluigi\AsgardCRM\Console\Commands\SyncCalendarConnectors;
+use Fazzinipierluigi\AsgardCRM\Http\Middleware\ApplyUserPreferences;
+use Fazzinipierluigi\AsgardCRM\Http\Middleware\EnsureAppIsInstalled;
+use Fazzinipierluigi\AsgardCRM\Http\Middleware\EnsureAppIsUpToDate;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Services\EnvFileWriter;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowActionExecutor;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEntityTriggerDispatcher;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\ServiceProvider;
 
-class CrmServiceProvider extends ServiceProvider
+class AsgardCRMServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Install;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Install;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Install\StoreAdminRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Install\StoreDatabaseRequest;
-use Fazzinipierluigi\CrmCore\Services\ApplicationInstaller;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Install\StoreAdminRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Install\StoreDatabaseRequest;
+use Fazzinipierluigi\AsgardCRM\Services\ApplicationInstaller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;

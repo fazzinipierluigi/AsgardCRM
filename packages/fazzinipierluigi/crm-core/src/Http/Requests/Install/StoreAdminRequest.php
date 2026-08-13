@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Install;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Install;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

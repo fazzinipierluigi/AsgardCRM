@@ -1,18 +1,18 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterChannel;
-use Fazzinipierluigi\CrmCore\Enums\ImporterScheduleType;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\PreviewImporterRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreImporterRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateImporterRequest;
-use Fazzinipierluigi\CrmCore\Jobs\RunImporterJob;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Models\ImporterRun;
-use Fazzinipierluigi\CrmCore\Services\Importers\ImporterChannelFactory;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterScheduleType;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\PreviewImporterRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreImporterRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateImporterRequest;
+use Fazzinipierluigi\AsgardCRM\Jobs\RunImporterJob;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Models\ImporterRun;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\ImporterChannelFactory;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

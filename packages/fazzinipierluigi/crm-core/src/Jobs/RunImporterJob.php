@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Jobs;
+namespace Fazzinipierluigi\AsgardCRM\Jobs;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterRunStatus;
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\ImporterRunner;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterRunStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\ImporterRunner;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

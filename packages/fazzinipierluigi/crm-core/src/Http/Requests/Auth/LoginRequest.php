@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Auth;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Auth;
 
-use Fazzinipierluigi\CrmCore\Services\Auth\LdapAuthenticator;
+use Fazzinipierluigi\AsgardCRM\Services\Auth\LdapAuthenticator;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;

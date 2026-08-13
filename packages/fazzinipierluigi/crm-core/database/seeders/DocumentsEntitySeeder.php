@@ -1,15 +1,15 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
 use Illuminate\Database\Seeder;
 
 /**
  * Seeds the system "Documenti" Entity — a document library with
- * infinitely nestable folders (Fazzinipierluigi\CrmCore\Models\DocumentFolder). Two locked
+ * infinitely nestable folders (Fazzinipierluigi\AsgardCRM\Models\DocumentFolder). Two locked
  * fields (Nome/Descrizione) plus the fixed upload-bookkeeping columns
  * EntitySchemaBuilder adds for `is_documents` entities; users can
  * later append their own custom metadata fields via

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep;
+use Fazzinipierluigi\AsgardCRM\Services\Upgrades\UpgradeStep;
 
 /**
- * Resolves and runs the Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep
+ * Resolves and runs the Fazzinipierluigi\AsgardCRM\Services\Upgrades\UpgradeStep
  * classes registered in config('crm.upgrades.steps') that fall between two
  * app versions, in the direction the update wizard needs.
  */

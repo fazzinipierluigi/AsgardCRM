@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Database\Seeders\DocumentsEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\DocumentsEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;

@@ -1,10 +1,10 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityCard;
-use Fazzinipierluigi\CrmCore\Models\EntityTab;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityCard;
+use Fazzinipierluigi\AsgardCRM\Models\EntityTab;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
 use Laravel\Dusk\Browser;
 
 test('toggling a field live shows/hides, locks and requires other fields per the entity conditional rules', function () {

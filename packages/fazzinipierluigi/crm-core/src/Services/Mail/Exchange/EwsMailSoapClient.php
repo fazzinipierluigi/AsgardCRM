@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
@@ -9,7 +9,7 @@ use SimpleXMLElement;
 
 /**
  * Raw SOAP client for Exchange Web Services mail operations — a
- * separate, mail-shaped sibling of Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\
+ * separate, mail-shaped sibling of Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\
  * EwsSoapClient (calendar), built the same way (hand-written XML over
  * Http, Basic auth or best-effort NTLM via raw curl options, no SDK
  * dependency) but with FindFolder/FindItem/GetItem/GetAttachment

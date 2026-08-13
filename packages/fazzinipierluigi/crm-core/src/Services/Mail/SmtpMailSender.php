@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Enums\MailAuthMethod;
-use Fazzinipierluigi\CrmCore\Enums\MailEncryption;
-use Fazzinipierluigi\CrmCore\Mail\ComposedMail;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAuthMethod;
+use Fazzinipierluigi\AsgardCRM\Enums\MailEncryption;
+use Fazzinipierluigi\AsgardCRM\Mail\ComposedMail;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -15,10 +15,10 @@ use Throwable;
  * MailSenderInterface over SMTP, for IMAP/POP3/EWS-direct accounts —
  * registers a per-account ephemeral Laravel mailer at send() time
  * (never a static config/mail.php entry), same runtime-config trick
- * Fazzinipierluigi\CrmCore\Services\DocumentStorageDiskResolver uses for a storage-backend
+ * Fazzinipierluigi\AsgardCRM\Services\DocumentStorageDiskResolver uses for a storage-backend
  * disk. The mailer name is scoped to the account id, so concurrent
  * sends from different accounts never clash. Sends through a proper
- * Mailable (Fazzinipierluigi\CrmCore\Mail\ComposedMail) rather than Mailer::html()'s raw
+ * Mailable (Fazzinipierluigi\AsgardCRM\Mail\ComposedMail) rather than Mailer::html()'s raw
  * closure form — Mail::fake() (used by the test suite) only reliably
  * intercepts Mailable-based sends, not the raw form.
  *

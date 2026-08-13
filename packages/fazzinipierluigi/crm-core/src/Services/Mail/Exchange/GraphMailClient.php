@@ -1,17 +1,17 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange;
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailComposeDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailReaderInterface;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailSenderInterface;
 use Carbon\CarbonImmutable;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailComposeDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailReaderInterface;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailSenderInterface;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;

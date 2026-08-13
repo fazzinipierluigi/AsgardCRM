@@ -1,20 +1,20 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\DocumentStorageType;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateDocumentStorageRequest;
-use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
+use Fazzinipierluigi\AsgardCRM\Enums\DocumentStorageType;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateDocumentStorageRequest;
+use Fazzinipierluigi\AsgardCRM\Models\DocumentStorageSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
  * Admin singleton settings page: which disk the "Documenti" entity
- * (Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController) stores files on. Same
+ * (Fazzinipierluigi\AsgardCRM\Http\Controllers\DocumentController) stores files on. Same
  * "blank secret on edit keeps the previous value" trick as
- * ConnectorController — see Fazzinipierluigi\CrmCore\Services\DocumentStorageDiskResolver
+ * ConnectorController — see Fazzinipierluigi\AsgardCRM\Services\DocumentStorageDiskResolver
  * for how the saved config turns into an actual Flysystem disk.
  */
 class DocumentStorageController extends Controller

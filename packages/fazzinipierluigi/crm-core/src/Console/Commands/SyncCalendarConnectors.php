@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Console\Commands;
+namespace Fazzinipierluigi\AsgardCRM\Console\Commands;
 
-use Fazzinipierluigi\CrmCore\Jobs\SyncConnectorJob;
-use Fazzinipierluigi\CrmCore\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Jobs\SyncConnectorJob;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
 use Illuminate\Console\Command;
 
 /**

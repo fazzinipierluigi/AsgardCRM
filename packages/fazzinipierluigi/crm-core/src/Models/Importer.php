@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterChannel;
-use Fazzinipierluigi\CrmCore\Enums\ImporterScheduleType;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterScheduleType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

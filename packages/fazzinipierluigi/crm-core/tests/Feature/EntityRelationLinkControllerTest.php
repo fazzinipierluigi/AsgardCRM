@@ -1,12 +1,12 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Models\EntityRelationLink;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelationLink;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 
 uses(RefreshDatabase::class);
 

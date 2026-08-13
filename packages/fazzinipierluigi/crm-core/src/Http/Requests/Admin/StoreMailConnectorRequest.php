@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\MailConnectorType;
+use Fazzinipierluigi\AsgardCRM\Enums\MailConnectorType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

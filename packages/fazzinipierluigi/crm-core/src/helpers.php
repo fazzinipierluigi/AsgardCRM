@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Language;
-use Fazzinipierluigi\CrmCore\Models\Translation;
+use Fazzinipierluigi\AsgardCRM\Models\Language;
+use Fazzinipierluigi\AsgardCRM\Models\Translation;
 
 if (! function_exists('preferences')) {
     /**

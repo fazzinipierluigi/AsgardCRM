@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors;
 
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorSyncState;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorSyncState;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
 use Illuminate\Support\Carbon;
 
 /**

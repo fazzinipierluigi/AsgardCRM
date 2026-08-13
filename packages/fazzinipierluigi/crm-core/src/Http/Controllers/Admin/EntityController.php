@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\ImportEntityRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreEntityRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateEntityRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
-use Fazzinipierluigi\CrmCore\Services\EntitySchemaTransfer;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\ImportEntityRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreEntityRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateEntityRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Services\EntitySchemaTransfer;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

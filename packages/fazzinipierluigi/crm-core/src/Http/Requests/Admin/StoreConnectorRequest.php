@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\ConnectorSyncDirection;
-use Fazzinipierluigi\CrmCore\Enums\ConnectorType;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorSyncDirection;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

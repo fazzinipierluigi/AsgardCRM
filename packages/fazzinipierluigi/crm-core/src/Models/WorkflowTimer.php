@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowTimerFactory;
+use Fazzinipierluigi\AsgardCRM\Database\Factories\WorkflowTimerFactory;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

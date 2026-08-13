@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

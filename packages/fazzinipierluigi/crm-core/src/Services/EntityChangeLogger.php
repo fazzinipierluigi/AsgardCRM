@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityFieldChange;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityFieldChange;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 

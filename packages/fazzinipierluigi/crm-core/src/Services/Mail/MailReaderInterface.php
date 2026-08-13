@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
 
 /**
  * Reads a mailbox live, on demand — no implementation of this

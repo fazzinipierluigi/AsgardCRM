@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateMailSettingRequest;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateMailSettingRequest;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -13,7 +13,7 @@ use Illuminate\View\View;
  * (connection timeout, max attachment size, which protocols a user may
  * pick when adding a mailbox, the short on-demand-listing cache
  * window, and each OAuth provider's app registration) — see
- * Fazzinipierluigi\CrmCore\Models\MailSetting. The two client_secret fields use the same
+ * Fazzinipierluigi\AsgardCRM\Models\MailSetting. The two client_secret fields use the same
  * "blank keeps the previous value" trick as DocumentStorageController/
  * ConnectorController.
  */

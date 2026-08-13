@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Importers;
+namespace Fazzinipierluigi\AsgardCRM\Services\Importers;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterChannel;
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\CsvImporterChannel;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\DatabaseImporterChannel;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\JsonImporterChannel;
-use Fazzinipierluigi\CrmCore\Services\Importers\Channels\RestApiImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\CsvImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\DatabaseImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\JsonImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\Channels\RestApiImporterChannel;
 
 class ImporterChannelFactory
 {

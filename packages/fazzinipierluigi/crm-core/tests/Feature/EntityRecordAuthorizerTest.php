@@ -1,13 +1,13 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\EntityRoleVisibility;
-use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRoleVisibility;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
 
 uses(RefreshDatabase::class);
 

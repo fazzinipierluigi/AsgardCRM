@@ -1,28 +1,28 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeExecutionStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Fazzinipierluigi\CrmCore\Http\Requests\StoreEntityRecordRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateEntityRecordRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityFieldChange;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNodeExecution;
-use Fazzinipierluigi\CrmCore\Models\WorkflowUserTask;
-use Fazzinipierluigi\CrmCore\Services\CalendarAuthorizer;
-use Fazzinipierluigi\CrmCore\Services\EntityChangeLogger;
-use Fazzinipierluigi\CrmCore\Services\EntityCodeGenerator;
-use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationLinkResolver;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationResolver;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeExecutionStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\StoreEntityRecordRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateEntityRecordRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityFieldChange;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowEdge;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNodeExecution;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowUserTask;
+use Fazzinipierluigi\AsgardCRM\Services\CalendarAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Services\EntityChangeLogger;
+use Fazzinipierluigi\AsgardCRM\Services\EntityCodeGenerator;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationLinkResolver;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationResolver;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -337,7 +337,7 @@ class EntityRecordController extends Controller
 
     /**
      * This record's change log, grouped by transaction (one save = one
-     * group) — see Fazzinipierluigi\CrmCore\Services\EntityChangeLogger. Ordering by id
+     * group) — see Fazzinipierluigi\AsgardCRM\Services\EntityChangeLogger. Ordering by id
      * descending keeps both the groups and the rows within each group
      * in reverse-chronological order, since Collection::groupBy()
      * preserves first-seen order.

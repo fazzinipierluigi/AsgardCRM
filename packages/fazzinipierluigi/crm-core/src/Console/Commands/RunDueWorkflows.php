@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Console\Commands;
+namespace Fazzinipierluigi\AsgardCRM\Console\Commands;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTriggerType;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
 use Cron\CronExpression;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTriggerType;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
 use Illuminate\Console\Command;
 use Throwable;
 

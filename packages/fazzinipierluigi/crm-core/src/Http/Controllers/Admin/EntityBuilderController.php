@@ -1,22 +1,22 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTriggerType;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreEntityFieldRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateEntityBuilderRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityCard;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityTab;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationResolver;
-use Fazzinipierluigi\CrmCore\Services\EntitySchemaBuilder;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowFieldReferenceCleaner;
-use Fazzinipierluigi\CrmCore\Support\ButtonConfigValidator;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTriggerType;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreEntityFieldRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateEntityBuilderRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityCard;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityTab;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationResolver;
+use Fazzinipierluigi\AsgardCRM\Services\EntitySchemaBuilder;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowFieldReferenceCleaner;
+use Fazzinipierluigi\AsgardCRM\Support\ButtonConfigValidator;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;

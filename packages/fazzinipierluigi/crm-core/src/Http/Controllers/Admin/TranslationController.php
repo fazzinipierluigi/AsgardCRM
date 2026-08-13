@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreTranslationRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateTranslationRequest;
-use Fazzinipierluigi\CrmCore\Models\Language;
-use Fazzinipierluigi\CrmCore\Models\Translation;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreTranslationRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateTranslationRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Language;
+use Fazzinipierluigi\AsgardCRM\Models\Translation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

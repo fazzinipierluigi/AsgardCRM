@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateCalendarSharesRequest;
-use Fazzinipierluigi\CrmCore\Models\CalendarShare;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateCalendarSharesRequest;
+use Fazzinipierluigi\AsgardCRM\Models\CalendarShare;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;

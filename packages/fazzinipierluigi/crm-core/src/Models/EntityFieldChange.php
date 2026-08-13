@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * One field's value change, always written by Fazzinipierluigi\CrmCore\Services\
+ * One field's value change, always written by Fazzinipierluigi\AsgardCRM\Services\
  * EntityChangeLogger — never updated or deleted afterwards, an
  * append-only audit trail. Several rows sharing the same
  * transaction_id came from the same save (one EntityRecordController

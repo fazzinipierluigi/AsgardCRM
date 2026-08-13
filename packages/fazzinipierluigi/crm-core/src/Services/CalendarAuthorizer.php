@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Enums\CalendarSharePermission;
-use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
-use Fazzinipierluigi\CrmCore\Models\CalendarShare;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Enums\CalendarSharePermission;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\AsgardCRM\Models\CalendarShare;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Illuminate\Database\Eloquent\Builder;
 
 /**

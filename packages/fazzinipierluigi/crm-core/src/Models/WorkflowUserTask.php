@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowUserTaskFactory;
+use Fazzinipierluigi\AsgardCRM\Database\Factories\WorkflowUserTaskFactory;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowUserTaskStatus;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

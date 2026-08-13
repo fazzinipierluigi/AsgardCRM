@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep;
-use Fazzinipierluigi\CrmCore\Services\VersionUpgradeRunner;
+use Fazzinipierluigi\AsgardCRM\Services\Upgrades\UpgradeStep;
+use Fazzinipierluigi\AsgardCRM\Services\VersionUpgradeRunner;
 
 class FakeUpgradeStep implements UpgradeStep
 {

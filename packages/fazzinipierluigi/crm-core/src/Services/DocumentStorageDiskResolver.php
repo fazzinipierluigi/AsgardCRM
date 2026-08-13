@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Enums\DocumentStorageType;
-use Fazzinipierluigi\CrmCore\Models\DocumentStorageSetting;
+use Fazzinipierluigi\AsgardCRM\Enums\DocumentStorageType;
+use Fazzinipierluigi\AsgardCRM\Models\DocumentStorageSetting;
 
 /**
- * Resolves the disk name Fazzinipierluigi\CrmCore\Http\Controllers\DocumentController should
+ * Resolves the disk name Fazzinipierluigi\AsgardCRM\Http\Controllers\DocumentController should
  * read/write documents on, driven by the admin-configurable
  * DocumentStorageSetting singleton. The "local" type keeps using the
  * app's already-registered 'local' disk untouched (so Storage::fake('local')

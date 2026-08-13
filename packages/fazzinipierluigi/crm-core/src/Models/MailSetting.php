@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Model;
  * module — connection timeout, max attachment size a user is allowed
  * to download, which protocols are offered when adding a mailbox, the
  * short-lived, ephemeral cache window paginated (page 2+) message
- * listings are held in (see Fazzinipierluigi\CrmCore\Http\Controllers\MailController::
+ * listings are held in (see Fazzinipierluigi\AsgardCRM\Http\Controllers\MailController::
  * messages() — a folder's first page is a separate, persisted cache
- * instead, see Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache, not governed
+ * instead, see Fazzinipierluigi\AsgardCRM\Services\Mail\MailMessageHeaderCache, not governed
  * by this TTL at all), and — the one secret this model does hold —
  * each OAuth provider's app registration (client id/secret), shared by
  * every user's "Connetti con Google/Microsoft" button rather than
  * asking each of them to register their own app (see
- * Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService).
+ * Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService).
  */
 #[Fillable(['connection_timeout_seconds', 'max_attachment_size_kb', 'enabled_protocols', 'cache_ttl_seconds', 'google_oauth_client_id', 'google_oauth_client_secret', 'microsoft_oauth_client_id', 'microsoft_oauth_client_secret'])]
 class MailSetting extends Model

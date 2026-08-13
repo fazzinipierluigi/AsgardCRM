@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Support;
+namespace Fazzinipierluigi\AsgardCRM\Support;
 
 /**
  * Maps a document's file extension to a Tabler icon name (see

@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Importers\Channels;
+namespace Fazzinipierluigi\AsgardCRM\Services\Importers\Channels;
 
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Services\Importers\ImporterChannelInterface;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Services\Importers\ImporterChannelInterface;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 use Throwable;

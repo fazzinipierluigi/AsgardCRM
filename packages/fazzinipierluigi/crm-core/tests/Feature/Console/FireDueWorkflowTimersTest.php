@@ -1,11 +1,11 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowEdge;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);

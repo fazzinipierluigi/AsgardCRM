@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Enums\MailOAuthProvider;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService;
+use Fazzinipierluigi\AsgardCRM\Enums\MailOAuthProvider;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use RuntimeException;

@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Http\Middleware\EnsureAppIsUpToDate;
-use Fazzinipierluigi\CrmCore\Models\Setting;
-use Fazzinipierluigi\CrmCore\Models\VersionHistory;
+use Fazzinipierluigi\AsgardCRM\Http\Middleware\EnsureAppIsUpToDate;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Models\VersionHistory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 
@@ -10,7 +10,7 @@ uses(RefreshDatabase::class);
 
 /**
  * Global registration of EnsureAppIsUpToDate is a host bootstrap/app.php
- * decision (crm.up-to-date alias, see CrmServiceProvider) — exercise it
+ * decision (crm.up-to-date alias, see AsgardCRMServiceProvider) — exercise it
  * directly against ad-hoc routes instead.
  */
 beforeEach(function () {

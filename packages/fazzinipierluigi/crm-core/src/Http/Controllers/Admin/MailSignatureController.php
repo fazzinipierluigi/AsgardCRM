@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreMailSignatureRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateMailSignatureRequest;
-use Fazzinipierluigi\CrmCore\Models\MailSignature;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreMailSignatureRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateMailSignatureRequest;
+use Fazzinipierluigi\AsgardCRM\Models\MailSignature;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;

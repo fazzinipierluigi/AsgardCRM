@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows\Contracts;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows\Contracts;
 
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
 
 /**
  * Runs a Task processo/script (ServiceTask) node's activity and advances

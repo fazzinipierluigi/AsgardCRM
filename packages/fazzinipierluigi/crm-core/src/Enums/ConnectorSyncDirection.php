@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Enums;
+namespace Fazzinipierluigi\AsgardCRM\Enums;
 
 enum ConnectorSyncDirection: string
 {

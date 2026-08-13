@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Factories;
+namespace Fazzinipierluigi\AsgardCRM\Database\Factories;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

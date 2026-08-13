@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
-use Fazzinipierluigi\CrmCore\Services\Workflows\Contracts\TaskExecutor;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowTokenTransitioner;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\Contracts\TaskExecutor;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowTokenTransitioner;
 use RuntimeException;
 
 /**

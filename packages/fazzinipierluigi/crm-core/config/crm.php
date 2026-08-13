@@ -10,7 +10,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Fully-qualified class name of the Eloquent model that implements
-    | Fazzinipierluigi\CrmCore\Contracts\CrmUser. The host application
+    | Fazzinipierluigi\AsgardCRM\Contracts\CrmUser. The host application
     | binds its own User model here.
     |
     */
@@ -34,7 +34,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Ordered (ascending by version) list of
-    | Fazzinipierluigi\CrmCore\Services\Upgrades\UpgradeStep implementations.
+    | Fazzinipierluigi\AsgardCRM\Services\Upgrades\UpgradeStep implementations.
     | VersionUpgradeRunner runs the ->upgrade() of every step between the
     | database's recorded version and the deployed code's version
     | (config('app.version')) — or the ->downgrade() of every step in
@@ -95,7 +95,7 @@ return [
     |
     | 'language' is intentionally not defined here — its options are
     | sourced dynamically from the `languages` table (Fazzinipierluigi\
-    | CrmCore\Models\Language) instead of a static list, so admins can
+    | AsgardCRM\Models\Language) instead of a static list, so admins can
     | add a language at runtime. Use the preferences() helper
     | (src/helpers.php), not config('crm.preferences') directly,
     | wherever you need the full preference set including language.

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeExecutionStatus;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNodeExecution;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeExecutionStatus;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNodeExecution;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
 
 /**
  * Writes the per-node execution log the "Flussi" tab on an entity

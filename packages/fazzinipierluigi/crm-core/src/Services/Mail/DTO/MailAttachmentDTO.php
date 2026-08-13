@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\DTO;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\DTO;
 
 /**
  * A single attachment's bytes, fetched live on demand (see

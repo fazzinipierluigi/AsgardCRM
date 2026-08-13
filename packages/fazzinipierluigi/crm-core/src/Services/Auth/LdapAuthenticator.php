@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Auth;
+namespace Fazzinipierluigi\AsgardCRM\Services\Auth;
 
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use LdapRecord\Auth\BindException;
 use LdapRecord\Connection;
 use LdapRecord\Container;

@@ -1,5 +1,5 @@
 {
-    "name": "fazzinipierluigi/crm-core",
+    "name": "fazzinipierluigi/asgardcrm",
     "description": "Core package (models, migrations, service provider) for the AsgardCRM extensible entity/workflow CRM.",
     "license": "MIT",
     "authors": [
@@ -8,8 +8,8 @@
             "email": "fazzinipierluigi@gmail.com"
         }
     ],
-    "homepage": "https://github.com/fazzinipierluigi/crm-core",
-    "keywords": ["Laravel", "CRM", "crm-core"],
+    "homepage": "https://github.com/fazzinipierluigi/AsgardCRM",
+    "keywords": ["Laravel", "CRM", "asgardcrm"],
     "require": {
         "php": "^8.3",
         "illuminate/support": "^13.12",
@@ -31,8 +31,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Fazzinipierluigi\\CrmCore\\": "src/",
-            "Fazzinipierluigi\\CrmCore\\Database\\Seeders\\": "database/seeders/"
+            "Fazzinipierluigi\\AsgardCRM\\": "src/",
+            "Fazzinipierluigi\\AsgardCRM\\Database\\Seeders\\": "database/seeders/"
         },
         "files": [
             "src/helpers.php"
@@ -40,8 +40,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Fazzinipierluigi\\CrmCore\\Tests\\": "tests/",
-            "Fazzinipierluigi\\CrmCore\\Database\\Factories\\": "database/factories/"
+            "Fazzinipierluigi\\AsgardCRM\\Tests\\": "tests/",
+            "Fazzinipierluigi\\AsgardCRM\\Database\\Factories\\": "database/factories/"
         },
         "files": [
             "tests/helpers.php"
@@ -50,7 +50,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Fazzinipierluigi\\CrmCore\\CrmServiceProvider"
+                "Fazzinipierluigi\\AsgardCRM\\AsgardCRMServiceProvider"
             ]
         }
     },

@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateConnectorMailboxesRequest;
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Models\ConnectorUserMailbox;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateConnectorMailboxesRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Models\ConnectorUserMailbox;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 

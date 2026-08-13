@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\DTO;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\DTO;
 
 /**
  * A message to send — built by MailController::send()/reply()/forward()

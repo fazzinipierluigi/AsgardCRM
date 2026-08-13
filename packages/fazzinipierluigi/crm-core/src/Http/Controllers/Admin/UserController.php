@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\StoreUserRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateUserRequest;
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\StoreUserRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateUserRequest;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Fazzinipierluigi\LaraccoonDatasource\EloquentSource;
 use Illuminate\Http\JsonResponse;

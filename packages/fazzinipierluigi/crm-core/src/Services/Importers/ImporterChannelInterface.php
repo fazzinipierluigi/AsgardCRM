@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Importers;
+namespace Fazzinipierluigi\AsgardCRM\Services\Importers;
 
-use Fazzinipierluigi\CrmCore\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
 
 /**
  * Contract every import source channel implements (see

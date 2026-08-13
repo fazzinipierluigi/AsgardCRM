@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowVersionStatus;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowVersionStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowAction;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
 
 /**
  * Strips dangling references to a just-deleted entity field out of every

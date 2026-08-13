@@ -1,18 +1,18 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Enums\MailEncryption;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailSetting;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\Pop3\Pop3Client;
-use Fazzinipierluigi\CrmCore\Services\Mail\Pop3\Pop3MessageParser;
 use Carbon\CarbonImmutable;
+use Fazzinipierluigi\AsgardCRM\Enums\MailEncryption;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailSetting;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3\Pop3Client;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Pop3\Pop3MessageParser;
 use RuntimeException;
 use Throwable;
 

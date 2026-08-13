@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Importers;
+namespace Fazzinipierluigi\AsgardCRM\Services\Importers;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterRunStatus;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\Importer;
-use Fazzinipierluigi\CrmCore\Models\ImporterRun;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterRunStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\Importer;
+use Fazzinipierluigi\AsgardCRM\Models\ImporterRun;
 use Throwable;
 
 /**

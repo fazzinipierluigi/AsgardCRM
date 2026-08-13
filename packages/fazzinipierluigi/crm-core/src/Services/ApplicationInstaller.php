@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\LanguageSeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\TranslationSeeder;
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
-use Fazzinipierluigi\CrmCore\Models\Setting;
-use Fazzinipierluigi\CrmCore\Models\VersionHistory;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\LanguageSeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\TranslationSeeder;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Models\VersionHistory;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;

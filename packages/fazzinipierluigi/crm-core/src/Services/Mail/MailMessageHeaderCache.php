@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailFolderCacheSync;
-use Fazzinipierluigi\CrmCore\Models\MailMessageCache;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailFolderCacheSync;
+use Fazzinipierluigi\AsgardCRM\Models\MailMessageCache;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
 use Illuminate\Support\Facades\DB;
 
 /**

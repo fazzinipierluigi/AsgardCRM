@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * One cached message header (folder page 1 only) — see
- * Fazzinipierluigi\CrmCore\Services\Mail\MailMessageHeaderCache, the only place these rows
+ * Fazzinipierluigi\AsgardCRM\Services\Mail\MailMessageHeaderCache, the only place these rows
  * are ever written or read. Never holds a body: this exists purely so
  * the webmail UI can paint a folder's message list instantly from the
  * database instead of waiting on a live IMAP/EWS/Graph round trip

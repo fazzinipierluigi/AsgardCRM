@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Console\Commands;
+namespace Fazzinipierluigi\AsgardCRM\Console\Commands;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Fazzinipierluigi\CrmCore\Models\WorkflowTimer;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowTimer;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
 use Illuminate\Console\Command;
 
 /**

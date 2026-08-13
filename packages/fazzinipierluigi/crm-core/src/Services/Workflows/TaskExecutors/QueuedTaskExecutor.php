@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Fazzinipierluigi\CrmCore\Jobs\Workflows\ExecuteServiceTaskJob;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
-use Fazzinipierluigi\CrmCore\Services\Workflows\Contracts\TaskExecutor;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\AsgardCRM\Jobs\Workflows\ExecuteServiceTaskJob;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\Contracts\TaskExecutor;
 
 /**
  * Parks the token and hands the activity off to Laravel's queue instead

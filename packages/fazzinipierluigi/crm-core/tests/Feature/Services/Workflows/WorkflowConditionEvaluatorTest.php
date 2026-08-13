@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowConditionEvaluator;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowConditionEvaluator;
 
 test('a null or empty rule always evaluates to true', function () {
     $evaluator = new WorkflowConditionEvaluator;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Middleware;
+namespace Fazzinipierluigi\AsgardCRM\Http\Middleware;
 
 use Closure;
-use Fazzinipierluigi\CrmCore\Models\Setting;
-use Fazzinipierluigi\CrmCore\Models\VersionHistory;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Models\VersionHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;

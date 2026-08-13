@@ -1,20 +1,20 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail;
 
-use Fazzinipierluigi\CrmCore\Enums\MailAccountProtocol;
-use Fazzinipierluigi\CrmCore\Enums\MailConnectorType;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\EwsMailClient;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\GraphMailClient;
-use Fazzinipierluigi\CrmCore\Services\Mail\Exchange\MailGraphTokenClient;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAccountProtocol;
+use Fazzinipierluigi\AsgardCRM\Enums\MailConnectorType;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\EwsMailClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\GraphMailClient;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\Exchange\MailGraphTokenClient;
 
 /**
  * Resolves the right MailReaderInterface/MailSenderInterface for a
  * given account — protocol plus whether it uses a shared
  * MailConnector, and that connector's own type, decide the concrete
  * class. Structurally the same idea as
- * Fazzinipierluigi\CrmCore\Services\Connectors\ConnectorFactory, but a separate class: mail
+ * Fazzinipierluigi\AsgardCRM\Services\Connectors\ConnectorFactory, but a separate class: mail
  * and calendar sync are unrelated concerns that happen to share this
  * "type picks an implementation" shape.
  */

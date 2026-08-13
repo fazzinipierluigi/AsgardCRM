@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Mail;
+namespace Fazzinipierluigi\AsgardCRM\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;

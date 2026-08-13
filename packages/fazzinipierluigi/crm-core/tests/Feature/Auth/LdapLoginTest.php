@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
-use Fazzinipierluigi\CrmCore\Services\Auth\LdapAuthenticator;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Services\Auth\LdapAuthenticator;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LdapRecord\Connection;
 use LdapRecord\Container;

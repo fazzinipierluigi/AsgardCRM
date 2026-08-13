@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Rules;
+namespace Fazzinipierluigi\AsgardCRM\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Admin;
 
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Contracts\Validation\ValidationRule;

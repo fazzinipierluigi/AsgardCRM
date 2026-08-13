@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors\Exchange;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange;
 
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;

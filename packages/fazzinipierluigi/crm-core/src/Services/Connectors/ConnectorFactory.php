@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Connectors;
+namespace Fazzinipierluigi\AsgardCRM\Services\Connectors;
 
-use Fazzinipierluigi\CrmCore\Enums\ConnectorType;
-use Fazzinipierluigi\CrmCore\Models\Connector;
-use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\EwsExchangeConnector;
-use Fazzinipierluigi\CrmCore\Services\Connectors\Exchange\GraphExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Enums\ConnectorType;
+use Fazzinipierluigi\AsgardCRM\Models\Connector;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\EwsExchangeConnector;
+use Fazzinipierluigi\AsgardCRM\Services\Connectors\Exchange\GraphExchangeConnector;
 
 class ConnectorFactory
 {

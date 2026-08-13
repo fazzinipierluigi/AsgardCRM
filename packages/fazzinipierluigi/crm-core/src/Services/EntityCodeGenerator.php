@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
 use Illuminate\Support\Facades\DB;
 
 /**

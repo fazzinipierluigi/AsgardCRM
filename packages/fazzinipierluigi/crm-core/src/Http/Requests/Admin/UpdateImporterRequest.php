@@ -1,11 +1,11 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Requests\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Requests\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\ImporterChannel;
-use Fazzinipierluigi\CrmCore\Enums\ImporterScheduleType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
 use Cron\CronExpression;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterChannel;
+use Fazzinipierluigi\AsgardCRM\Enums\ImporterScheduleType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

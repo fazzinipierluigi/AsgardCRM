@@ -28,7 +28,7 @@
             data-testid="mail-connector-type-select"
             @if ($isEdit) disabled @endif
         >
-            @foreach (\Fazzinipierluigi\CrmCore\Enums\MailConnectorType::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\AsgardCRM\Enums\MailConnectorType::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected(old('type', $connector?->type?->value) === $value2)>{{ $label }}</option>
             @endforeach
         </select>

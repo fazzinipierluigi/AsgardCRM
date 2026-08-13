@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Illuminate\Support\Facades\DB;
 
 /**

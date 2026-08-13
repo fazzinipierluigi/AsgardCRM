@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityVisibilityLevel;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityVisibilityLevel;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;

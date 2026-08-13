@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Populated by the user themselves (or an admin) and used
             // as {{user.phone}}/{{user.job_title}} placeholders in
-            // Fazzinipierluigi\CrmCore\Models\MailSignature — see MailSignature::render().
+            // Fazzinipierluigi\AsgardCRM\Models\MailSignature — see MailSignature::render().
             $table->string('phone')->nullable()->after('email');
             $table->string('job_title')->nullable()->after('phone');
         });

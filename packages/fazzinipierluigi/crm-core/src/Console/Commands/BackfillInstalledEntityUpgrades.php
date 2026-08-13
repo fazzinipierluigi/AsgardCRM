@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Console\Commands;
+namespace Fazzinipierluigi\AsgardCRM\Console\Commands;
 
-use Fazzinipierluigi\CrmCore\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
 use Fazzinipierluigi\JustAGate\Facades\JustAGate;
 use Illuminate\Console\Command;
 use Illuminate\Database\Schema\Blueprint;

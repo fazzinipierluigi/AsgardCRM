@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;

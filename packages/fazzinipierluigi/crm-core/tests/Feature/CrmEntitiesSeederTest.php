@@ -1,21 +1,21 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Database\Seeders\CalendarEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\ClientiEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\ContattiEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\DocumentsEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\FattureEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\FornitoriEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\LeadEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\OpportunitaEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\OrdiniAcquistoEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\OrdiniVenditaEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\PreventiviEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\ProdottiEntitySeeder;
-use Fazzinipierluigi\CrmCore\Database\Seeders\TicketEntitySeeder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityFieldCondition;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\CalendarEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ClientiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ContattiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\DocumentsEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\FattureEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\FornitoriEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\LeadEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OpportunitaEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OrdiniAcquistoEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\OrdiniVenditaEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\PreventiviEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\ProdottiEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Database\Seeders\TicketEntitySeeder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityFieldCondition;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
 use Fazzinipierluigi\JustAGate\Models\Permission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;

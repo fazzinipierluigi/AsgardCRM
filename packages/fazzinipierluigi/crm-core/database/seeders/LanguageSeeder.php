@@ -1,8 +1,8 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Models\Language;
+use Fazzinipierluigi\AsgardCRM\Models\Language;
 use Illuminate\Database\Seeder;
 
 class LanguageSeeder extends Seeder

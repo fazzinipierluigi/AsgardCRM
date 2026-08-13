@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Factories;
+namespace Fazzinipierluigi\AsgardCRM\Database\Factories;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
-use Fazzinipierluigi\CrmCore\Models\WorkflowAction;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowVersion;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionType;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowAction;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowVersion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

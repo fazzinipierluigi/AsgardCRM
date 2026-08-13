@@ -1,6 +1,6 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Services\EnvFileWriter;
+use Fazzinipierluigi\AsgardCRM\Services\EnvFileWriter;
 use Illuminate\Support\Facades\DB;
 
 /**

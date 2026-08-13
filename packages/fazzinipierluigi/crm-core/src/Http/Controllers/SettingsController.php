@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdatePreferencesRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateSettingsRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdatePreferencesRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateSettingsRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;

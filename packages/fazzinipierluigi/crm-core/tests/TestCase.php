@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Tests;
+namespace Fazzinipierluigi\AsgardCRM\Tests;
 
-use Fazzinipierluigi\CrmCore\CrmServiceProvider;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\AsgardCRMServiceProvider;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\JustAGateServiceProvider;
 use Fazzinipierluigi\LaraccoonLayouts\RaccoonLayoutsServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -82,7 +82,7 @@ abstract class TestCase extends OrchestraTestCase
             JustAGateServiceProvider::class,
             RaccoonLayoutsServiceProvider::class,
             LdapServiceProvider::class,
-            CrmServiceProvider::class,
+            AsgardCRMServiceProvider::class,
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Upgrades;
+namespace Fazzinipierluigi\AsgardCRM\Services\Upgrades;
 
 /**
  * A version-specific task run by the update wizard alongside migrations

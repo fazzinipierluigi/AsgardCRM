@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services;
+namespace Fazzinipierluigi\AsgardCRM\Services;
 
-use Fazzinipierluigi\CrmCore\Models\Setting;
-use Fazzinipierluigi\CrmCore\Models\VersionHistory;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Models\VersionHistory;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;

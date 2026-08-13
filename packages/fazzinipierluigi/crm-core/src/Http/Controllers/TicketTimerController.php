@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Services\EntityRecordAuthorizer;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationLinkResolver;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRecordAuthorizer;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationLinkResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Carbon;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

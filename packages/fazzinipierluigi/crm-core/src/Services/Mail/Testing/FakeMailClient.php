@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Mail\Testing;
+namespace Fazzinipierluigi\AsgardCRM\Services\Mail\Testing;
 
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailAttachmentDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailFolderDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\DTO\MailMessageSummaryDTO;
-use Fazzinipierluigi\CrmCore\Services\Mail\MailReaderInterface;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailAttachmentDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailFolderDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\DTO\MailMessageSummaryDTO;
+use Fazzinipierluigi\AsgardCRM\Services\Mail\MailReaderInterface;
 use RuntimeException;
 
 /**

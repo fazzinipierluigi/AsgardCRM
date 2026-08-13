@@ -1,13 +1,13 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Enums\MailAuthMethod;
-use Fazzinipierluigi\CrmCore\Http\Requests\StoreMailAccountRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateMailAccountRequest;
-use Fazzinipierluigi\CrmCore\Models\MailAccount;
-use Fazzinipierluigi\CrmCore\Models\MailConnector;
-use Fazzinipierluigi\CrmCore\Models\MailSignature;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAuthMethod;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\StoreMailAccountRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateMailAccountRequest;
+use Fazzinipierluigi\AsgardCRM\Models\MailAccount;
+use Fazzinipierluigi\AsgardCRM\Models\MailConnector;
+use Fazzinipierluigi\AsgardCRM\Models\MailSignature;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

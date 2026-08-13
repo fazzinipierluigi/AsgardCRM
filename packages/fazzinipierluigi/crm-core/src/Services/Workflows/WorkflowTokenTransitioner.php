@@ -1,14 +1,14 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowTimer;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowEdge;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowTimer;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
 use Illuminate\Database\Eloquent\Model;
 
 /**

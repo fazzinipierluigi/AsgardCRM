@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Enums\EntityRelationTargetType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityRelationTargetType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
 use Illuminate\Database\Seeder;
 
 /**
@@ -16,7 +16,7 @@ use Illuminate\Database\Seeder;
  * is_hidden so they never render in the record form/view and are
  * skipped by EntityRecordController::prepareAttributes()/
  * StoreEntityRecordRequest — written only by
- * Fazzinipierluigi\CrmCore\Http\Controllers\TicketTimerController, whose start/stop actions
+ * Fazzinipierluigi\AsgardCRM\Http\Controllers\TicketTimerController, whose start/stop actions
  * back the live timer rendered in the record page's header buttons
  * (see resources/views/entities/_ticket-timer-buttons.blade.php,
  * included from entities/edit.blade.php and entities/show.blade.php

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Enums;
+namespace Fazzinipierluigi\AsgardCRM\Enums;
 
 /**
  * For an entity-bound start trigger (created/updated/both): whether

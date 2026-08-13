@@ -1,16 +1,16 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Jobs\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Jobs\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActivityExecutionStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Fazzinipierluigi\CrmCore\Models\WorkflowActivityExecution;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
-use Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors\SyncTaskExecutor;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowEngine;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActivityExecutionStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowActivityExecution;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors\SyncTaskExecutor;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowEngine;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;

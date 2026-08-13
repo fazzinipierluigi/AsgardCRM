@@ -1,12 +1,12 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Factories;
+namespace Fazzinipierluigi\AsgardCRM\Database\Factories;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
-use Fazzinipierluigi\CrmCore\Models\WorkflowUserTask;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowUserTask;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

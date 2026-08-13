@@ -1,8 +1,8 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\Setting;
-use Fazzinipierluigi\CrmCore\Models\VersionHistory;
-use Fazzinipierluigi\CrmCore\Services\DependencyInstaller;
+use Fazzinipierluigi\AsgardCRM\Models\Setting;
+use Fazzinipierluigi\AsgardCRM\Models\VersionHistory;
+use Fazzinipierluigi\AsgardCRM\Services\DependencyInstaller;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;

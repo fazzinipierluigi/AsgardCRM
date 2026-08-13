@@ -39,7 +39,7 @@
                             <tr>
                                 <th>{{ t('Condividi con') }}</th>
                                 <th>{{ t('Nessuna') }}</th>
-                                @foreach (\Fazzinipierluigi\CrmCore\Enums\CalendarSharePermission::options() as $value => $label)
+                                @foreach (\Fazzinipierluigi\AsgardCRM\Enums\CalendarSharePermission::options() as $value => $label)
                                     <th>{{ $label }}</th>
                                 @endforeach
                             </tr>
@@ -54,7 +54,7 @@
                                     <td>
                                         <input type="radio" class="form-check-input" name="shares[{{ $shareUser->id }}]" value="none" @checked($currentPermission === 'none')>
                                     </td>
-                                    @foreach (\Fazzinipierluigi\CrmCore\Enums\CalendarSharePermission::options() as $value => $label)
+                                    @foreach (\Fazzinipierluigi\AsgardCRM\Enums\CalendarSharePermission::options() as $value => $label)
                                         <td>
                                             <input type="radio" class="form-check-input" name="shares[{{ $shareUser->id }}]" value="{{ $value }}" @checked($currentPermission === $value)>
                                         </td>

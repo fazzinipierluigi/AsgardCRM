@@ -1,7 +1,7 @@
 <?php
 
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
-use Fazzinipierluigi\CrmCore\Tests\Fixtures\User;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Tests\Fixtures\User;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 

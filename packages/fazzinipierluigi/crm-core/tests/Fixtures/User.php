@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Tests\Fixtures;
+namespace Fazzinipierluigi\AsgardCRM\Tests\Fixtures;
 
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Models\LoginProvider;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Models\LoginProvider;
 use Fazzinipierluigi\JustAGate\Traits\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

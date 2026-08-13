@@ -1,19 +1,19 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\EntityRelationRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityRelation;
-use Fazzinipierluigi\CrmCore\Services\EntityRelationLinkResolver;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\EntityRelationRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRelation;
+use Fazzinipierluigi\AsgardCRM\Services\EntityRelationLinkResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
 
 /**
  * Admin CRUD for many-to-many relation definitions between two
- * entities (see Fazzinipierluigi\CrmCore\Models\EntityRelation). $entity is always the "a"
+ * entities (see Fazzinipierluigi\AsgardCRM\Models\EntityRelation). $entity is always the "a"
  * side of a new relation — the admin picks the "b" side from every
  * other installed entity.
  */

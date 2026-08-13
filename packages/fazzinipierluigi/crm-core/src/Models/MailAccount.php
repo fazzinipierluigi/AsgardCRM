@@ -1,24 +1,24 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Enums\MailAccountProtocol;
-use Fazzinipierluigi\CrmCore\Enums\MailAuthMethod;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAccountProtocol;
+use Fazzinipierluigi\AsgardCRM\Enums\MailAuthMethod;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * A user's personal mailbox (IMAP/POP3/Exchange), added self-service
- * from their own "Le mie caselle" screen (Fazzinipierluigi\CrmCore\Http\Controllers\
+ * from their own "Le mie caselle" screen (Fazzinipierluigi\AsgardCRM\Http\Controllers\
  * MailAccountController) — not admin-managed, unlike MailConnector.
  * `config` holds direct protocol credentials — host/port/encryption/
  * username/password plus smtp_* for sending when auth_method is
  * Password, or oauth_provider/access_token/refresh_token/
  * token_expires_at when it's one of MailAuthMethod's OAuth cases (see
- * Fazzinipierluigi\CrmCore\Services\Mail\OAuth\MailOAuthService) — and is empty when
- * mail_connector_id is set instead — see Fazzinipierluigi\CrmCore\Services\Mail\
+ * Fazzinipierluigi\AsgardCRM\Services\Mail\OAuth\MailOAuthService) — and is empty when
+ * mail_connector_id is set instead — see Fazzinipierluigi\AsgardCRM\Services\Mail\
  * MailClientFactory for how these are resolved into a live client.
  */
 #[Fillable(['user_id', 'protocol', 'auth_method', 'name', 'email_address', 'is_active', 'mail_connector_id', 'mail_signature_id', 'config', 'last_tested_at', 'last_test_status', 'last_test_message'])]

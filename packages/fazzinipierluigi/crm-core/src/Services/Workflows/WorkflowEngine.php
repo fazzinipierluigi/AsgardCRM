@@ -1,25 +1,25 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowInstanceStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerUnit;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTokenStatus;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowUserTaskStatus;
-use Fazzinipierluigi\CrmCore\Contracts\CrmUser;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowEdge;
-use Fazzinipierluigi\CrmCore\Models\WorkflowInstance;
-use Fazzinipierluigi\CrmCore\Models\WorkflowNode;
-use Fazzinipierluigi\CrmCore\Models\WorkflowTimer;
-use Fazzinipierluigi\CrmCore\Models\WorkflowToken;
-use Fazzinipierluigi\CrmCore\Models\WorkflowUserTask;
-use Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors\QueuedTaskExecutor;
-use Fazzinipierluigi\CrmCore\Services\Workflows\TaskExecutors\SyncTaskExecutor;
 use Carbon\Carbon;
+use Fazzinipierluigi\AsgardCRM\Contracts\CrmUser;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowInstanceStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerUnit;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTokenStatus;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowUserTaskStatus;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowEdge;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowInstance;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowNode;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowTimer;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowToken;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowUserTask;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors\QueuedTaskExecutor;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\TaskExecutors\SyncTaskExecutor;
 use Illuminate\Database\Eloquent\Model;
 use RuntimeException;
 use Throwable;

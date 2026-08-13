@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Middleware;
+namespace Fazzinipierluigi\AsgardCRM\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

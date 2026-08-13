@@ -16,7 +16,7 @@
     <div class="col-md-4 mb-3">
         <label for="{{ $field('encryption') }}" class="form-label">{{ t('Crittografia') }}</label>
         <select id="{{ $field('encryption') }}" name="{{ $field('encryption') }}" class="form-select @error($field('encryption')) is-invalid @enderror">
-            @foreach (\Fazzinipierluigi\CrmCore\Enums\MailEncryption::options() as $value2 => $label)
+            @foreach (\Fazzinipierluigi\AsgardCRM\Enums\MailEncryption::options() as $value2 => $label)
                 <option value="{{ $value2 }}" @selected($value($field('encryption')) === $value2)>{{ $label }}</option>
             @endforeach
         </select>

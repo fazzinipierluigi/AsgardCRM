@@ -1,16 +1,16 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Http\Requests\StoreDocumentFolderRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\StoreDocumentRequest;
-use Fazzinipierluigi\CrmCore\Http\Requests\UpdateDocumentRequest;
-use Fazzinipierluigi\CrmCore\Models\DocumentFolder;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\EntityField;
-use Fazzinipierluigi\CrmCore\Models\EntityRecord;
-use Fazzinipierluigi\CrmCore\Services\DocumentStorageDiskResolver;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\StoreDocumentFolderRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\StoreDocumentRequest;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\UpdateDocumentRequest;
+use Fazzinipierluigi\AsgardCRM\Models\DocumentFolder;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\EntityField;
+use Fazzinipierluigi\AsgardCRM\Models\EntityRecord;
+use Fazzinipierluigi\AsgardCRM\Services\DocumentStorageDiskResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * The "Documenti" system entity's own UI: a folder tree
- * (Fazzinipierluigi\CrmCore\Models\DocumentFolder, infinitely nestable, not an EntityField —
+ * (Fazzinipierluigi\AsgardCRM\Models\DocumentFolder, infinitely nestable, not an EntityField —
  * see EntitySchemaBuilder) with the entity's own dynamic-table records
  * as the files filed into it. Reads/writes through EntityRecord::forEntity()
  * like every other entity, but with a dedicated browse/upload/download UI

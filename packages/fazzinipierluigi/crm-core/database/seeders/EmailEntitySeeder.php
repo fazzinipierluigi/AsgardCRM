@@ -1,10 +1,10 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Database\Seeders;
+namespace Fazzinipierluigi\AsgardCRM\Database\Seeders;
 
-use Fazzinipierluigi\CrmCore\Enums\EntityFieldType;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Services\EntityInstaller;
+use Fazzinipierluigi\AsgardCRM\Enums\EntityFieldType;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Services\EntityInstaller;
 use Illuminate\Database\Seeder;
 
 /**
@@ -12,7 +12,7 @@ use Illuminate\Database\Seeder;
  * (oggetto/mittente/destinatari/data_messaggio/ha_allegati) installed
  * the same way any other Entity is, so it gets a real dynamic table
  * plus the standard entity_email.* CRUD permissions for free. This
- * entity never stores a message body or attachments — Fazzinipierluigi\CrmCore\Http\
+ * entity never stores a message body or attachments — Fazzinipierluigi\AsgardCRM\Http\
  * Controllers\MailController fetches those live from the mailbox on
  * demand and only writes a row here (a bookmark: mail_account_id +
  * folder + message_uid, see EntitySchemaBuilder::create()'s is_email

@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Update;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Update;
 
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Services\VersionUpdateService;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Services\VersionUpdateService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Throwable;

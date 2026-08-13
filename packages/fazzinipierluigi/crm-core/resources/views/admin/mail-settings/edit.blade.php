@@ -45,7 +45,7 @@
                 <div class="mb-3">
                     <label class="form-label">{{ t('Protocolli abilitati') }}</label>
                     @php $enabledProtocols = old('enabled_protocols', $setting->enabled_protocols ?? []); @endphp
-                    @foreach (\Fazzinipierluigi\CrmCore\Enums\MailAccountProtocol::options() as $value => $label)
+                    @foreach (\Fazzinipierluigi\AsgardCRM\Enums\MailAccountProtocol::options() as $value => $label)
                         <label class="form-check">
                             <input type="checkbox" class="form-check-input" name="enabled_protocols[]" value="{{ $value }}" @checked(in_array($value, $enabledProtocols, true))>
                             <span class="form-check-label">{{ $label }}</span>

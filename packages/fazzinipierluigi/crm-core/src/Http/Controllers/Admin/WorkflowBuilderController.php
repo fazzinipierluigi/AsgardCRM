@@ -1,21 +1,21 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Http\Controllers\Admin;
+namespace Fazzinipierluigi\AsgardCRM\Http\Controllers\Admin;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowNodeType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowStartOccurrence;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTimerUnit;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowTriggerType;
-use Fazzinipierluigi\CrmCore\Enums\WorkflowVariableType;
-use Fazzinipierluigi\CrmCore\Http\Controllers\Controller;
-use Fazzinipierluigi\CrmCore\Http\Requests\Admin\UpdateWorkflowGraphRequest;
-use Fazzinipierluigi\CrmCore\Models\Entity;
-use Fazzinipierluigi\CrmCore\Models\Workflow;
-use Fazzinipierluigi\CrmCore\Models\WorkflowApiEndpoint;
-use Fazzinipierluigi\CrmCore\Models\WorkflowSqlConnection;
-use Fazzinipierluigi\CrmCore\Services\Workflows\WorkflowGraphPersister;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowNodeType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowStartOccurrence;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTimerUnit;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowTriggerType;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowVariableType;
+use Fazzinipierluigi\AsgardCRM\Http\Controllers\Controller;
+use Fazzinipierluigi\AsgardCRM\Http\Requests\Admin\UpdateWorkflowGraphRequest;
+use Fazzinipierluigi\AsgardCRM\Models\Entity;
+use Fazzinipierluigi\AsgardCRM\Models\Workflow;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowApiEndpoint;
+use Fazzinipierluigi\AsgardCRM\Models\WorkflowSqlConnection;
+use Fazzinipierluigi\AsgardCRM\Services\Workflows\WorkflowGraphPersister;
 use Fazzinipierluigi\JustAGate\Models\Role;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;

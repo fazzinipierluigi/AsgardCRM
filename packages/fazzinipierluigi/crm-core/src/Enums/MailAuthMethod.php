@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Enums;
+namespace Fazzinipierluigi\AsgardCRM\Enums;
 
 /**
  * How a MailAccount proves its identity to the mail server — a plain

@@ -1,6 +1,6 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Services\Workflows;
+namespace Fazzinipierluigi\AsgardCRM\Services\Workflows;
 
 use Illuminate\Support\Arr;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;

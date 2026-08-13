@@ -1,9 +1,9 @@
 <?php
 
-namespace Fazzinipierluigi\CrmCore\Models;
+namespace Fazzinipierluigi\AsgardCRM\Models;
 
-use Fazzinipierluigi\CrmCore\Enums\WorkflowActionPhase;
-use Fazzinipierluigi\CrmCore\Database\Factories\WorkflowEdgeFactory;
+use Fazzinipierluigi\AsgardCRM\Database\Factories\WorkflowEdgeFactory;
+use Fazzinipierluigi\AsgardCRM\Enums\WorkflowActionPhase;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
