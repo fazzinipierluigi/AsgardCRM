@@ -150,6 +150,20 @@ class AsgardCRMServiceProvider extends ServiceProvider
                 __DIR__.'/../public/android-chrome-512x512.png' => public_path('android-chrome-512x512.png'),
             ], 'crm-assets');
 
+            // Theme override of fazzinipierluigi/laraccoon-layouts' own
+            // dropdown view (form-select + real Bootstrap dropdown-menu
+            // instead of the vendor package's unstyled BEM-only markup —
+            // see resources/views/vendor/raccoon-layouts/dropdown.blade.php's
+            // own header comment). Laravel's view finder checks
+            // resource_path('views/vendor/{namespace}/...') before a
+            // package's own registered view path for ANY namespace, not
+            // just this package's own 'crm' one, so publishing straight
+            // into the host's views/vendor tree is what makes the
+            // override actually take effect.
+            $this->publishes([
+                __DIR__.'/../resources/views/vendor' => resource_path('views/vendor'),
+            ], 'crm-assets');
+
             // The 3 custom auth.provider_* keys (Modulo 5) live alongside
             // Laravel's own stock auth.php keys — bare `trans('auth.xxx')`
             // calls only resolve them once this is published into the
